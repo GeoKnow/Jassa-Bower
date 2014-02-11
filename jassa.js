@@ -292,9 +292,9 @@ var Jassa = {
 		//collection: {}
 	},
 	
-	client: {
-	    
-	}
+	client: {},
+	
+	geo: {}
 };
 
 // Export for nodejs
@@ -310,6 +310,94 @@ module["exports"] = Jassa;
 (function() {
 	
 	var ns = Jassa.util;
+	
+	ns.MultiMapUtils = {
+	    get: function(obj, key) {
+            return (key in obj)
+                ? obj[key]
+                : [];
+	    },
+	    
+	    put: function(obj, key, val) {
+            var values;
+            
+            if(key in obj) {
+                values = obj[key];
+            } else {
+                values = [];
+                obj[key] = values;
+            }
+            
+            values.push(value);
+	    },
+	    
+	    clear: function(obj) {
+            var keys = _(obj).keys();
+            _(keys).each(function(key) {
+                delete obj[key];
+            });	        
+	    }
+	};
+	
+	   
+    ns.MultiMapObjectArray = Class.create({
+        initialize: function() {
+            this.entries = {};
+        },
+    
+        clone: function() {
+            var result = new ns.MultiMapObjectArray();
+            result.addMultiMap(this);
+            
+            return result;
+        },
+    
+        clear: function() {
+            //this.entries = {};
+            var keys = _(this.entries).keys();
+            _(keys).each(function(key) {
+                delete this.entries[key];
+            });
+        },
+    
+        addMultiMap: function(other) {
+            for(var key in other.entries) {
+                var values = other.entries[key];
+                
+                for(var i = 0; i < values.length; ++i) {
+                    var value = values[i];
+                    
+                    this.put(key, value);
+                }           
+            }
+        },
+    
+        get: function(key) {
+            return (key in this.entries)
+                ? this.entries[key]
+                : [];
+        },
+    
+        put: function(key, value) {
+            var values;
+            
+            if(key in this.entries) {
+                values = this.entries[key];
+            } else {
+                values = [];
+                this.entries[key] = values;
+            }
+            
+            values.push(value);
+        },
+
+        removeKey: function(key) {
+            delete this.entries[key];
+        }
+    });
+    
+	
+	
 	
 	ns.ArrayUtils = {
 	
@@ -779,7 +867,7 @@ module["exports"] = Jassa;
 	ns.ArrayList = Class.create({
 	   initialize: function(fnEquals) {
 	       this.items = [];
-	       this.fnEquals = fnEquals ? fnEquals : ns.defaultEquals;
+	       this.fnEquals = fnEquals || ns.defaultEquals;
 	   },
 	   
 	   setItems: function(items) {
@@ -880,10 +968,58 @@ module["exports"] = Jassa;
 					ns.TreeUtils.visitDepthFirst(child, fnChildren, fnPredicate);
 				});
 			}
-		}
+		},
+		
+	    /**
+	     * Traverses a tree structure based on a child-attribute name and returns all nodes
+	     * 
+	     */
+	    flattenTree: function(node, childPropertyName, result) {
+	        if(result == null) {
+	            result = [];
+	        }
+	        
+	        if(node) {
+	            result.push(node);
+	        }
+	        
+	        var children = node[childPropertyName];
+	        var self = this;
+	        if(children) {
+	            _(children).each(function(childNode) {
+	                self.flattenTree(childNode, childPropertyName, result);
+	            });
+	        }
+	        
+	        return result;
+	    }
 			
 	};
 	
+})();
+(function() {
+
+    var ns = Jassa.util;
+    
+    // requires JSONCanonical
+    
+    ns.JsonUtils = {
+        stringifyCyclic: function(obj) {
+            var seen = [];
+            var result = JSONCanonical.stringify(obj, function(key, val) {
+               if (typeof val == "object") {
+                    if (seen.indexOf(val) >= 0)
+                        return
+                    seen.push(val)
+                }
+                return val;}
+            );
+            
+            return result;
+        }
+    };
+    
+    
 })();
 (function() {
 	
@@ -1317,7 +1453,8 @@ module["exports"] = Jassa;
 	
     ns.TypedValue = Class.create({
         initialize: function(lexicalValue, datatypeUri) {
-            this.lexicxalValue = datatypeUri;
+            this.lexicalValue = lexicalValue;
+            this.datatypeUri = datatypeUri;
         },
         
         getLexicalValue: function() {
@@ -1956,7 +2093,7 @@ module["exports"] = Jassa;
 		xinteger: new ns.DatatypeLabelInteger(),
 		xfloat: new ns.DatatypeLabelFloat(),
 		xstring: new ns.DatatypeLabelString(),
-		decimal: new ns.DatatypeLabelInteger() // TODO Handle Decimal properly
+		decimal: new ns.DatatypeLabelFloat() // TODO Handle Decimal properly
 	};
 	
 	
@@ -1971,7 +2108,7 @@ module["exports"] = Jassa;
 	ns.registerRdfDatype(xsd.str.xstring, ns.DatatypeLabels.xstring);
 	ns.registerRdfDatype(xsd.str.xfloat, ns.DatatypeLabels.xfloat);
 
-	ns.registerRdfDatype(xsd.str.decimal, ns.DatatypeLabels.xinteger);
+	ns.registerRdfDatype(xsd.str.decimal, ns.DatatypeLabels.xfloat);
 	
 	/**
 	 * Some default datatypes.
@@ -2034,7 +2171,10 @@ module["exports"] = Jassa;
 	var p = 'http://www.w3.org/2002/07/owl#';
 	
 	ns.str = {
-		'Class': p + 'Class'
+		'Class': p + 'Class',
+		'DatatypeProperty': p + 'DatatypeProperty',
+		'ObjectProperty': p + 'ObjectProperty',
+		'AnnotationProperty': p + 'AnnotationProperty'
 	};
 	
 	util.initNodes(ns);
@@ -2337,7 +2477,12 @@ module["exports"] = Jassa;
 		
 		getRight: function() {
 			return this.right;
-		}
+		},
+		
+	    getVarsMentioned: function() {
+	        var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
+	        return result;
+	    }
 	});
 	
 
@@ -2475,36 +2620,53 @@ module["exports"] = Jassa;
 	
 
 
-	ns.E_Function = function(uriNode, args) {
-		this.uriNode = uriNode;
-		this.args = args;
-	};
+	ns.E_Function = Class.create(ns.Expr, {
+	    initialize: function(functionIri, args) {
+    		this.functionIri = functionIri;
+    		this.args = args;
+    	},
 	
-	ns.E_Function.prototype.copySubstitute = function(fnNodeMap) {
-		var newArgs = _.map(this.args, fnNodeMap);
-		
-		return new ns.E_Function(this.uriNode, newArgs);
-	};
+    	copySubstitute: function(fnNodeMap) {
+    		var newArgs = _(this.args).map(function(arg) {
+    		    var r = arg.copySubstitute(fnNodeMap);
+    		    return r;
+    		});
+    		
+    		return new ns.E_Function(this.functionIri, newArgs);
+    	},
 	
-	ns.E_Function.prototype.getArgs = function() {
-		return this.args;
-	};
+    	getArgs: function() {
+    	    return this.args;
+    	},
 	
-	ns.E_Function.prototype.copy = function(newArgs) {
-		return new ns.E_Function(this.uriNode, newArgs);
-	};
+    	copy: function(newArgs) {
+    	    return new ns.E_Function(this.functionIri, newArgs);
+    	},
 	
-	ns.E_Function.prototype.toString = function() {
-		var argStr = this.args.join(", ");
-		
-		var result = this.uriNode.value + "(" + argStr + ")";
-		return result;
-	};
-
+    	toString: function() {
+    		var argStr = this.args.join(", ");
+    		
+    		// TODO HACK for virtuoso and other cases
+    		// If the functionIri contains a ':', we assume its a compact iri
+    		var iri = '' + this.functionIri;
+    		var fnName = (iri.indexOf(':') < 0) ? '<' + iri + '>' : iri;  
+    		
+    		var result = fnName + '(' + argStr + ')';
+    		return result;
+    	},
+    	
+    	getVarsMentioned: function() {
+            var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
+            return result;
+    	}
+	});
 	
 	
 	ns.E_Equals = Class.create(ns.ExprFunction2, {
-	
+	    initialize: function($super, left, right) {
+	        $super(left, right);
+	    },
+	    
 		copySubstitute: function(fnNodeMap) {
 //		    if(!this.right.copySubstitute) {
 //		        debugger;
@@ -2522,7 +2684,7 @@ module["exports"] = Jassa;
 	
 		eval: function(binding) {
 			// TODO Evaluate the expression
-		},
+		}
 	});
 
 	
@@ -2546,6 +2708,11 @@ module["exports"] = Jassa;
 			
 			toString: function() {
 				return "langMatches(" + this.left + ", " + this.right + ")";
+			},
+			
+			getVarsMentioned: function() {
+			    var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
+			    return result;
 			}
 	};
 	
@@ -2570,6 +2737,10 @@ module["exports"] = Jassa;
 			
 			toString: function() {
 				return "lang(" + this.expr + ")";
+			},
+			
+			getVarsMentioned: function() {
+			    return this.expr.getVarsMentioned();
 			}
 	};
 	
@@ -2599,90 +2770,95 @@ module["exports"] = Jassa;
 	
 	
 	
-	ns.E_GreaterThan = function(left, right) {
-		this.left = left;
-		this.right = right;
-	};
+	ns.E_GreaterThan = Class.create(ns.ExprFunction2, {
+	    initialize: function($super, left, right) {
+	        $super(left, right);
+	    },
 
-	ns.E_GreaterThan.prototype.copySubstitute = function(fnNodeMap) {
-		return new ns.E_GreaterThan(fnNodeMap(this.left), fnNodeMap(this.right));
-	};
+	    copySubstitute: function(fnNodeMap) {
+	        return new ns.E_GreaterThan(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
+	    },
 
-	ns.E_GreaterThan.prototype.getArgs = function() {
-		return [this.left, this.right];
-	};
+//	    getArgs: function() {
+//    		return [this.left, this.right];
+//    	},
 	
-	ns.E_GreaterThan.prototype.copy = function(args) {
-		return ns.newBinaryExpr(ns.E_GreaterThan, args);
-	};
+    	copy: function(args) {
+    	    return ns.newBinaryExpr(ns.E_GreaterThan, args);
+    	},
 	
-	ns.E_GreaterThan.prototype.toString = function() {
-		return "(" + this.left + " > " + this.right + ")";
-	};
+    	toString: function() {
+    	    return "(" + this.left + " > " + this.right + ")";
+    	}
+	});
 
-	ns.E_LessThan = function(left, right) {
-		this.left = left;
-		this.right = right;
-	};
+	ns.E_LessThan = Class.create(ns.ExprFunction2, {
+        initialize: function($super, left, right) {
+            $super(left, right);
+        },
 
-	ns.E_LessThan.prototype.copySubstitute = function(fnNodeMap) {
-		return new ns.E_LessThan(fnNodeMap(this.left), fnNodeMap(this.right));
-	};
+        copySubstitute: function(fnNodeMap) {
+            return new ns.E_LessThan(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
+        },
 
-	ns.E_LessThan.prototype.getArgs = function() {
-		return [this.left, this.right];
-	};
+//        getArgs: function() {
+//            return [this.left, this.right];
+//        },
 	
-	ns.E_LessThan.prototype.copy = function(args) {
-		return ns.newBinaryExpr(ns.E_LessThan, args);
-	};
+        copy: function(args) {
+            return ns.newBinaryExpr(ns.E_LessThan, args);
+        },
 
-	ns.E_LessThan.prototype.toString = function() {
-		return "(" + this.left + " < " + this.right + ")";
-	};
+        toString: function() {
+            return "(" + this.left + " < " + this.right + ")";
+        }
+    });
 	
-	ns.E_LogicalAnd = function(left, right) {
-		this.left = left;
-		this.right = right;
-	};
+	ns.E_LogicalAnd = Class.create(ns.ExprFunction2, {
+        initialize: function($super, left, right) {
+            $super(left, right);
+        },
 
-	ns.E_LogicalAnd.prototype.copySubstitute = function(fnNodeMap) {
-		//return new ns.E_LogicalAnd(fnNodeMap(this.left), fnNodeMap(this.right));
-		return new ns.E_LogicalAnd(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
-	};
+	    copySubstitute: function(fnNodeMap) {
+	        // return new ns.E_LogicalAnd(fnNodeMap(this.left), fnNodeMap(this.right));
+	        return new ns.E_LogicalAnd(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
+	    },
 	
-	ns.E_LogicalAnd.prototype.getArgs = function() {
-		return [this.left, this.right];
-	};
+//	    getArgs: function() {
+//	        return [this.left, this.right];
+//	    },
 	
-	ns.E_LogicalAnd.prototype.copy = function(args) {
-		return ns.newBinaryExpr(ns.E_LogicalAnd, args);
-	};
+	    copy: function(args) {
+	        return ns.newBinaryExpr(ns.E_LogicalAnd, args);
+	    },
 	
-	ns.E_LogicalAnd.prototype.toString = function() {
-		return "(" + this.left + " && " + this.right + ")";
-	};
+	    toString: function() {
+	        return "(" + this.left + " && " + this.right + ")";
+	    }	    
+	});
 	
-	ns.E_LogicalOr = function(left, right) {
-		this.left = left;
-		this.right = right;
-	};
+	ns.E_LogicalOr = Class.create(ns.ExprFunction2, {
+        initialize: function($super, left, right) {
+            $super(left, right);
+        },
 
-	ns.E_LogicalOr.prototype.copySubstitute = function(fnNodeMap) {
-		return new ns.E_LogicalOr(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
-	};
+	    copySubstitute: function(fnNodeMap) {
+	        return new ns.E_LogicalOr(this.left.copySubstitute(fnNodeMap), this.right.copySubstitute(fnNodeMap));
+	    },
 	
-	ns.E_LogicalOr.prototype.getArgs = function() {
-		return [this.left, this.right];
-	};
+	    getArgs: function() {
+	        return [this.left, this.right];
+	    },
 	
-	ns.E_LogicalOr.prototype.copy = function(args) {
-		return ns.newBinaryExpr(ns.E_LogicalOr, args);
-	};
+	    copy: function(args) {
+	        return ns.newBinaryExpr(ns.E_LogicalOr, args);
+	    },
 
-	ns.E_LogicalOr.prototype.toString = function() {
-		return "(" + this.left + " || " + this.right + ")";
-	};
+	    toString: function() {
+	        return "(" + this.left + " || " + this.right + ")";
+	    }	    
+    });
+
 
 
 	ns.E_LogicalNot = function(expr) {
@@ -2954,6 +3130,10 @@ module["exports"] = Jassa;
 		makeInteger: function(val) {
 			return new ns.NodeValue.createLiteral(val, xsd.str.xint);
 		},
+
+		makeDecimal: function(val) {
+            return new ns.NodeValue.createLiteral(val, xsd.str.decimal);
+        },
 		
 		makeFloat: function(val) {
 			return new ns.NodeValue.createLiteral(val, xsd.str.xfloat);
@@ -3472,7 +3652,7 @@ module["exports"] = Jassa;
 	
 	
     ns.Element = Class.create({
-	        
+
     });
 	    
 
@@ -3531,7 +3711,7 @@ module["exports"] = Jassa;
 	 * An element that injects a string "as is" into a query.
 	 * 
 	 */
-	ns.ElementString = Class.create({
+	ns.ElementString = Class.create(ns.Element, {
 		initialize: function(sparqlString) {
 //			if(_(sparqlString).isString()) {
 //				debugger;
@@ -3627,8 +3807,13 @@ module["exports"] = Jassa;
 		}
 	};
 	
-	ns.ElementFilter = function(exprs) {
-		this.exprs = exprs;
+	ns.ElementFilter = function(expr) {
+	    if(_(expr).isArray()) {
+	        console.log('[WARN] Array argument for filter is deprecated');
+	        expr = ns.andify(expr);
+	    }
+	    
+		this.expr = expr;
 	};
 	
 	ns.ElementFilter.classLabel = 'ElementFilter';
@@ -3644,20 +3829,27 @@ module["exports"] = Jassa;
 			}
 		
 		// 	FIXME: Should we clone the attributes too?
-			var result = new ns.ElemenFilter(this.exprs);
+			var result = new ns.ElemenFilter(this.expr);
 			return result;
 		},
 	
 		copySubstitute: function(fnNodeMap) {
-			var exprs = _(this.exprs).map(function(expr) {
-				return expr.copySubstitute(fnNodeMap);
-			});
-		
-			return new ns.ElementFilter(exprs);
+//			var exprs = _(this.exprs).map(function(expr) {
+//				return expr.copySubstitute(fnNodeMap);
+//			});
+
+		    var newExpr = this.expr.copySubstitute(fnNodeMap);
+			return new ns.ElementFilter(newExpr);
 		},
 
 		getVarsMentioned: function() {
-			return [];
+//            _(this.elements).reduce(function(memo, element) {
+//                var evs = element.getVarsMentioned();
+//                var r = _(memo).union(evs);
+//                return r;
+//            }, result);
+		    //console.log('filter expr ', this.expr);
+			return this.expr.getVarsMentioned();
 		},
 	
 		flatten: function() {
@@ -3666,9 +3858,9 @@ module["exports"] = Jassa;
 	
 		toString: function() {
 			
-			var expr = ns.andify(this.exprs);
+			//var expr = ns.andify(this.exprs);
 			
-			return "Filter(" + expr + ")";
+			return "Filter(" + this.expr + ")";
 		}
 	};
 	
@@ -4528,13 +4720,19 @@ module["exports"] = Jassa;
 		getVarsMentioned: function(elements) {
 			
 			var result = _(elements).reduce(function(memo, element) {
+			    
+			    var fn = element.getVarsMentioned; 
+			    if(!fn || !_(fn).isFunction()) {
+			        console.log('[ERROR] .getVarsMentioned not found on object ', element);
+			    }
+			    
 				var vs = element.getVarsMentioned();
 			    var r = _(memo).union(vs);
 			    return r;
 			}, []);
 			
 			return result;
-		}
+		},
 	};
 
 	
@@ -5544,6 +5742,14 @@ module["exports"] = Jassa;
 	        this.resultCache = resultCache ? resultCache : new Cache();
 	    },
 	    
+	    getServiceId: function() {
+	        return this.qef.getServiceId();
+	    },
+	    
+	    getStateHash: function() {
+	        return this.qef.getStateHash();
+	    },
+	    
 	    createQueryExecutionStr: function(queryStr) {
 	        var serviceId = this.qef.getServiceId();
 	        var stateHash = this.qef.getStateHash();
@@ -6540,7 +6746,35 @@ module["exports"] = Jassa;
         }
     });
 
-})();(function() {
+    
+    ns.SparqlServiceFactoryDefault = Class.create({
+        initialize: function() {
+            this.hashToCache = {};
+        },
+        
+        createSparqlService: function(sparqlServiceIri, defaultGraphIris) {
+            var tmp = new service.SparqlServiceHttp(sparqlServiceIri, defaultGraphIris);
+            tmp = new service.SparqlServiceCache(tmp);
+            
+            var hash = tmp.getStateHash();
+            
+            var cacheEntry = this.hashToCache[hash];
+            
+            var result;
+            if(cacheEntry) {
+                result = cacheEntry;                
+            } else {
+                this.hashToCache[hash] = tmp;
+                result = tmp;
+            }
+            
+            return result;
+        }
+    });
+
+})();
+
+(function() {
 	
 	var ns = Jassa.sparql;
 	
@@ -6797,6 +7031,52 @@ module["exports"] = Jassa;
 
 	var ns = Jassa.sponate;
 	
+	
+	
+    ns.AccumulatorFactoryFn = Class.create({
+        initialize: function(fn, referencedVars) {
+            this.fn = fn;
+            this.referencedVars = referencedVars;
+        },
+        
+        createAggregator: function() {
+            var result = new ns.AccumulatorFn(this.fn, this.referencedVars);
+            return result;
+        },
+        
+        getVarsMentioned: function() {
+            return this.referencedVars;
+        }
+    });
+    
+    ns.AccumulatorFn = Class.create({
+        initialize: function(fn) {
+            this.fn = fn;
+            // TODO Is this really a node, or an arbitrary object?
+            this.node = null;
+        },
+        
+        processBinding: function(binding) {
+            var val = this.fn(binding);
+            this.node = val;
+        },
+        
+        getJson: function(retainRdfNodes) {
+            return this.node;
+            //return this.node.toString();
+        },
+        
+        toNode: function() {
+            return this.node
+        }
+    });
+
+	
+	/**
+	 * TODO Like Jena, we could use the namings Aggregator and Accumulator
+	 * I think our aggregators are closer to accumulators. 
+	 * 
+	 */
 	
 	/**
 	 * A path of attributes.
@@ -7130,6 +7410,10 @@ module["exports"] = Jassa;
 	 */
 	ns.PatternObject = Class.create(ns.Pattern, {
 		initialize: function(attrToPattern) {
+
+		    //console.log('attrToPattern', attrToPattern);
+		    
+		    
 			this.attrToPattern = attrToPattern;
 		},
 
@@ -7175,8 +7459,15 @@ module["exports"] = Jassa;
 				return x.toString();
 			});
 			
-			_.each(this.attrToPattern, function(member, k) {
-				result = result.concat(member.getVarsMentioned());
+			_(this.attrToPattern).each(function(member, k) {
+			    var vs = member.getVarsMentioned();
+			    
+			    if(!vs) {
+			        console.log('[ERROR] Could not retrieve vars for member of pattern', this, member);
+			    }
+			    else {
+			        result = result.concat(vs);
+			    }
 			});
 			result = _.uniq(result, false, fnToString);	
 			
@@ -7499,7 +7790,7 @@ module["exports"] = Jassa;
 			throw new 'override me';
 		},
 		
-		getJson: function() {
+		getJson: function(retainRdfNodes) {
 			throw 'override me';
 		}
 	});
@@ -7518,8 +7809,8 @@ module["exports"] = Jassa;
 	       this.customAgg.processBinding(binding);
 	   },
 	   
-	   getJson: function() {
-	       var result = this.customAgg.getJson();
+	   getJson: function(retainRdfNodes) {
+	       var result = this.customAgg.getJson(retainRdfNodes);
 	       return result;
 	   }
 	});
@@ -7567,21 +7858,33 @@ module["exports"] = Jassa;
 			}
 		},
 		
-		getJson: function() {
+		getJson: function(retainRdfNodes) {
 			var result;
 
 			var node = this.node;
 			
 			if(node) {
-				if(node.isUri()) {
-					result = node.toString();
-				} else if (node.isLiteral()) {
-					result = node.getLiteralValue();
-				} else if(sparql.NodeValue.nvNothing.asNode().equals(node)) {
-				    result = null;
-				} else {
-					throw 'Unsupported node type';
-				}
+			    
+			    if(retainRdfNodes) {
+			        result = node;
+			    } else {
+			    
+    				if(node.isUri()) {
+    					result = node.toString();
+    				} else if (node.isLiteral()) {
+    					result = node.getLiteralValue();
+    					
+    					if(result instanceof rdf.TypedValue) {
+    					    result = result.getLexicalValue();
+    					}
+    					
+    				} else if(sparql.NodeValue.nvNothing.asNode().equals(node)) {
+    				    result = null;
+    				} else {
+    				    console.log('[ERROR] Unsupported node types: ', node)
+    					throw 'Unsupported node type';
+    				}
+			    }
 			}
 
 			return result;
@@ -7610,11 +7913,11 @@ module["exports"] = Jassa;
 			
 		},
 		
-		getJson: function() {
+		getJson: function(retainRdfNodes) {
 			var result = {};
 			
 			_(this.attrToAggr).each(function(aggr, attr) {
-	    		var json = aggr.getJson();
+	    		var json = aggr.getJson(retainRdfNodes);
 	    		result[attr] = json;
 		    });
 
@@ -7666,32 +7969,32 @@ module["exports"] = Jassa;
 			aggr.process(binding, context);
 		},
 		
-		getJson: function() {
+		getJson: function(retainRdfNodes) {
 			var result;
 
 			var isArray = this.patternMap.isArray();
 			if(isArray) {
-				result = this.getJsonArray();
+				result = this.getJsonArray(retainRdfNodes);
 			} else {
-				result = this.getJsonMap();
+				result = this.getJsonMap(retainRdfNodes);
 			}
 
 			return result;
 		},
 		
-		getJsonArray: function() {
+		getJsonArray: function(retainRdfNodes) {
 			var result = [];
 
 			var aggrs = this.keyToAggr.getItems();
 			var result = aggrs.map(function(aggr) {
-				var data = aggr.getJson();
+				var data = aggr.getJson(retainRdfNodes);
 				return data;
 			});
 				
 			return result;
 		},
 		
-		getJsonMap: function() {
+		getJsonMap: function(retainRdfNodes) {
 			var result = {};
 			
 			var aggrs = this.keyToAggr.getItems();
@@ -7699,7 +8002,7 @@ module["exports"] = Jassa;
 			
 			_(keyToIndex).each(function(index, aggr) {
 		    	var aggr = items[index];
-		    	var data = aggr.getJson();
+		    	var data = aggr.getJson(retainRdfNodes);
 		    	result[key] = data;
 			});
 			
@@ -7755,7 +8058,7 @@ module["exports"] = Jassa;
 			//context.registryRef.addRef(this, binding)
 		},
 		
-		getJson: function() {
+		getJson: function(retainRdfNodes) {
 			return this.json;
 		},
 		
@@ -7880,8 +8183,8 @@ module["exports"] = Jassa;
 		},
 		
 		
-		getJson: function() {
-			var result = this.rootAggregator.getJson();
+		getJson: function(retainRdfNodes) {
+			var result = this.rootAggregator.getJson(retainRdfNodes);
 			
 			return result;
 		}
@@ -8045,6 +8348,16 @@ module["exports"] = Jassa;
 			else if(_(val).isArray()) {
 				result = this.parseArray(val);
 			}
+            else if(_(val).isFunction()) {
+                result = new ns.PatternCustomAgg(new ns.AccumulatorFactoryFn(val));
+            }
+            else if(val instanceof rdf.Node && val.isVariable()) {
+                var expr = new sparql.ExprVar(val);             
+                result = new ns.PatternLiteral(expr);               
+            }
+            else if(val instanceof sparql.Expr) {
+                result = new ns.PatternLiteral(expr);               
+            }
 			else if(_(val).isObject()) {
 			    
 			    var fnCustomAggFactory = val['createAggregator'];
@@ -8058,6 +8371,7 @@ module["exports"] = Jassa;
 			    }
 			}
 			else {
+			    console.log('[ERROR] Unknown item type: ', val);
 				throw "Unkown item type";
 			}
 
@@ -8253,8 +8567,8 @@ module["exports"] = Jassa;
 		},
 		*/
 		
-		asList: function() {
-			var promise = this.execute();
+		asList: function(retainRdfNodes) {
+			var promise = this.execute(retainRdfNodes);
 
 			// TODO This should be part of the store facade
 			var result = promise.pipe(function(it) {
@@ -8279,24 +8593,24 @@ module["exports"] = Jassa;
 		
 		
 		// TODO This is a hack right now - not sure how to design the execution yet
-		execute: function() {
+		execute: function(retainRdfNodes) {
 //			var config = {
 //				criteria: this.criteria,
 //				limit: this.limit,
 //				offset: this.offset
 //			};
 		    var c = this.config;
-		    var j = this.config.join;
+		    var j = this.config.join || {};
 		    
 			var config = new ns.QueryConfig(c.criteria, c.limit, c.offset, j.concept, j.isLeftJoin);
 			
-			var result = this.store.execute(config);
+			var result = this.store.execute(config, retainRdfNodes);
 			return result;
 		},
 		
         count: function() {
             var c = this.config;
-            var j = this.config.join;
+            var j = this.config.join || {};
             
             var config = new ns.QueryConfig(c.criteria, c.limit, c.offset, j.concept, j.isLeftJoin);
             
@@ -8304,6 +8618,9 @@ module["exports"] = Jassa;
             return result;          
         }		
 	});
+	
+	
+	
 	
 	
 	/**
@@ -8382,7 +8699,8 @@ module["exports"] = Jassa;
 			//console.log('mapping:', mapping);
 			
 			// Retrieve the mapping's table and the associated element
-			var elementFactory = this.context.getElementFactory(mapping.getTableName());
+			
+			var elementFactory = mapping.getElementFactory(); //this.context.getElementFactory(mapping.getTableName());
 			var outerElement = elementFactory.createElement();
 			
 			
@@ -8432,15 +8750,15 @@ module["exports"] = Jassa;
             if(requireSubQuery) {
 
 
-	            if(concept && !concept.isSubjectConcept()) {
+	            if(concept && (isLeftJoin || !concept.isSubjectConcept())) {
 	                var conceptElement = concept.getElement();
                     var conceptVar = concept.getVar();
 	                 
 	                var elementA = conceptElement;
 	                var elementB = innerElement;
 
-	                console.log('elementA: ' + elementA);
-	                console.log('elementB: ' + elementB);
+	                //console.log('elementA: ' + elementA);
+	                //console.log('elementB: ' + elementB);
 
 	                
 	                var varsA = elementA.getVarsMentioned();
@@ -8452,7 +8770,7 @@ module["exports"] = Jassa;
 	                var varMap = sparql.ElementUtils.createJoinVarMap(varsB, varsA, joinVarsB, joinVarsA); //, varNameGenerator);
 	                var elementA = sparql.ElementUtils.createRenamedElement(elementA, varMap);
 	                 
-                    console.log('elementA renamed: ' + elementA);
+                    //console.log('elementA renamed: ' + elementA);
 	                 
 	                 //var conceptElement = concept.getElement();
 	                concept = new facete.Concept(elementA, idVar);
@@ -8511,8 +8829,6 @@ module["exports"] = Jassa;
 				//var orderBys = subQuery.getOrderBy();
 				//orderBys.push.apply(orderBys, sortConditions);
 
-				//console.log('innerElement: ' + innerElement);
-				//console.log('outerElement: ' + outerElement);
 				
 				innerElement = subQuery;
 			}
@@ -8529,14 +8845,19 @@ module["exports"] = Jassa;
                 criteria: criteria
             };
             
+            console.log('innerElement: ' + innerElement);
+            console.log('outerElement: ' + outerElement);
+            
+
+            
             return result;
 		},
 
 		
-		execute: function(config) {
+		execute: function(config, retainRdfNodes) {
 		    var spec = this.createQueries(config);
 		    
-		    var result = this.executeData(spec);
+		    var result = this.executeData(spec, retainRdfNodes);
 		    
 		    return result;
 		},
@@ -8556,7 +8877,7 @@ module["exports"] = Jassa;
             return result;
 		},
 		
-		executeData: function(spec) {
+		executeData: function(spec, retainRdfNodes) {
 		    var outerElement = spec.outerElement;
 		    var idExpr = spec.idExpr;
 		    var sortConditions = spec.sortConditions;
@@ -8597,7 +8918,7 @@ module["exports"] = Jassa;
 					instancer.process(binding);
 				}
 				
-				var json = instancer.getJson();
+				var json = instancer.getJson(retainRdfNodes);
 				
 				
 				
@@ -8606,22 +8927,27 @@ module["exports"] = Jassa;
 				var result;
 				if(_(json).isArray()) {
 
-					
-					var filtered = _(json).filter(function(item) {												
-						var isMatch = criteria.match(item);
-						return isMatch;
-					})
-					
-					var all = json.length;
-					var fil = filtered.length;
-					var delta = all - fil;
+				    var filtered;
+				    if(retainRdfNodes) {
+				        filtered = json;
+				    }
+				    else {
+    					var filtered = _(json).filter(function(item) {												
+    						var isMatch = criteria.match(item);
+    						return isMatch;
+    					})
+    					
+    					var all = json.length;
+    					var fil = filtered.length;
+    					var delta = all - fil;
+    
+    					console.log('[DEBUG] ' + delta + ' items filtered on the client ('+ fil + '/' + all + ' remaining) using criteria ' + JSON.stringify(criteria));
+				    }
 
-					console.log('[DEBUG] ' + delta + ' items filtered on the client ('+ fil + '/' + all + ' remaining) using criteria ' + JSON.stringify(criteria));
-
-					
-					result = new util.IteratorArray(filtered);
-					
+				    result = new util.IteratorArray(filtered);
+				    
 				} else {
+				    console.log('[ERROR] Implement me');
 					throw 'Implement me';
 				}
 				
@@ -9002,8 +9328,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 			this.tableNameToElementFactory[tableName] = elementFactory;
 		},
 		
-		addMapping: function(mapping) {
-			var name = mapping.getName();
+		addMapping: function(name, mapping) {
+			//var name = mapping.getName();
 			this.nameToMapping[name] = mapping;
 		},
 		
@@ -9145,8 +9471,118 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var sparql = Jassa.sparql; 
 	var util = Jassa.util;
+
 	var ns = Jassa.sponate;
 
+	
+	ns.MapParser = Class.create({
+	    initialize: function(prefixMap, patternParser) {
+	        this.patternParser = patternParser || new ns.ParserPattern();
+	    },
+	    
+	    parseMap: function(spec) {
+	        var result = ns.SponateUtils.parseMap(spec, this.prefixMap, this.patternParser);
+	        return result;
+	    }
+	});
+	
+	ns.SponateUtils = {
+
+	    /**
+	     * Parse a sponate mapping spec JSON object and return a sponate.Mapping object 
+	     * 
+	     * TODO Add fallback to default patternParser if none provided
+	     */
+	    parseMap: function(spec, prefixMap, patternParser) {
+            var name = spec.name;
+
+            var jsonTemplate = spec.template;
+            var from = spec.from;
+
+            var context = this.context;
+            
+            // Parse the 'from' attribute into an ElementFactory
+            // TODO Move to util class
+            var elementFactory;
+            if(_(from).isString()) {
+                
+                var elementStr = from;
+                
+                if(prefixMap != null) {
+                    var prefixes = prefixMap.getJson();
+                    //var vars = sparql.extractSparqlVars(elementStr);
+                    var str = sparql.expandPrefixes(prefixes, elementStr);
+                }
+
+                var element = sparql.ElementString.create(str);//, vars);
+                
+                elementFactory = new sparql.ElementFactoryConst(element);
+            }
+            else if(from instanceof sparql.Element) {
+                elementFactory = new sparql.ElementFactoryConst(from);
+            }
+            else if(from instanceof sparql.ElementFactory) {
+                elementFactory = from;
+            }
+            else {
+                console.log('[ERROR] Unknown argument type for "from" attribute', from);
+                throw 'Bailing out';
+            }
+            
+            //this.context.mapTableNameToElementFactory(name, elementFactory);
+            
+            // TODO The support joining the from element
+            
+            var pattern = patternParser.parsePattern(jsonTemplate);           
+
+            var patternRefs = ns.PatternUtils.getRefs(pattern);
+
+            //console.log('Parsed pattern', JSON.stringify(pattern));
+
+            // The table name is the same as that of the mapping
+            //ns.ContextUtils.createTable(this.context, name, from, patternRefs);
+    
+
+            var result = new ns.Mapping(name, pattern, elementFactory, patternRefs);
+
+            return result;
+	    },
+	    
+        defaultPrefLangs:  ['en', ''],
+
+        prefLabelPropertyUris: [
+            'http://www.w3.org/2000/01/rdf-schema#label'
+	    ],
+
+        createDefaultLabelMap: function(prefLangs, prefLabelPropertyUris, s, p, o) {
+
+            prefLangs = prefLangs || this.defaultPrefLangs;
+            prefLabelPropertyUris = prefLabelPropertyUris || this.prefLabelPropertyUris;
+            s = s || 's';
+            p = p || 'p';
+            o = o || 'o';
+            
+            var mapParser = new sponate.MapParser();
+            
+            var labelUtilFactory = new sponate.LabelUtilFactory(prefLabelPropertyUris, prefLangs);
+                
+            // A label util can be created based on var names and holds an element and an aggregator factory.
+            var labelUtil = labelUtilFactory.createLabelUtil(o, s, p);
+
+            var result = mapParser.parseMap({
+                name: 'labels',
+                template: [{
+                    id: '?' + s,
+                    displayLabel: labelUtil.getAggFactory(),
+                    hiddenLabels: [{id: '?' + o}]
+                }],
+                from: labelUtil.getElement()
+            });
+            
+            return result;
+        }    
+	    
+	};
 	
 	/**
 	 * @Deprecated - Do not use - will be removed asap.
@@ -9609,13 +10045,17 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	
 	ns.Mapping = Class.create({
-		initialize: function(name, pattern, tableName, patternRefs) {
-			this.name = name;
+		initialize: function(name, pattern, elementFactory, patternRefs) {
+			// TODO Remove the name attribute
+		    this.name = name;
 			this.pattern = pattern;
-			this.tableName = tableName;
+			this.elementFactory = elementFactory;
+			
+			// TODO Remove this attribute
+			//this.tableName = name;
 
 			// Cached value; inferred from pattern
-			this.patternRefs = patternRefs;
+			this.patternRefs = patternRefs || [];
 		},
 		
 		getName: function() {
@@ -9626,12 +10066,21 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return this.pattern;
 		},
 		
-		getTableName: function() {
-			return this.tableName;
+		getElementFactory: function() {
+		    return this.elementFactory;
 		},
+		
+//		getTableName: function() {
+//			return this.tableName;
+//		},
 		
 		getPatternRefs: function() {
 			return this.patternRefs;
+		},
+		
+		toString: function() {
+		    var result = '[pattern: ' + this.pattern + ', element: ' + this.elementFactory.createElement() + ']';
+		    return result;
 		}
 	});
 	
@@ -9655,12 +10104,51 @@ or simply: Angular + Magic Sparql = Angular Marql
 			this.context = new ns.Context();
 			this.context.getPrefixMap().addJson(prefixes);
 		},
+
+		addMap: function(obj, name) {
+		    var result = (obj instanceof ns.Mapping) ? this.addMapObj(name, obj) : this.addMapSpec(obj);
+		    return result;
+		},
+		
+		addMapObj: function(name, map) {
+            //var name = nameOverride || mapping.getName();
+
+            var elementFactory = map.getElementFactory();
+            this.context.mapTableNameToElementFactory(name, elementFactory);
+
+            this.context.addMapping(name, map);
+                
+            // Create a new store object
+            this.createStore(name);
+                
+            return this;
+		    
+		},
 		
 		/**
 		 * Add a mapping specification
 		 * 
 		 */
-		addMap: function(spec) {
+		addMapSpec: function(spec) {
+		    var map = ns.SponateUtils.parseMap(spec, this.context.getPrefixMap(), this.context.getPatternParser());
+	            
+		    var name = spec.name; //mapping.getName();
+
+		    var result = this.addMapObj(name, map);
+		    return result;
+		    
+//		    var elementFactory = mapping.getElementFactory();
+//            this.context.mapTableNameToElementFactory(name, elementFactory);
+//
+//		    this.context.addMapping(mapping);
+//	            
+//		    // Create a new store object
+//		    this.createStore(name);
+//	            
+//		    return this;
+
+		    
+		    /*
 			var name = spec.name;
 
 			var jsonTemplate = spec.template;
@@ -9716,6 +10204,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			this.createStore(name);
 			
 			return this;
+			*/
 		},
 		
 		createStore: function(name) {
@@ -9797,7 +10286,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
             var options = critObject['$options'];
 
-			var criterias = _.chain(critObject).omit('$options').map(function(val, key) {
+			var criterias = _(critObject).chain().omit('$options').map(function(val, key) {
 				
 				var criteria;
 
@@ -10131,6 +10620,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 		initialize: function($super, attrPath, regex) {
 			$super('$regex', attrPath);
 			this.regex = regex;
+			
+//			console.log('REGEX', regex);
 //			this.pattern = pattern;
 //			this.flags = flags;
 		},
@@ -10299,9 +10790,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 		 */
 		compile: function(context, mapping, criteria) {
 
-		    var tableName = mapping.getTableName();
-		    var tableNameToElementFactory = context.getTableNameToElementFactory();
-		    var elementFactory = tableNameToElementFactory[tableName];
+		    //var tableName = mapping.getTableName();
+		    //var tableNameToElementFactory = context.getTableNameToElementFactory();
+		    //var elementFactory = tableNameToElementFactory[tableName];
+		    var elementFactory = mapping.getElementFactory();
+		    
 		    var element = elementFactory.createElement();
 		    		    
 		    var joinNode = sparql.JoinBuilderElement.create(element);
@@ -10558,6 +11051,268 @@ or simply: Angular + Magic Sparql = Angular Marql
         return a < b;
     };
     
+    // TODO Move to utils
+    ns.extractLabelFromUri = function(str) {
+        var a = str.lastIndexOf('#');
+        var b = str.lastIndexOf('/');
+        
+        var i = Math.max(a, b);
+
+        var result = (i == str.length) ? str : str.substring(i + 1); 
+
+        return result;
+    }
+    
+    ns.AggregatorFactoryLabel = Class.create({
+        initialize: function(labelPrios, prefLangs, labelExpr, subjectExpr, propertyExpr) {
+            this.labelPrios = labelPrios;
+            this.prefLangs = prefLangs;
+            this.labelExpr = labelExpr;
+            this.subjectExpr = subjectExpr;
+            this.propertyExpr = propertyExpr;
+        },
+        
+        createAggregator: function() {
+            var result = new ns.AggregatorLabel(
+                this.labelPrios, this.prefLangs, this. labelExpr, this.subjectExpr, this.propertyExpr
+            );
+            return result;
+        },
+        
+        getVarsMentioned: function() {
+            var vm = (function(expr) {
+                var result = expr ? expr.getVarsMentioned() : [];
+                return result;
+            });
+            
+            var result = _.union(vm(this.labelExpr), vm(this.subjectExpr), vm(this.propertyExpr));
+            return result;
+        }
+    });
+    
+    
+    ns.AggregatorLabel = Class.create({
+        initialize: function(labelPrios, prefLangs, labelExpr, subjectExpr, propertyExpr) {
+            this.subjectExpr = subjectExpr;
+            this.propertyExpr = propertyExpr;
+            this.labelExpr = labelExpr;
+            
+
+            //this.exprEvaluator = exprEvaluator ? exprEvaluator : new sparql.ExprEvaluatorImpl();
+            this.exprEvaluator = new sparql.ExprEvaluatorImpl();
+            
+            this.labelPrios = labelPrios;
+            this.prefLangs = prefLangs;
+
+            //this.defaultPropery = defaultProperty;
+            
+            this.bestMatchNode = null;
+            this.bestMatchScore = [1000, 1000];
+        },
+        
+        processBinding: function(binding) {
+            
+            // Evaluate label, property and subject based on the binding
+            var property = this.exprEvaluator.eval(this.propertyExpr, binding);
+            var label = this.exprEvaluator.eval(this.labelExpr, binding);
+            var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
+           
+            
+            // Determine the score vector for the property and the language
+            var propertyScore = -1;
+            var langScore;
+            
+            var l;
+            if(property && property.isConstant()) {
+                var p = property.getConstant().asNode();
+                if(p.isUri()) {
+                    var propertyUri = p.getUri();
+                    propertyScore = this.labelPrios.indexOf(propertyUri);
+                }
+            }
+            
+            if(label && label.isConstant()) {
+                l = label.getConstant().asNode();
+                
+                var lang = l.isLiteral() ? l.getLiteralLanguage() : 'nolang';
+                
+//              var val = l.getLiteralLexicalForm();
+
+//              if(val == 'Foobar' || val == 'Baz') {
+//                  console.log('here');
+//              }
+
+                
+                langScore = this.prefLangs.indexOf(lang);
+            }
+            
+            
+            var score = [propertyScore, langScore];
+            
+            var allNonNegative = _(score).every(function(item) {
+                return item >= 0;
+            });
+            
+            if(allNonNegative) {
+            
+                // Check if the new score is better (less than) than the current best match
+                var cmp = compareArray(score, this.bestMatchScore, cmpLessThan);
+                if(cmp === true) {
+                    this.bestMatchScore = score;
+                    this.bestMatchNode = l;
+                }
+            }
+        },
+        
+        getNode: function() {
+            return this.bestMatchNode;  
+        },
+        
+        getJson: function() {
+            var result = null;
+            if(this.bestMatchNode) {
+                result = this.bestMatchNode.getLiteralValue();
+            }
+
+            return result;
+        }
+    });
+    
+    //var aggLabel = new ns.AggregatorLabel(prefLabelPropertyUris, prefLangs, labelExpr, subjectExpr, propertyExpr);
+
+
+    //var aggFactoryLabel = new ns.AggregatorFactoryLabel(prefLabelPropertyUris, prefLangs, labelExpr, subjectExpr, propertyExpr);
+
+    
+    ns.LabelUtil = Class.create({
+        initialize: function(aggFactory, element) {
+            this.aggFactory = aggFactory
+            this.element = element;
+        },
+        
+        getAggFactory: function() {
+            return this.aggFactory;
+        },
+        
+        getElement: function() {
+            return this.element;
+        }
+    });
+
+    ns.LabelUtilFactory = Class.create({
+       initialize: function(prefLabelPropertyUris, prefLangs) {
+           this.prefLabelPropertyUris = prefLabelPropertyUris;
+           this.prefLangs = prefLangs;
+           
+           // TODO Add option fetchAllLangs (prevent fetching only desired langs - may have performance bonus on lang switches)
+           // TODO Add option prefPropertyOverLang (by default, the language is more important than the property)
+           
+           this.prefLabelProperties = _(this.prefLabelPropertyUris).map(function(uri) {
+              return rdf.NodeFactory.createUri(uri); 
+           });
+       },
+       
+       createLabelUtil: function(labelVarName, subjectVarName, propertyVarName) {
+            var s = rdf.NodeFactory.createVar(subjectVarName);
+            var p = rdf.NodeFactory.createVar(propertyVarName);
+            var o = rdf.NodeFactory.createVar(labelVarName);
+
+            var subjectExpr = new sparql.ExprVar(s);
+            var propertyExpr = new sparql.ExprVar(p);
+            var labelExpr = new sparql.ExprVar(o);
+
+            // First, create the aggregator object
+            var aggFactoryLabel = new ns.AggregatorFactoryLabel(this.prefLabelPropertyUris, this.prefLangs, labelExpr, subjectExpr, propertyExpr);
+        
+            
+            // Second, create the element
+            var langTmp = _(this.prefLangs).map(function(lang) {
+                var r = new sparql.E_LangMatches(new sparql.E_Lang(labelExpr), sparql.NodeValue.makeString(lang));
+                return r;
+            });
+                
+            // Combine multiple expressions into a single logicalOr expression.
+            var langConstraint = sparql.orify(langTmp);
+            
+            //var propFilter = new sparql.E_LogicalAnd(
+            var propFilter = new sparql.E_OneOf(propertyExpr, this.prefLabelProperties);
+            //);
+            
+            var els = [];
+            els.push(new sparql.ElementTriplesBlock([ new rdf.Triple(s, p, o)] ));
+            els.push(new sparql.ElementFilter([propFilter]));
+            els.push(new sparql.ElementFilter([langConstraint]));
+            
+            var langElement = new sparql.ElementGroup(els);
+            
+            var result = new ns.LabelUtil(aggFactoryLabel, langElement);
+            return result;
+       }
+    });
+
+    
+    
+})();
+(function() {
+
+    var rdf = Jassa.rdf;
+    var sparql = Jassa.sparql;
+    
+    var ns = Jassa.sponate;
+    
+    var compareArray = function(as, bs, op) {
+        var zipped = _.zip(as, bs);
+        
+        var result = false;
+        for(var i = 0; i < zipped.length; ++i) {
+           var item = zipped[i];
+           var a = item[0];
+           var b = item[1];
+           
+           if(op(a, b)) {
+               if(op(b, a)) {
+                   continue;
+               }
+               
+               result = true;
+               break;
+           } else { //else if(op(b, a)) {
+               if(!op(b, a)) {
+                   continue;
+               }
+
+               result = false;
+               break;
+           }
+        }
+//         _(zipped).each(function(item) {
+            
+//         });
+        
+//      var result = zipped.every(function(a) {
+//          var r = op(a[0], a[1]);
+//          return r;
+//      });
+       
+        return result;
+    };
+    
+    var cmpLessThan = function(a, b) {
+        return a < b;
+    };
+    
+    // TODO Move to utils
+    ns.extractLabelFromUri = function(str) {
+        var a = str.lastIndexOf('#');
+        var b = str.lastIndexOf('/');
+        
+        var i = Math.max(a, b);
+
+        var result = (i == str.length) ? str : str.substring(i + 1); 
+
+        return result;
+    }
+    
     ns.AggregatorFactoryLabel = Class.create({
         initialize: function(labelPrios, prefLangs, labelExpr, subjectExpr, propertyExpr) {
             this.labelPrios = labelPrios;
@@ -10789,6 +11544,45 @@ or simply: Angular + Magic Sparql = Angular Marql
 		return ngDeferred.promise;
 	}
 
+})();
+(function() {
+
+    var ns = Jassa.sponate;
+
+    ns.GeoMapFactory = Class.create({
+        initialize: function(baseSponateView, bboxExprFactory) {
+            //this.template = template;
+            //this.baseElement = baseElement;
+            this.baseSponateView = baseSponateView;
+            this.bboxExprFactory = bboxExprFactory;
+        },
+
+        createMapForGlobal: function() {
+            var result = this.createMapForBounds(null);
+            return result;
+        },
+        
+        createMapForBounds: function(bounds) {
+            var baseSponateView = this.baseSponateView;
+            var bboxExprFactory = this.bboxExprFactory;
+            
+            var pattern = baseSponateView.getPattern();
+            var baseElementFactory = baseSponateView.getElementFactory();
+            
+            var baseElement = baseElementFactory.createElement();
+            var element = baseElement;         
+            if(bounds) {
+                var filterExpr = bboxExprFactory.createExpr(bounds);
+                var filterElement = new sparql.ElementFilter(filterExpr);
+               
+                element = new sparql.ElementGroup([baseElement, filterElement]);
+            }
+               
+            var result = new sponate.Mapping(null, pattern, new sparql.ElementFactoryConst(element));
+            return result;
+        }
+    });
+    
 })();
 (function() {
 
@@ -11054,6 +11848,35 @@ or simply: Angular + Magic Sparql = Angular Marql
 	};
 	
 
+	/**
+	 * Combines a path with a direction
+	 * 
+	 * Used for the facet tree service, to specify for each path whether to fetch the 
+	 * ingoing or outgoing properties (or both)
+	 */
+	ns.PathHead = Class.create({
+	    initialize: function(path, inverse) {
+	        this.path = path;
+	        this.inverse = inverse ? true : false;
+	    },
+	    
+	    getPath: function() {
+	        return this.path;
+	    },
+	    
+	    isInverse: function() {
+	        return this.inverse;
+	    },
+	    
+	    equals: function(that) {
+	        var pathEquals = this.path.equals(that.path);
+	        var inverseEquals = this.inverse = that.inverse;
+	        var result = pathEquals && inverseEquals;
+	        return result;
+	    }
+	});
+	
+	
 	// @Deprecated - Do not use anymore
 	ns.Path.fromString = ns.Path.parse;
 	
@@ -11390,6 +12213,19 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return this.concept;
 		}
 	});
+	
+	
+    ns.ConceptFactoryFacetService = Class.create(ns.ConceptFactory, {
+        initialize: function(facetService) {
+            this.facetService = facetService;
+        },
+        
+        createConcept: function() {
+            var result = this.facetService.createConceptFacetValues(new facete.Path());
+            return result;
+        }
+    });
+
 
 })();(function() {
 	
@@ -12169,9 +13005,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 		},
 
 		toggleConstraint: function(constraint) {
-		    var wasRemoved = constraintManager.removeConstraint(constraint);
+		    var wasRemoved = this.removeConstraint(constraint);
 		    if(!wasRemoved) {
-		        constraintManager.addConstraint(constraint);
+		        this.addConstraint(constraint);
 		    }
 		},
 
@@ -13799,16 +14635,40 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var triple; 
 			
 			if(enableOptimization && !hasConstraints && path.isEmpty()) {
-				triple = new rdf.Triple(propertyVar, vocab.rdf.type, vocab.rdf.Property);
+				//triple = new rdf.Triple(propertyVar, vocab.rdf.type, vocab.rdf.Property);
+				
+				var types = [vocab.rdf.Property, vocab.owl.AnnotationProperty, vocab.owl.DatatypeProperty, vocab.owl.ObjectProperty];
+				
+                var v = rdf.NodeFactory.createVar('_x_');
+                var exprVar = new sparql.ExprVar(v);
+				var typeExprs = _(types).map(function(node) {
+				   var nodeValue = sparql.NodeValue.makeNode(node);
+				   var expr = new sparql.E_Equals(exprVar, nodeValue);
+				   return expr;
+				});
+				
+				var filterExpr = sparql.orify(typeExprs); 
+				
+				var triple = new rdf.Triple(propertyVar, vocab.rdf.type, v);
+
+				var element = new sparql.ElementGroup([
+                    new sparql.ElementTriplesBlock([triple]),
+                    new sparql.ElementFilter(filterExpr)
+                ]);
+				
+				//console.log('ELEMENTE' + element);
+				
+                facetElements.push(element);
+				
 			} else {
 				if(!isInverse) {
 					triple = new rdf.Triple(facetVar, propertyVar, objectVar);
 				} else {
 					triple = new rdf.Triple(objectVar, propertyVar, facetVar);
 				}
+	            facetElements.push(new sparql.ElementTriplesBlock([triple]));
 			}
 			
-			facetElements.push(new sparql.ElementTriplesBlock([triple]));
 			
 			
 			if(singleStep) {
@@ -13940,9 +14800,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 				genericElements.push(filterElement);
 			}
 			
-			var genericConceptItem = new ns.FacetConceptItem(null, genericFacetConcept);
+			// Important: If there are no properties to include, we can drop the genericConcept
+			if(includeProperties.length > 0) {
+			    var genericConceptItem = new ns.FacetConceptItem(null, genericFacetConcept);
 			
-			result.push(genericConceptItem);
+			    result.push(genericConceptItem);
+			}
 			
 			return result;
 		},
@@ -14391,12 +15254,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	
 	ns.FacetTreeServiceImpl = Class.create({
-		initialize: function(facetService, expansionSet, facetStateProvider, pathToFilterString) { //facetStateProvider) {
+		initialize: function(facetService, expansionSet, expansionMap, facetStateProvider, pathToFilterString) { //facetStateProvider) {
 			this.facetService = facetService;
 			this.expansionSet = expansionSet;
+			this.expansionMap = expansionMap;
 			this.facetStateProvider = facetStateProvider;
-			
-			this.labelStore = labelStore;
+
 			this.pathToFilterString = pathToFilterString;
 		},
 		
@@ -14443,6 +15306,95 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		
 		
+		/**
+		 * Returns Promise<List<FacetItem>>
+		 * 
+		 */
+		fetchFacetTreeChildren: function(path, isInverse) {
+
+		    var baseData = {
+		            path: path,
+		            children: [],
+		            limit: null,
+		            offset: null
+		    };
+		        
+            //baseData.children = [];
+            
+            var limit = null;
+            var offset = null;
+
+            var state = this.facetStateProvider.getFacetState(path);
+            
+            if(state) {
+                var resultRange = state.getResultRange();
+                
+                limit = resultRange.getLimit();
+                offset = resultRange.getOffset() || 0;
+            }
+
+
+            baseData.limit = limit;
+            baseData.offset = offset;
+
+
+            var filterString = this.pathToFilterString.get(path);
+            var baseFlow = this.facetService.createFlow(path, isInverse, filterString);
+
+            var countPromise = baseFlow.count();
+            
+            //var countPromise = this.facetService.fetchFacetCount(path, false);
+            //var childFacetsPromise = this.facetService.fetchFacets(path, false, limit, offset);
+            
+            var dataFlow = baseFlow.skip(offset).limit(limit);
+            
+            // TODO How to decide whether to fetch forward or backward facets?
+            
+            //var childFacetsPromise = this.facetService.fetchFacetsFromFlow(dataFlow, path, false);
+            //var childFacetsPromise = this.facetService.fetchFacetsFromFlow(dataFlow, pathHead.getPath(), pathHead.isInverse());
+            var childFacetsPromise = this.facetService.fetchFacetsFromFlow(dataFlow, path, isInverse);
+
+
+            var promises = [countPromise, childFacetsPromise];
+            
+             
+            var result = $.Deferred();
+            var self = this;
+            $.when.apply(window, promises).pipe(function(childFacetCount, facetItems) {
+//console.log('facetItems:', facetItems);
+                baseData.childFacetCount = childFacetCount;
+                
+                var o = limit ? Math.floor((offset || 0) / limit) : 0; 
+                
+                baseData.pageIndex = 1 + o;
+                baseData.pageCount = 1 + (limit ? Math.floor(childFacetCount / limit) : 0);
+                
+                var childPromises = _(facetItems).map(function(facetItem) {
+                    var path = facetItem.getPath();
+
+                    var childPromise = self.fetchFacetTreeRec(path, facetItem);
+                    //.pipe(function(childItem) {
+                    //});
+
+                    return childPromise;
+                });
+
+                
+                $.when.apply(window, childPromises).done(function() {
+                    _(arguments).each(function(childItem) {
+                        baseData.children.push(childItem);
+                    });
+
+                    result.resolve(baseData);
+                }).fail(function() {
+                    result.fail();
+                });
+                
+            });                
+		  
+            return result;
+		},
+		
 	    /**
          * Given a path, this method fetches all child facets at its target location.
          * 
@@ -14456,96 +15408,56 @@ or simply: Angular + Magic Sparql = Angular Marql
 		fetchFacetTreeRec: function(path, parentFacetItem) {
 
 		    var isExpanded = this.expansionSet.contains(path);
-            
+		    var expansionState = this.expansionMap.get(path);
+
+		    var isOutgoingActive = (expansionState & 1) != 0;
+		    var isIncomingActive = (expansionState & 2) != 0;
 
             // This is the basic information returned for non-expanded facets
             var baseData = {
                 item: parentFacetItem,
                 isExpanded: isExpanded,
+                expansionState: expansionState,
+                isOutgoingActive: isOutgoingActive,
+                isIncomingActive: isIncomingActive, 
                 //state: facetState,
-                children: null,                    
+                incoming: null,
+                outgoing: null
             };
 
+//            if(isIncomingActive) {
+//                console.log('WHAAAAAAAAAAT?');
+//            }
             
             var self = this;
             
             
             var result = $.Deferred();
             
-            
-            // If the facet is expanded,
-            // fetch the count of sub facets together with the facets in the range of limit and offset
+            var promises = [];
+
             if(isExpanded) {
                 
-                baseData.children = [];
-            
-                var limit = null;
-                var offset = null;
-    
-                var state = this.facetStateProvider.getFacetState(path);
-                
-                if(state) {
-                    var resultRange = state.getResultRange();
+                if(isOutgoingActive) { // outgoing
+                    var promise = this.fetchFacetTreeChildren(path, false).pipe(function(childData) {
+                       baseData.outgoing = childData; 
+                    });
                     
-                    limit = resultRange.getLimit();
-                    offset = resultRange.getOffset() || 0;
+                    promises.push(promise);
                 }
-    
-
-                baseData.limit = limit;
-                baseData.offset = offset;
-
-
-                var filterString = this.pathToFilterString.get(path);
-                var baseFlow = this.facetService.createFlow(path, false, filterString);
-
-                var countPromise = baseFlow.count();
                 
-                //var countPromise = this.facetService.fetchFacetCount(path, false);
-                //var childFacetsPromise = this.facetService.fetchFacets(path, false, limit, offset);
-                
-                var dataFlow = baseFlow.skip(offset).limit(limit);
-                
-                var childFacetsPromise = this.facetService.fetchFacetsFromFlow(dataFlow, path, false);
-                
-                var promises = [countPromise, childFacetsPromise];
-                
-                $.when.apply(window, promises).done(function(childFacetCount, facetItems) {
-//console.log('facetItems:', facetItems);
-                    baseData.childFacetCount = childFacetCount;
-                    
-                    var o = limit ? Math.floor((offset || 0) / limit) : 0; 
-                    
-                    baseData.pageIndex = 1 + o;
-                    baseData.pageCount = 1 + (limit ? Math.floor(childFacetCount / limit) : 0);
-                    
-                    var childPromises = _(facetItems).map(function(facetItem) {
-                        var path = facetItem.getPath();
-
-                        var childPromise = self.fetchFacetTreeRec(path, facetItem);
-                        //.pipe(function(childItem) {
-                        //});
-
-                        return childPromise;
+                if(isIncomingActive) { // incoming
+                    var promise = this.fetchFacetTreeChildren(path, true).pipe(function(childData) {
+                       baseData.incoming = childData; 
                     });
-
-                    
-                    $.when.apply(window, childPromises).done(function() {
-                        _(arguments).each(function(childItem) {
-                            baseData.children.push(childItem);
-                        });
-
-                        result.resolve(baseData);
-                    }).fail(function() {
-                        result.fail();
-                    });
-                    
-                });                
+                    promises.push(promise);
+                }
             }
-            else {
+            
+            $.when.apply(window, promises).done(function() {
                 result.resolve(baseData);
-            }
-		    
+            });
+            
             return result.promise();
 		},
 		
@@ -14689,25 +15601,34 @@ or simply: Angular + Magic Sparql = Angular Marql
 		}
 	});
 	
+	
+	   ns.FacetFetchingWorkflow = Class.create({
+	        execute: function(sparqlService, labelMap) {
+	            
+	        }
+	    });
+
 
 	ns.FacetServiceImpl = Class.create(ns.FacetService, {
-		initialize: function(queryExecutionFactory, facetConceptGenerator, labelStore) {
-			this.qef = queryExecutionFactory;
+		initialize: function(sparqlService, facetConceptGenerator, labelMap) {
+			this.sparqlService = sparqlService;
 			this.facetConceptGenerator = facetConceptGenerator;
-			
-			// TODO This is a hack - Somehow Sponate should abstract away the qef as a store object....
-			this.labelStore = labelStore;
+			this.labelMap = labelMap;
 		},
 
-		
+/*		
 		createConceptFacetValues: function(path, excludeSelfConstraints) {
 			var concept = this.facetConceptGenerator.createConceptResources(path, excludeSelfConstraints);
 			return concept;
 		},
-		
+*/
 	
 		createFlow: function(path, isInverse, filterString) {
 
+		    var labelStore = new sponate.StoreFacade(this.sparqlService, {});//, cacheFactory);
+		    labelStore.addMap(this.labelMap, 'labels');
+
+		    
 		    var concept = this.facetConceptGenerator.createConceptFacets(path, isInverse);
 		    
             var criteria = {};
@@ -14719,7 +15640,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             }
 
 		    
-		    var result = this.labelStore.find(criteria).concept(concept, true);
+		    var result = labelStore.labels.find(criteria).concept(concept, true);
 		    return result;
 		},
 		
@@ -14735,7 +15656,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
             var query = ns.ConceptUtils.createQueryCount(concept, outputVar);
 
-            var qe = this.qef.createQueryExecution(query);
+            var qe = this.sparqlService.createQueryExecution(query);
             
             var promise = service.ServiceUtils.fetchInt(qe, outputVar);
 
@@ -14767,7 +15688,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             //console.log('All facet query: ' + query);
             
             //query.getOrderBys().add(new sparql.SortCondition(countVar))
-            var promise = this.qef.createQueryExecution(query).execSelect();
+            var promise = this.sparqlService.createQueryExecution(query).execSelect();
             
             var result = promise.pipe(function(rs) {
                 var r = [];
@@ -14795,21 +15716,24 @@ or simply: Angular + Magic Sparql = Angular Marql
 		},
 		
 		fetchFacetsFromFlow: function(flow, path, isInverse) {
-            var promise = flow.asList();
+            var promise = flow.asList(true); // Retains RDF nodes
 		    
             var deferred = $.Deferred();
 
             var self = this;
 	        promise.done(function(docs) {
+	            /*
 	            var properties = _(docs).map(function(doc) {
 	                return rdf.NodeFactory.parseRdfTerm(doc.id);
 	            });
+	            */
+	            var properties = _(docs).pluck('id');
 
 	            if(properties.length === 0) {
                     deferred.resolve([]);
                     return;
 	            }
-	            
+
                 var promise = self.fetchFacetValueCounts(path, isInverse, properties, false);
 
                 promise.done(function(r) {
@@ -14849,7 +15773,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 			//var query = this.facetQueryGenerator.createQueryFacets();
 			
-			var qe = this.qef.createQueryExecution(query);
+			var qe = this.sparqlService.createQueryExecution(query);
 			
 			var promise = service.ServiceUtils.fetchList(qe, concept.getVar());
 
@@ -14885,7 +15809,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		fetchFacetValueCounts: function(path, isInverse, properties, isNegated) {
 			var facetConceptItems = this.facetConceptGenerator.createConceptFacetValues(path, isInverse, properties, isNegated);
 			
-			
+
 			var outputVar = rdf.NodeFactory.createVar("_c_");
 			
 						
@@ -14915,7 +15839,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 				var query = ns.QueryUtils.createQueryCount(elements, null, countVar, outputVar, [groupVar], true); 
 				
-				var qe = self.qef.createQueryExecution(query);
+				var qe = self.sparqlService.createQueryExecution(query);
 				
 				//qe.setTimeout()
 				
@@ -15242,6 +16166,210 @@ or simply: Angular + Magic Sparql = Angular Marql
 })(jQuery);
 
 (function() {
+
+    var util = Jassa.util;
+    var ns = Jassa.facete;
+    
+    ns.FacetConfig = Class.create({
+        initialize: function(baseConcept, rootFacetNode, constraintManager) {
+            this.baseConcept = baseConcept;
+            this.rootFacetNode = rootFacetNode;
+            this.constraintManager = constraintManager;
+        },
+        
+        getBaseConcept: function() {
+            return this.baseConcept;
+        },
+        
+        setBaseConcept: function(baseConcept) {
+            this.baseConcept = baseConcept;
+        },
+        
+        getRootFacetNode: function() {
+            return this.rootFacetNode;
+        },
+        
+        setRootFacetNode: function(rootFacetNode) {
+            this.rootFacetNode = rootFacetNode;
+        },
+        
+        getConstraintManager: function() {
+            return this.constraintManager;
+        },
+        
+        setConstraintManager: function(constraintManager) {
+            this.constraintManager = constraintManager;
+        },
+
+        /**
+         * The purpose of this method is to detect changes in the configuration!
+         * TODO rely on hash codes from child components
+         * 
+         */
+        hashCode: function() {
+            var result = util.JsonUtils.stringifyCyclic(this);
+            return result;
+        }
+        
+        // The following attributes are pretty much UI dependent
+        // facetStateProvider, pathToFilterString, expansionSet
+    });
+
+    ns.FacetConfig.createDefaultFacetConfig = function() {
+        var baseVar = rdf.NodeFactory.createVar("s");
+        var baseConcept = facete.ConceptUtils.createSubjectConcept(baseVar);
+        //var sparqlStr = sparql.SparqlString.create("?s a ?t");
+        //var baseConcept = new facete.Concept(new sparql.ElementString(sparqlStr));
+        var rootFacetNode = facete.FacetNode.createRoot(baseVar);
+
+        var constraintManager = new facete.ConstraintManager();
+        
+        var result = new ns.FacetConfig(baseConcept, rootFacetNode, constraintManager);
+        return result;
+    };
+
+
+    /**
+     * 
+     * ExpansionSet: Whether a path is expanded at all
+     * ExpansionMap: If a path is expanded, whether to fetch the incoming or outgoing properties or both
+     * 
+     */
+    ns.FacetTreeConfig = Class.create({
+        initialize: function(facetConfig, labelMap, expansionSet, expansionMap, facetStateProvider, pathToFilterString) {
+            this.facetConfig = facetConfig || ns.FacetConfig.createDefaultFacetConfig();
+            this.labelMap = labelMap; // TODO Use some default
+            this.expansionSet = expansionSet || new util.HashSet();
+            this.expansionMap = expansionMap || new util.HashMap();
+            this.facetStateProvider = facetStateProvider || new facete.FacetStateProviderImpl(10);
+            this.pathToFilterString = pathToFilterString || new util.HashMap();
+        },
+        
+        getFacetConfig: function() {
+            return this.facetConfig;
+        },
+        
+        getLabelMap: function() {
+            return this.labelMap;
+        },
+        
+        getExpansionSet: function() {
+            return this.expansionSet;
+        },
+
+        getExpansionMap: function() {
+            return this.expansionMap;
+        },
+        
+        getFacetStateProvider: function() {
+            return this.facetStateProvider;
+        },
+        
+        getPathToFilterString: function() {
+            return this.pathToFilterString;
+        },
+        
+        /**
+         * The purpose of this method is to detect changes in the configuration!
+         * TODO rely on hash codes from child components
+         * 
+         */
+        hashCode: function() {
+            var result = util.JsonUtils.stringifyCyclic(this);
+            return result;
+        }
+    });
+
+    
+    /**
+     * 
+     * 
+     * TODO Possibly rename to FaceteConfigUtils
+     */
+    ns.FaceteUtils = {
+            createFacetConceptGenerator: function(facetConfig) {
+                var baseConcept = facetConfig.getBaseConcept();
+                var rootFacetNode = facetConfig.getRootFacetNode();
+                var constraintManager = facetConfig.getConstraintManager();
+                
+                var result = this.createFacetConceptGenerator2(baseConcept, rootFacetNode, constraintManager);
+                return result;
+            },
+            
+            createFacetConceptGenerator2: function(baseConcept, rootFacetNode, constraintManager) {
+                // Based on above objects, create a provider for the configuration
+                // which the facet service can build upon
+                var facetConfigProvider = new facete.FacetGeneratorConfigProviderIndirect(
+                    new facete.ConceptFactoryConst(baseConcept),
+                    new facete.FacetNodeFactoryConst(rootFacetNode),
+                    constraintManager
+                );
+                
+                var fcgf = new facete.FacetConceptGeneratorFactoryImpl(facetConfigProvider);
+                var result = fcgf.createFacetConceptGenerator();
+                
+                return result;
+            },
+            
+//            createFacetService: function(facetConfig) {
+//                var result = this.createFacetService2(facetConfig.);
+//            },
+//            
+            createFacetService: function(sparqlService, facetConfig, labelMap) {
+                var facetConceptGenerator = this.createFacetConceptGenerator(facetConfig);
+
+                var facetService = new facete.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap);
+
+                return facetService;
+            },
+            
+            
+            
+            createFacetTreeService: function(sparqlService, facetTreeConfig, labelMap) {
+
+
+                var facetService = this.createFacetService(sparqlService, facetTreeConfig.getFacetConfig(), labelMap);
+                
+                var expansionSet = facetTreeConfig.getExpansionSet();
+                var expansionMap = facetTreeConfig.getExpansionMap();
+                var facetStateProvider = facetTreeConfig.getFacetStateProvider();
+                var pathToFilterString = facetTreeConfig.getPathToFilterString();
+                
+
+                var facetTreeService = new facete.FacetTreeServiceImpl(facetService, expansionSet, expansionMap, facetStateProvider, pathToFilterString);
+
+                return facetTreeService;
+
+                //var constraintTaggerFactory = new facete.ConstraintTaggerFactory(constraintManager);       
+                
+                
+                //var faceteConceptFactory = new ns.ConceptFactoryFacetService(facetService);
+                
+                
+                //var result = new ns.ConceptSpace(facetTreeService);
+                
+                //return result;            
+            },
+            
+            createFacetTreeTagger: function(pathToFilterString) {
+                var tableMod = new facete.FaceteTableMod(); 
+                tableMod.togglePath(new facete.Path());
+                
+                
+                var pathTagger = new ns.ItemTaggerManager();
+                pathTagger.getTaggerMap()['table'] = new ns.ItemTaggerTablePath(tableMod);
+                pathTagger.getTaggerMap()['filter'] = new ns.ItemTaggerFilterString(pathToFilterString);
+                var facetTreeTagger = new ns.FacetTreeTagger(pathTagger);
+                
+                return facetTreeTagger;
+            }
+
+        };
+
+    
+    
+})();
+(function() {
 	
 	var service = Jassa.service;
 	var rdf = Jassa.rdf;
@@ -15544,5 +16672,1652 @@ or simply: Angular + Magic Sparql = Angular Marql
         }
     });
 
+    
+})();
+(function() {
+
+    var util = Jassa.util;
+    
+    var ns = Jassa.facete;
+
+
+    /**
+     * Tags all nodes in a facetTree, based on pathTaggers
+     * 
+     */
+    ns.FacetTreeTagger = Class.create({
+        initialize: function(pathTagger) {
+            this.pathTagger = pathTagger;
+        },
+        
+        applyTags: function(facetNode) {
+            var pathTagger = this.pathTagger;
+            
+            var facetNodes = util.TreeUtils.flattenTree(facetNode, 'children');
+            
+            _(facetNodes).each(function(node) {
+                var path = node.item.getPath();
+                var tags = pathTagger.createTags(path);
+                _(node).extend(tags);
+                
+                //console.log('tagging: ' + path, tags, node);
+            });
+        }
+    });
+    
+    
+    /**
+     * Interface for retrieval of tags for a given object
+     *
+     */
+    ns.ItemTagger = Class.create({
+        createTags: function(item) {
+            throw 'Not overidden';
+        } 
+    });
+
+    
+    /**
+     * Item Tagger that aggregates a set of item taggers
+     * 
+     */
+    ns.ItemTaggerManager = Class.create(ns.ItemTagger, {
+        initialize: function() {
+            this.taggerMap = {}
+        },
+        
+        getTaggerMap: function() {
+            return this.taggerMap;
+        },
+        
+        /**
+         * @param item The object for which to create the tags
+         */
+        createTags: function(item) {
+            var result = {};
+            _(this.taggerMap).each(function(tagger, key) {
+                var tags = tagger.createTags(item);
+                
+                result[key] = tags;
+            });
+            
+            return result;
+        }
+    });
+
+    
+    ns.ItemTaggerFilterString = Class.create(ns.ItemTagger, {
+        initialize: function(pathToFilterString) {
+            this.pathToFilterString = pathToFilterString;
+        },
+        
+        createTags: function(path) {
+            var filterString = this.pathToFilterString.get(path);
+            //var isContained = paths.contains(path);
+            
+            var result = { filterString: filterString };
+            //console.log('table: ' + path, isContained);
+            return result;
+        }
+    });
+
+    /**
+     * Item Tagger for paths of whether they are linked as a table column
+     * 
+     */
+    ns.ItemTaggerTablePath = Class.create(ns.ItemTagger, {
+        initialize: function(tableMod) {
+            this.tableMod = tableMod;
+        },
+        
+        createTags: function(path) {
+            var paths = this.tableMod.getPaths();
+            var isContained = paths.contains(path);
+            
+            var result = { isContained: isContained };
+            //console.log('table: ' + path, isContained);
+            return result;
+        }
+    });
+    
+    
+    
+    
+    /**
+     * Tags paths as active when they are in the collection of
+     * active map links
+     * 
+     * TODO Apparently not used yet
+     */
+    ns.ItemTaggerMapLinkPath = Class.create(ns.ItemTagger, {
+        initialize: function(mapLinkManager, conceptSpace) {
+            this.mapLinkManager = mapLinkManager;
+            this.conceptSpace = conceptSpace;
+        },
+        
+        createTags: function(path) {
+            var result = { isActive: isContained };
+            return result;
+        }
+    });    
+    
+
+})();
+(function() {
+
+    var ns = Jassa.geo;
+    
+    ns.BBoxExprFactory = Class.create({
+        createExpr: function(bounds) {
+            throw 'Not implemented';
+        }
+    });
+    
+
+    ns.BBoxExprFactoryWgs84 = Class.create(ns.BBoxExprFactory, {
+        initialize: function(xVar, yVar, castNode) {
+            //this.geoVar = geoVar;
+            this.xVar = xVar;
+            this.yVar = yVar;
+            this.castNode = castNode;
+        },
+        
+        createExpr: function(bounds) {
+            var result = ns.GeoExprUtils.createExprWgs84Intersects(this.xVar, this.yVar, bounds, this.castNode);
+            return result;
+        }
+    });
+    
+
+    ns.BBoxExprFactoryWkt = Class.create(ns.BBoxExprFactory, {
+        initialize: function(wktVar, intersectsFnName, geomFromTextFnName) {
+            this.wktVar = wktVar;
+            this.intersectsFnName = intersectsFnName;
+            this.geomFromTextFnName = geomFromTextFnName;
+        },
+        
+        createExpr: function(bounds) {
+            var result = ns.GeoExprUtils.createExprOgcIntersects(this.wktVar,bounds, this.intersectsFnName, this.geomFromTextFnName);
+            return result;
+        }
+    });
+    
+})();
+/**
+ * A LooseQuadTree data structure.
+ * 
+ * @param bounds Maximum bounds (e.g. (-180, -90) - (180, 90) for spanning the all wgs84 coordinates)
+ * @param maxDepth Maximum depth of the tree
+ * @param k The factor controlling the additional size of nodes in contrast to classic QuadTrees.
+ * @returns {QuadTree}
+ */
+
+(function() {
+    
+	var ns = Jassa.geo;
+	
+	
+    ns.Point = Class.create({
+        initialize: function(x, y) {
+            this.x = x;
+            this.y = y;
+        },
+        
+        getX: function() {
+            return this.x;
+        },
+        
+        getY: function() {
+            return this.y;
+        }
+    });
+    
+    ns.Bounds = Class.create({
+        initialize: function(left, bottom, right, top) {
+            this.left = left;
+            this.right = right;
+            this.bottom = bottom;
+            this.top = top;
+        },
+    
+        containsPoint: function(point) {
+            return point.x >= this.left && point.x < this.right && point.y >= this.bottom && point.y < this.top;
+        },
+    
+    
+        getCenter: function() {
+            return new ns.Point(0.5 * (this.left + this.right), 0.5 * (this.bottom + this.top));
+        },
+    
+        getWidth: function() {
+            return this.right - this.left; 
+        },
+    
+        getHeight: function() {
+            return this.top - this.bottom;
+        },
+    
+    
+        /**
+         * Checks for full containment (mere overlap does not yield true)
+         * 
+         * @param bounds
+         * @returns {Boolean}
+         */
+        contains: function(bounds) {
+            return bounds.left >= this.left && bounds.right < this.right && bounds.bottom >= this.bottom && bounds.top < this.top;
+        },
+    
+        rangeX: function() {
+            return new ns.Range(this.left, this.right);
+        },
+    
+        rangeY: function() {
+            return new ns.Range(this.bottom, this.top);
+        },
+    
+        overlap: function(bounds) {
+            if(!bounds.rangeX || !bounds.rangeY) {
+                console.error("Missing range");
+                throw 'Error';
+            }
+        
+            var ox = this.rangeX().getOverlap(bounds.rangeX());
+            if(!ox) {
+                return null;
+            }
+            
+            var oy = this.rangeY().getOverlap(bounds.rangeY());
+            if(!oy) {
+                return null;
+            }
+            
+            return new ns.Bounds(ox.min, oy.min, oy.max, ox.max);
+        },
+    
+        isOverlap: function(bounds) {
+            var tmp = this.overlap(bounds);
+            return tmp != null;
+        },
+    
+        toString: function() {
+        //return "[" + this.left + ", " + this.bottom + ", " + this.right + ", " + this.top + "]"; 
+            return "[" + this.left + " - " + this.right + ", " + this.bottom + " - " + this.top + "]";
+        }
+    });
+    
+    ns.Bounds.createFromJson = function(json) {
+        var result = new ns.Bounds(json.left, json.bottom, json.right, json.top);
+        return result;
+    };
+
+    ns.Range = Class.create({
+        initialize: function(min, max) {
+            this.min = min;
+            this.max = max;
+        },
+    
+        getOverlap: function(other) {
+            var min = Math.max(this.min, other.min);
+            var max = Math.min(this.max, other.max);
+    
+            return (min > max) ? null : new ns.Range(min, max); 
+        }
+    });
+	
+	
+	ns.QuadTree = Class.create({
+	    initialize: function(bounds, maxDepth, k) {
+    		if(k == undefined) {
+    			k = 0.25;
+    		}
+    		
+    		this.node = new ns.Node(null, bounds, maxDepth, 0, k);
+    		
+    		// Map in which nodes objects with a certain ID are located
+    		// Each ID may be associated with a set of geometries
+    		this.idToNodes = [];
+	    },
+	
+	    getRootNode: function() {
+	        return this.node;
+	    },
+	
+    	/**
+    	 * Retrieve the node that completely encompasses the given bounds
+    	 * 
+    	 * 
+    	 * @param bounds
+    	 */
+        aquireNodes: function(bounds, depth) {
+            return this.node.aquireNodes(bounds, depth);
+        },
+	
+	
+        query: function(bounds, depth) {
+            return this.node.query(bounds, depth);
+        },
+	
+        insert: function(item) {
+		
+        }
+	});
+	
+	
+	// Node
+	
+	ns.Node = Class.create({ 
+	    initialize: function(parent, bounds, maxDepth, depth, k, parentChildIndex) {
+    		this.parent = parent;
+    		this.parentChildIndex = parentChildIndex;
+    		
+    		this._bounds = bounds;
+    		this._maxDepth = maxDepth;
+    		this._depth = depth;
+    		this._k = k;  // expansion factor for loose quad tree [0, 1[ - recommended range: 0.25-0.5
+    	
+    		this.isLoaded = false;
+    		this.children = null;
+    		
+    		this.data = {};
+    		
+    		this._minItemCount = null; // Concrete minumum item count
+    		this.infMinItemCount = null; // Inferred minimum item count by taking the sum
+    		
+    		// The contained items: id->position (so each item must have an id)
+    		this.idToPos = {};
+    		
+    		this._classConstructor = ns.Node;
+    	},
+	
+    	getId: function() {
+    	    var parent = this.parent;
+    	    var parentId = parent ? parent.getId() : '';
+    	    
+    	    var indexId = this.parentChildIndex != null ? this.parentChildIndex : 'r'; // r for root
+    	    var result = parentId + indexId;
+    	    return result;
+    	},
+    	
+    	isLeaf: function() {
+    	    return !this.children;
+    	},
+		
+	
+    	addItem: function(id, pos) {
+    	    this.idToPos[id] = pos;
+    	},
+	
+	
+    	addItems: function(idToPos) {
+    	    for(id in idToPos) {
+    	        pos = idToPos[id];
+			
+    	        this.addItem(id, pos);
+    	    }
+    	},
+	
+	
+    	removeItem: function(id) {
+    	    delete this.idToPos[id];
+    	},
+	
+    	/**
+    	 * Sets the minimum item count on this node and recursively updates
+    	 * the inferred minimum item count (.infMinItemCount) on its parents.
+    	 * 
+    	 * @param value
+    	 */
+    	setMinItemCount: function(value) {
+    		this._minItemCount = value;
+    	    this.infMinItemCount = value;
+    		
+    		if(this.parent) {
+    			this.parent.updateInfMinItemCount();
+    		}
+    	},
+    	
+    	getMinItemCount: function() {
+    	    return this._minItemCount;
+    	},
+	
+    	/**
+    	 * True if either the minItemCount is set, or all children have it set 
+    	 * FIXME This description is not concise - mention the transitivity
+    	 * 
+    	 * @returns
+    	 */
+    	isCountComplete: function() {
+    		if(this.getMinItemCount() !== null) {
+    			return true;
+    		}
+    		
+    		if(this.children) {
+    			var result = _.reduce(
+    					this.children,
+    					function(memo, child) {
+    						return memo && child.isCountComplete();
+    					},
+    					true);
+    
+    			return result;
+    		}
+    		
+    		return false;
+    	},
+	
+    	updateInfMinItemCount: function() {
+    		if(!this.children && this._minItemCount !== null) {
+    			return;
+    		}
+    		
+    		var sum = 0;
+    		
+    		_(this.children).each(function(child, index) {
+    			if(child._minItemCount !== null) {
+    				sum += child._minItemCount;
+    			} else if(child.infMinItemCount) {
+    				sum += child.infMinItemCount;
+    			}
+    		});
+    		
+    		this.infMinItemCount = sum;
+    		
+    		if(this.parent) {
+    			this.parent.updateInfMinItemCount();
+    		}
+    	},
+    	
+    	getBounds: function() {
+    	    return this._bounds;
+    	},
+	
+	
+    	getCenter: function() {
+    	    return this._bounds.getCenter();
+    	},
+	
+	
+    	subdivide: function() {
+    		var depth = this._depth + 1;
+    		
+    		var c = this.getCenter();
+    	
+    		//console.log("k is " + this._k);
+    		
+    		// expansions
+    		var ew = this._k * 0.5 * this._bounds.getWidth();
+    		var eh = this._k * 0.5 * this._bounds.getHeight();
+    		
+    		this.children = [];
+    		
+    		this.children[ns.Node.TOP_LEFT] = new this._classConstructor(this, new ns.Bounds(
+    			this._bounds.left, 
+    			c.y - eh,
+                c.x + ew, 
+    			this._bounds.top
+    		),
+    		this._maxDepth, depth, this._k, ns.Node.TOP_LEFT);
+    		
+    		this.children[ns.Node.TOP_RIGHT] = new this._classConstructor(this, new ns.Bounds(
+    			c.x - ew, 
+    			c.y - eh,
+                this._bounds.right, 
+    			this._bounds.top
+    		),
+    		this._maxDepth, depth, this._k, ns.Node.TOP_RIGHT);
+    		
+    		this.children[ns.Node.BOTTOM_LEFT] = new this._classConstructor(this, new ns.Bounds(
+    			this._bounds.left, 
+    			this._bounds.bottom,
+                c.x + ew, 
+    			c.y + eh
+    		),
+    		this._maxDepth, depth, this._k, ns.Node.BOTTOM_LEFT);
+    	
+    		this.children[ns.Node.BOTTOM_RIGHT] = new this._classConstructor(this, new ns.Bounds(
+    			c.x - ew, 
+                this._bounds.bottom,
+    			this._bounds.right, 
+    			c.y + eh
+    		),
+    		this._maxDepth, depth, this._k, ns.Node.BOTTOM_RIGHT);
+    		
+    		
+    		// Uncomment for debug output
+    		/*
+    		console.log("Subdivided " + this._bounds + " into ");
+    		for(var i in this.children) {
+    			var child = this.children[i];
+    			console.log("    " + child._bounds);
+    		}
+    		*/
+    	},
+	
+	
+    	_findIndexPoint: function(point) {
+    		var center = this.getCenter(bounds);
+    		left = point.x < center.x;
+    		top = point.y > center.y;
+    		
+    		var index; 
+    		if(left) {
+    			if(top) {
+    				index = Node.TOP_LEFT;
+    			} else {
+    				index = Node.BOTTOM_LEFT;
+    			};
+    		} else {
+    			if(top) {
+    				index = Node.TOP_RIGHT;
+    			} else {
+    				index = Node.BOTTOM_RIGHT;
+    			};
+    		}
+    		
+    		return index;	
+    	},
+	
+    	_findIndex: function(bounds) {
+    		var topLeft = new ns.Point(bounds.left, bounds.top);
+    		return this._findIndexPoint(topLeft);
+    	},
+	
+    	getOverlaps: function(bounds) {
+    		
+    	},
+	
+	
+	
+    	/**
+    	 * Return loaded and leaf nodes within the bounds
+    	 * 
+    	 * @param bounds
+    	 * @param depth The maximum number of levels to go beyond the level derived from the size of bounds
+    	 * @returns {Array}
+    	 */
+    	query: function(bounds, depth) {
+    		var result = [];
+    		
+    		this.queryRec(bounds, result);
+    		
+    		return result;
+    	},
+	
+    	queryRec: function(bounds, result) {
+    		if(!this._bounds.isOverlap(bounds)) {
+    			return;
+    		}
+    	
+    		var w = bounds.getWidth() / this._bounds.getWidth();
+    		var h = bounds.getHeight() / this._bounds.getHeight();
+    		
+    		var r = Math.max(w, h);
+    		
+    		// Stop recursion on encounter of a loaded node or leaf node or node that exceeded the depth limit
+    		if(this.isLoaded || !this.children || r >= depth) {
+    			result.push(this);
+    			return;
+    		}
+    		
+    		for(i in this.children) {
+    			var child = this.children[i];
+    			
+    			child.queryRec(bounds, depth, result);
+    		}	
+    	},
+	
+	
+	
+	
+    	/**
+    	 * If the node'size is above a certain ration of the size of the bounds,
+    	 * it is placed into result. Otherwise, it is recursively split until
+    	 * the child nodes' ratio to given bounds has become large enough.
+    	 * 
+    	 * Use example:
+    	 * If the screen is centered on a certain location, then this method
+    	 * picks tiles (quad-tree-nodes) of appropriate size (not too big and not too small).
+    	 * 
+    	 * 
+    	 * @param bounds
+    	 * @param depth
+    	 * @param result
+    	 */
+    	splitFor: function(bounds, depth, result) {
+    		/*
+    		console.log("Depth = " + depth);
+    		console.log(this.getBounds());
+    		*/
+    		
+    		
+    		/*
+    		if(depth > 10) {
+    			result.push(this);
+    			return;
+    		}*/
+    		
+    		
+    		if(!this._bounds.isOverlap(bounds)) {
+    			return;
+    		}
+    		
+    		// If the node is loaded, avoid splitting it
+    		if(this.isLoaded) {
+    			if(result) {
+    				result.push(this);
+    			}
+    			return;
+    		}
+    		
+    		// How many times the current node is bigger than the view rect
+    		var w = bounds.getWidth() / this._bounds.getWidth();
+    		var h = bounds.getHeight() / this._bounds.getHeight();
+    	
+    		var r = Math.max(w, h);
+    		//var r = Math.min(w, h);
+    		
+    		if(r >= depth || this._depth >= this._maxDepth) {
+    			if(result) {
+    				result.push(this);
+    				//console.log("Added a node");
+    			}
+    			return;
+    		}
+    		
+    		if(!this.children) {
+    			this.subdivide();
+    		}
+    		
+    		for(var i = 0; i < this.children.length; ++i) {
+    			var child = this.children[i];
+    			
+    			//console.log("Split for ",child, bounds);
+    			child.splitFor(bounds, depth, result);
+    		}	
+    	},
+	
+	
+    	aquireNodes: function(bounds, depth) {
+    		var result = [];
+    		
+    		this.splitFor(bounds, depth, result);
+    		
+    		return result;
+    	},
+    	
+    	
+    	unlink: function() {
+    		if(!this.parent) {
+    			return;
+    		}
+    		
+    		for(i in this.parent.children) {
+    			var child = this.parent.children[i];
+    			
+    			if(child == this) {
+    				this.parent.children = new ns.Node(this.parent, this._bounds, this._depth, this._k);
+    			}
+    		}		
+    	}
+	});
+	
+	
+    ns.Node.TOP_LEFT = 0;
+    ns.Node.TOP_RIGHT = 1;
+    ns.Node.BOTTOM_LEFT = 2;
+    ns.Node.BOTTOM_RIGHT = 3;
+    
+})();
+
+(function() {
+
+    var ns = Jassa.geo;
+    
+    
+    ns.GeoExprUtils = {
+        /**
+         * @param varX The SPARQL variable that corresponds to the longitude
+         * @param varY The SPARQL variable that corresponds to the longitude
+         * @param bounds The bounding box to use for filtering
+         * @param castNode An optional SPAQRL node used for casting, e.g. xsd.xdouble
+         */
+        createExprWgs84Intersects: function(varX, varY, bounds, castNode) {
+            var lon = new sparql.ExprVar(varX);
+            var lat = new sparql.ExprVar(varY);
+            
+            // Cast the variables if requested
+            // TODO E_Cast should not be used - use E_Function(castNode.getUri(), lon) instead - i.e. the cast type equals the cast function name
+            if(castNode) {
+                lon = new sparql.E_Cast(lon, castNode);
+                lat = new sparql.E_Cast(lat, castNode);
+            }
+            
+            var xMin = sparql.NodeValue.makeDecimal(bounds.left);
+            var xMax = sparql.NodeValue.makeDecimal(bounds.right);
+            var yMin = sparql.NodeValue.makeDecimal(bounds.bottom);
+            var yMax = sparql.NodeValue.makeDecimal(bounds.top);
+
+            var result = new sparql.E_LogicalAnd(
+                new sparql.E_LogicalAnd(new sparql.E_GreaterThan(lon, xMin), new sparql.E_LessThan(lon, xMax)),
+                new sparql.E_LogicalAnd(new sparql.E_GreaterThan(lat, yMin), new sparql.E_LessThan(lat, yMax))
+            );
+
+            return result;
+        },
+            
+            
+        createExprOgcIntersects: function(v, bounds, intersectsFnName, geomFromTextFnName) {
+            var ogc = 'http://www.opengis.net/rdf#';
+
+            intersectsFnName = intersectsFnName || (ogc + 'intersects'); 
+            geomFromTextFnName = geomFromTextFnName || (ogc + "geomFromText");              
+            
+            
+            var exprVar = new sparql.ExprVar(v);
+            var wktStr = this.boundsToWkt(bounds);
+            
+            // FIXME: Better use typeLit with xsd:string
+            var wktNodeValue = sparql.NodeValue.makeString(wktStr); //new sparql.NodeValue(rdf.NodeFactory.createPlainLiteral(wktStr));
+            
+            var result = new sparql.E_Function(
+                    intersectsFnName,
+                [exprVar, new sparql.E_Function(geomFromTextFnName, [wktNodeValue])]
+            );
+
+            return result;
+        },
+         
+        /**
+         * Convert a bounds object to a WKT polygon string
+         * 
+         * TODO This method could be moved to a better place
+         * 
+         */
+        boundsToWkt: function(bounds) {
+            var ax = bounds.left;
+            var ay = bounds.bottom;
+            var bx = bounds.right;
+            var by = bounds.top;
+            
+            var result = "POLYGON((" + ax + " " + ay + "," + bx + " " + ay
+                    + "," + bx + " " + by + "," + ax + " " + by + "," + ax
+                    + " " + ay + "))";
+
+            return result;
+        }   
+    };
+
+    
+})();
+(function($) {
+    
+    var ns = Jassa.geo;
+
+    var defaultDocWktExtractorFn = function(doc) {
+        var wktStr = doc.wkt;
+
+        var points = ns.WktUtils.extractPointsFromWkt(wktStr);
+        var result = ns.WktUtils.createBBoxFromPoints(points);
+
+        return result;
+    };
+
+    var number = '(\\d+(\\.\\d*)?)';
+    var nonNumber = '[^\\d]*'
+    ns.pointRegexPattern = new RegExp(nonNumber + '(' + number + '\\s+' + number + nonNumber + ')');
+
+    ns.WktUtils = {
+
+        extractPointsFromWkt: function(wktStr) {
+            var result = [];
+            
+            while (match = ns.pointRegexPattern.exec(wktStr)) {
+                var strX = match[2];
+                var strY = match[4];
+                var x = parseFloat(strX);
+                var y = parseFloat(strY);
+                
+                
+                var p = new ns.Point(x, y);
+                result.push(p);
+                
+                wktStr = wktStr.replace(match[0], '');                
+            }
+            
+            return result;
+        },
+        
+        createBBoxFromPoints: function(points) {
+            var minX = null;
+            var minY = null;
+            var maxX = null;
+            var maxY = null;
+            
+            _(points).each(function(point) {
+                var x = point.getX();
+                var y = point.getY();
+                
+                minX = !minX ? x : Math.min(minX, x);
+                minY = !minY ? y : Math.min(minY, y);
+                maxX = !maxX ? x : Math.max(maxX, x);
+                maxY = !maxY ? y : Math.max(maxY, y);
+            });
+            
+            var result = new ns.Bounds(minX, minY, maxX, maxY);
+            return result;
+        }
+    };
+    
+    
+    ns.QuadTreeCacheService = Class.create({
+       
+        
+    });
+    
+    
+    /**
+     * 
+     * fetchData
+     *   runWorkflow
+     *      runGlobalWorkflow
+     *      runTiledWorkflow
+     * 
+     * 
+     * Given a geoQueryFactory (i.e. a factory object, that can create queries for given bounds),
+     * this class caches results for bounds.
+     * 
+     * The process is as follows:
+     * The orginial bounds are extended to the size of tiles in a quad tree.
+     * Then the data is fetched.
+     * A callback with the data and the original bounds is invoked.
+     * IMPORTANT! The callback has to make sure how to filter the data against the original bounds (if needed)
+     * 
+     * TODO This class is not aware of postprocessing by filtering against original bounds - should it be?
+     * 
+     * @param backend
+     * @returns {ns.QuadTreeCache}
+     */
+    ns.QuadTreeCache = Class.create({ 
+        initialize: function(sparqlService, geoMapFactory, concept, fnGetBBox, options) {
+            this.sparqlService = sparqlService;
+            
+            var maxBounds = new geo.Bounds(-180.0, -90.0, 180.0, 90.0);
+            this.quadTree = new geo.QuadTree(maxBounds, 18, 0);
+        
+            
+            this.concept = concept;
+            
+            if(!options) {
+                options = {};
+            }
+            
+            this.maxItemsPerTileCount = options.maxItemsPerTileCount || 25;
+            this.maxGlobalItemCount = options.maxGlobalItemCount || 50;
+            
+            this.geoMapFactory = geoMapFactory;
+            
+
+            
+            this.fnGetBBox = fnGetBBox || ns.defaultDocWktExtractorFn;
+        },
+
+        
+        /**
+         * Method for fetching data within the given bounds
+         * 
+         */
+        fetchData: function(bounds) {
+            var result = this.runWorkflow(bounds);
+            return result;
+        },
+        
+        createFlowForBounds: function(bounds) {
+            var store = new sponate.StoreFacade(this.sparqlService); //, prefixes); 
+            var geoMap = this.geoMapFactory.createMapForBounds(bounds);
+            store.addMap(geoMap, 'geoMap');
+            return store.geoMap;            
+        },
+        
+        createFlowForGlobal: function() {
+            var store = new sponate.StoreFacade(this.sparqlService); //, prefixes); 
+            var geoMap = this.geoMapFactory.createMapForGlobal();
+            store.addMap(geoMap, 'geoMap');
+            return store.geoMap;
+        },
+        
+        runCheckGlobal: function() {
+            var result;
+            
+            var rootNode = this.quadTree.getRootNode();
+
+            var self = this;
+            if(!rootNode.checkedGlobal) {
+            
+                var countFlow = this.createFlowForGlobal().find().concept(this.concept).limit(self.maxGlobalItemCount);
+                var countTask = countFlow.count();
+                var globalCheckTask = countTask.pipe(function(geomCount) {
+                    console.debug("Global check counts", geomCount, self.maxGlobalItemCount);
+                    var canUseGlobal = !(geomCount >= self.maxGlobalItemCount);
+                    rootNode.canUseGlobal = canUseGlobal;
+                    rootNode.checkedGlobal = true;
+                    
+                    return canUseGlobal;
+                });
+                
+                result = globalCheckTask;
+
+            } else {
+                var deferred = $.Deferred();
+                deferred.resolve(rootNode.canUseGlobal);
+                result = deferred.promise();
+            }
+            
+            return result;
+        },
+        
+        runWorkflow: function(bounds) {
+            
+            var deferred = $.Deferred();
+            
+            var rootNode = this.quadTree.getRootNode();
+            
+            var self = this;
+            this.runCheckGlobal().pipe(function(canUseGlobal) {
+                console.log('Can use global? ', canUseGlobal);
+                var task;
+                if(canUseGlobal) {
+                    task = self.runGlobalWorkflow(rootNode);
+                } else {
+                    task = self.runTiledWorkflow(bounds);
+                }                
+
+                task.done(function(nodes) {
+                    deferred.resolve(nodes);
+                }).fail(function() {
+                    deferred.fail();
+                });
+            }).fail(function() {
+                deferred.fail(); 
+            });
+            
+            var result = deferred.promise();
+            
+            return result;
+        },
+    
+        runGlobalWorkflow: function(node) {
+        
+            var self = this;
+            
+    
+            // Fetch the items
+            var baseFlow = this.createFlowForGlobal().find().concept(this.concept);            
+            var result = baseFlow.asList().pipe(function(docs) {
+                //console.log("Global fetching: ", geomToFeatureCount);
+                self.loadTaskAction(node, docs);
+                
+                return [node];
+            });
+    
+            /*
+            loadTask.done(function() {
+                $.when(self.postProcess([node])).done(function() {
+                    //console.log("Global workflow completed.");
+                    //console.debug("Workflow completed. Resolving deferred.");
+                    result.resolve([node]);
+                }).fail(function() {
+                    result.fail();
+                });
+            }).fail(function() {
+                result.fail();
+            });
+            */
+    
+            return result;
+        },
+        
+        
+        /**
+         * This method implements the primary workflow for tile-based fetching data.
+         * 
+         * globalGeomCount = number of geoms - facets enabled, bounds disabled.
+         * if(globalGeomCount > threshold) {
+         * 
+         * 
+         *    nodes = aquire nodes.
+         *    foreach(node in nodes) {
+         *        fetchGeomCount in the node - facets TODO enabled or disabled?
+         *        
+         *        nonFullNodes = nodes where geomCount < threshold
+         *        foreach(node in nonFullNodes) {
+         *            fetch geomToFeatureCount - facets enabled
+         *            
+         *            fetch all positions of geometries in that area
+         *            -- Optionally: fetchGeomToFeatureCount - facets disabled - this can be cached per type of interest!!
+         *        }
+         *    }
+         * } 
+         * 
+         */
+        runTiledWorkflow: function(bounds) {
+            var self = this;
+
+            console.log("Aquiring nodes for " + bounds);
+            var nodes = this.quadTree.aquireNodes(bounds, 2);
+
+            //console.log('Done aquiring');
+            
+            // Init the data attribute if needed
+            _(nodes).each(function(node) {
+                if(!node.data) {
+                    node.data = {};
+                }
+            });
+            
+    
+            // Mark empty nodes as loaded
+            _(nodes).each(function(node) {
+                if(node.isCountComplete() && node.infMinItemCount === 0) {
+                    node.isLoaded = true;
+                }
+            });
+    
+            
+            var uncountedNodes = _(nodes).filter(function(node) { return self.isCountingNeeded(node); });
+            //console.log("# uncounted nodes", uncountedNodes.length);
+    
+            // The deferred is only resolved once the whole workflow completed
+            var result = $.Deferred();
+    
+            
+            var countTasks = this.createCountTasks(uncountedNodes);
+            
+            $.when.apply(window, countTasks).done(function() {
+                nonLoadedNodes = _(nodes).filter(function(node) { return self.isLoadingNeeded(node); });
+                //console.log("# non loaded nodes", nonLoadedNodes.length, nonLoadedNodes);
+                
+                var loadTasks = self.createLoadTasks(nonLoadedNodes);
+                $.when.apply(window, loadTasks).done(function() {
+                    //ns.QuadTreeCache.finalizeLoading(nodes);
+                    
+                    $.when(self.postProcess(nodes)).then(function() {
+                        //self.isLocked = false;
+                        //console.debug("Workflow completed. Resolving deferred.");
+                        result.resolve(nodes);
+                    });
+                });
+            }).fail(function() {
+                result.fail();
+            });
+            
+            return result;
+        },
+
+        
+        
+        
+        createCountTask: function(node) {
+
+            var self = this;
+            var limit = self.maxItemsPerTileCount ? self.maxItemsPerTileCount + 1 : null;
+
+            var countFlow = this.createFlowForBounds(node.getBounds()).find().concept(this.concept).limit(limit);
+            var result = countFlow.count().pipe(function(itemCount) {
+                node.setMinItemCount(itemCount); 
+                
+                // If the value is 0, also mark the node as loaded
+                if(itemCount === 0) {
+                    //self.initNode(node);
+                    node.isLoaded = true;
+                }
+            });
+            
+            return result;
+        },
+    
+        /**
+         * If either the minimum number of items in the node is above the threshold or
+         * all children have been counted, then there is NO need for counting
+         * 
+         */
+        isCountingNeeded: function(node) {
+            //console.log("Node To Count:", node, node.isCountComplete());            
+            return !(this.isTooManyGeoms(node) || node.isCountComplete());
+        },
+    
+    
+
+        /**
+         * Loading is needed if NONE of the following criteria applies:
+         * . node was already loaded
+         * . there are no items in the node
+         * . there are to many items in the node
+         * 
+         */
+        isLoadingNeeded: function(node) {
+    
+            //(node.data && node.data.isLoaded)
+            var noLoadingNeeded = node.isLoaded || (node.isCountComplete() && node.infMinItemCount === 0) || this.isTooManyGeoms(node);
+            
+            return !noLoadingNeeded;
+        },
+    
+    
+        isTooManyGeoms: function(node) {    
+            //console.log("FFS", node.infMinItemCount, node.getMinItemCount());
+            return node.infMinItemCount >= this.maxItemsPerTileCount;
+        },
+        
+    
+    
+        createCountTasks: function(nodes) {
+            var self = this;
+            var result = _(nodes).chain()
+                .map(function(node) {
+                    return self.createCountTask(node);
+                })
+                .compact() // Remove null entries
+                .value();
+            
+            /*
+            var result = [];
+            $.each(nodes, function(i, node) {
+                var task = self.createCountTask(node);
+                if(task) {
+                    result.push(task);
+                }
+            });
+            */
+    
+            return result;
+        },
+    
+//    
+//        /**
+//         * 
+//         * @param node
+//         * @returns
+//         */
+//        createTaskGeomToFeatureCount: function(node) {
+//            var result = this.backend.fetchGeomToFeatureCount().pipe(function(geomToFeatureCount) {
+//                node.data.geomToFeatureCount = geomToFeatureCount;
+//            });
+//            
+//            return result;
+//        },
+    
+    
+        /**
+         * Sets the node's state to loaded, attaches the geomToFeatureCount to it.
+         * 
+         * @param node
+         * @param geomToFeatureCount
+         */
+        loadTaskAction: function(node, docs) {
+            //console.log('Data for ' + node.getBounds() + ': ', docs);
+            node.data.docs = docs;
+            node.isLoaded = true;            
+        },
+    
+        createLoadTasks: function(nodes) {
+            var self = this;
+            var result = [];
+                        
+            //$.each(nodes, function(index, node) {
+            _.each(nodes, function(node) {
+                //console.debug("Inferred minimum item count: ", node.infMinItemCount);
+    
+                //if(node.data.absoluteGeomToFeatureCount)
+
+                var loadFlow = self.createFlowForBounds(node.getBounds()).find().concept(this.concept);
+                var loadTask = loadFlow.asList().pipe(function(docs) {
+                    self.loadTaskAction(node, docs);
+                });
+    
+                result.push(loadTask);
+            });
+            
+            return result;
+        },
+        
+            
+        /**
+         * TODO Finishing this method at some point to merge nodes together could be useful
+         * 
+         */
+        finalizeLoading: function(nodes) {
+            // Restructure all nodes that have been completely loaded, 
+            var parents = [];
+            
+            $.each(nodes, function(index, node) {
+                if(node.parent) {
+                    parents.push(node.parent);
+                }
+            });
+    
+            parents = _.uniq(parents);
+            
+            var change = false;         
+            do {
+                change = false;
+                for(var i in parents) {
+                    var p = parents[i];
+    
+                    var children = p.children;
+    
+                    var didMerge = ns.tryMergeNode(p);
+                    if(!didMerge) {
+                        continue;
+                    }
+                    
+                    change = true;
+    
+                    $.each(children, function(i, child) {
+                        var indexOf = _.indexOf(nodes, child);
+                        if(indexOf >= 0) {
+                            nodes[indexOf] = undefined;
+                        }
+                    });
+                    
+                    nodes.push(p);
+                    
+                    if(p.parent) {
+                        parents.push(p.parent);
+                    }
+                    
+                    break;
+                }
+            } while(change == true);
+            
+            _.compact(nodes);
+            
+            /*
+            $.each(nodes, function(i, node) {
+                node.isLoaded = true;
+            });
+            */
+            
+            //console.log("All done");
+            //self._setNodes(nodes, bounds);
+            //callback.success(nodes, bounds);      
+        },
+
+    
+        /**
+         * TODO Make sure we never need this method again.
+         * 
+         * Extracts labels and geometries from the databanks that were fetched for the nodes 
+         * 
+         */
+        postProcess: function(nodes) {
+            
+            return;
+            
+            var self = this;
+
+            var deferred = $.Deferred();
+            
+            /*
+            deferred.resolve({});
+
+            return deferred;
+            */
+            
+            
+            // Here we create an rdfQuery databank object with the information we gathered
+            
+            var subTasks = _.map(nodes, function(node) {
+    
+                if(!node.data || !node.data.geomToFeatureCount) {
+                    return;
+                }
+                
+    
+                
+                node.data.graph = $.rdf.databank();
+                
+                var uriStrs = _.keys(node.data.geomToFeatureCount);
+                var uris = _.map(uriStrs, function(uriStr) { return sparql.Node.uri(uriStr); });
+                
+                
+                //console.debug("Post processing uris", uris);
+
+                /*
+                var p1 = self.labelFetcher.fetch(uriStrs).pipe(function(data) {
+                    //console.log("Labels", data);
+                    node.data.geomToLabel = data;
+                });
+                */
+                
+
+                var p2 = self.geomPosFetcher.fetch(uris).pipe(function(data) {
+                    //console.log("Positions", data);
+                    node.data.geomToPoint = data;
+                });
+    
+                var databank = node.data.graph;
+                _.each(node.data.geomToFeatureCount, function(count, geom) {
+                    var s = sparql.Node.uri(geom);
+                    var o = sparql.Node.typedLit(count, xsd.integer);
+                    
+                    var tripleStr = "" + s + " " + appvocab.featureCount + " " + o;
+                    var triple = $.rdf.triple(tripleStr);
+                    
+                    databank.add(triple);                   
+                });
+
+                
+                var subTask = $.when(p2).then(function() {
+                    
+                    var data = node.data;
+                    var geomToLabel = data.geomToLabel;
+                    var databank = data.graph;
+                    
+                    _.each(geomToLabel, function(label, uri) {
+                        var s = sparql.Node.uri(uri);
+                        var o = sparql.Node.plainLit(label.value, label.language);
+                        
+                        var tripleStr = "" + s + " " + rdfs.label + " " + o;
+                        var triple = $.rdf.triple(tripleStr);
+                        
+                        databank.add(triple);
+                    });
+    
+                    var geomToPoint = data.geomToPoint;
+                    
+                    _.each(geomToPoint, function(point, uri) {
+                        var s = sparql.Node.uri(uri);
+                        var oLon = sparql.Node.typedLit(point.x, xsd.xdouble.value);
+                        var oLat = sparql.Node.typedLit(point.y, xsd.xdouble.value);
+                        
+                        var lonTriple = "" + s + " " + geo.lon + " " + oLon; 
+                        var latTriple = "" + s + " " + geo.lat + " " + oLat;
+                        
+                        //alert(lonTriple + " ---- " + latTriple);
+                        
+                        databank.add(lonTriple);
+                        databank.add(latTriple);
+                    });
+                });
+                
+                return subTask;         
+            });
+            
+            $.when.apply(window, subTasks).then(function() {
+                deferred.resolve();
+            });
+            
+            return deferred.promise();
+        }
+
+
+    
+    });
+
+    /**
+     * 
+     * 
+     * @param parent
+     * @returns {Boolean} true if the node was merged, false otherwise
+     */
+    ns.tryMergeNode = function(parent) {
+        return false;
+        
+        if(!parent) {
+            return;
+        }
+    
+        // If all children are loaded, and the total number
+        var itemCount = 0;
+        for(var i in parent.children) {
+            var child = parent.children[i];
+            
+            if(!child.isLoaded) {
+                return false;
+            }
+            
+            itemCount += child.itemCount;
+        }
+        
+        if(itemCount >= self.maxItemsPerTileCount) {
+            return false;
+        }
+        
+        parent.isLoaded = true;
+    
+        for(var i in parent.children) {
+            var child = parent.children[i];
+            
+            mergeMapsInPlace(parent.idToPos, child.idToPos);
+            
+            mergeMapsInPlace(parent.data.idToLabels, child.data.idToLabels);
+            mergeMapsInPlace(parent.data.idToTypes, child.data.idToTypes);
+            
+            //parent.data.ids.addAll(child.data.ids);
+            //parent.data.addAll(child.data);
+        }
+        
+        
+        // Unlink children
+        parent.children = null;
+        
+        console.log("Merged a node");
+        
+        return true;
+    };
+
+
+    
+    
+})(jQuery);(function() {
+    
+    var ns = Jassa.geo;
+    
+//    ns.createMapDiff = function(a, b) {
+//
+//        var aIds = _(a).keys();
+//        var bIds = _(b).keys();
+//        
+//        var addedIds = _(aIds).difference(bIds);
+//        var removedIds = _(bIds).difference(aIds);
+//
+//        var added = _(a).pick(addedIds);
+//        var remoed = _(b).pick(removedIds);
+//
+//        var result = {
+//                added: added,
+//                removed: removed
+//        };
+//
+//        return result;
+//    };
+
+    
+    ns.ViewStateUtils = {
+        createStateHash: function(sparqlService, geoMap, concept) {
+            var serviceHash = sparqlService.getStateHash();         
+            var geoHash = JSON.stringify(geoMap); //geoMap.getElementFactory().createElement().toString();
+            var conceptHash = '' + concept;
+
+            var result = serviceHash + geoHash + conceptHash;
+            return result;
+        },
+
+        // TODO This function is generig; move to a better location 
+        diffObjects: function(newObjs, oldObjs, idFn) {
+
+            //function(node) {return node.getNodeId(); }
+            var newIdToObj = _(newObjs).indexBy(idFn);
+            var oldIdToObj = _(oldObjs).indexBy(idFn);
+            
+            var newIds = _(newIdToObj).keys();
+            var oldIds = _(oldIdToObj).keys();
+            
+            var retainedIds = _(newIds).intersection(oldIds);
+            
+            var result = {
+                retained:  _(oldIdToObj).chain().pick(retainedIds).values().value(),
+                added: _(newIdToObj).chain().omit(oldIds).values().value(),
+                removed: _(oldIdToObj).chain().omit(newIds).values().value()
+            };
+
+            return result;
+        },
+        
+        diffViewStates: function(newViewState, oldViewState) {
+            //oldViewState = oldViewState || new ns.ViewState(); 
+
+            var newStateHash = newViewState.getStateHash();
+            var oldStateHash = oldViewState ? oldViewState.getStateHash() : '';
+            
+            var newNodes = newViewState.getNodes();
+            var oldNodes = oldViewState ? oldViewState.getNodes() : [];
+            
+            
+            var result;
+            
+            // If the hashes do not match, replace the whole old state
+            if(newStateHash != oldStateHash) {
+                result = {
+                    retained: [],
+                    added: newNodes,
+                    removed: oldNodes
+                }
+            }
+            else {
+                var idFn = function(node) {
+                    var result = node.getId();
+                    //console.log('NodeId', result);
+                    return result;
+                };
+                
+                result = this.diffObjects(newNodes, oldNodes, idFn);
+            }
+            return result;
+        }        
+    };
+    
+    /**
+     * TODO/Note This data should be (also) part of the model I suppose
+     */
+    ns.ViewState = Class.create({
+        initialize: function(sparqlService, geoMap, concept, bounds, nodes) {
+            this.sparqlService = sparqlService;
+            //this.concept = concept;
+            this.geoMap = geoMap;
+            this.concept = concept;
+            this.bounds = bounds; //null; //new qt.Bounds(-9999, -9998, -9999, -9998);
+            this.nodes = nodes;
+        },
+
+        getStateHash: function() {
+            return ns.ViewStateUtils.createStateHash(this.sparqlService, this.geoMap, this.concept);  
+        },
+
+        // TODO Maybe the view state should remain agnostic of service and concept, and
+        // instead only reveal the nodes that are part of it
+        getSparqlService: function() {
+             return this.sparqlService;
+        },
+        
+        getGeoMap: function() {
+            return this.geoMap;
+        },
+//        getConcept: function() {
+//            return this.concept;
+//        },
+        
+        /**
+         * Returns the quad tree nodes intersecting with the viewport
+         */
+        getNodes: function() {
+            return this.nodes;
+        },
+        
+        getBounds: function() {
+            return this.bounds;
+        }
+        
+        //getVisibleG
+    });
+
+    
+    /**
+     * TODO Maybe replace sparqlService with sparqlServiceFactory?
+     * But then the object would have to deal with services with different state.
+     * Or we have a QuadTreeProvider/Factory, that creates QuadTreeObjects as needed,
+     * depending on the combined state of the service and concept.
+     * - Or we have a factory, that creates a MapCtrl as needed for each given service.
+     * I guess the last approach is good enough.
+     * 
+     * 
+     * Hm, rather I would prefer if some 'template' object was returned,
+     * that could be instantiated with a service.
+     * 
+     * mapCtrl.foo(geoMapFactory, conceptFactory).createService(sparqlService);
+     * or service.execute(mapping?)
+     * 
+     */
+    ns.ViewStateFetcher = Class.create({
+        //initialize: function(sparqlService, geoMapFactory, conceptFactory) {
+        initialize: function() {
+//            this.sparqlService = sparqlService;
+//            this.geoMapFactory = geoMapFactory;
+//            this.conceptFactory = conceptFactory;
+
+            //this.conceptToService = {};
+            this.hashToCache = {};
+        },
+        
+        //fetchViewState: function(bounds) {
+        fetchViewState: function(sparqlService, geoMapFactory, concept, bounds) {
+//            var sparqlService = this.sparqlService;
+//            var geoMapFactory = this.geoMapFactory;
+//            var conceptFactory = this.conceptFactory;
+            
+            
+            //var concept = conceptFactory.createConcept();
+            
+            // TODO Make this configurable
+            var quadTreeConfig = {
+                    maxItemsPerTileCount: 1000,//150,
+                    maxGlobalItemCount: 5000
+            };
+
+            var geoMap = geoMapFactory.createMapForGlobal();
+            // TODO This should be a concept, I assume
+            //var geoConcept = geoMap.createConcept();
+            
+            var hash = ns.ViewStateUtils.createStateHash(sparqlService, geoMap, concept);
+            
+
+            // TODO Combine the concept with the geoConcept...
+            
+            //var serviceHash = sparqlService.getStateHash();         
+            //var geoConceptHash = geoMap.getElementFactory().createElement().toString();
+
+            
+            //console.log("[DEBUG] Query hash (including facets): " + hash);
+            
+            var cacheEntry = this.hashToCache[hash];
+            if(!cacheEntry) {
+                cacheEntry = new ns.QuadTreeCache(sparqlService, geoMapFactory, concept, null, quadTreeConfig);
+                this.hashToCache[hash] = cacheEntry;
+            }
+            
+            var nodePromise = cacheEntry.fetchData(bounds);
+            
+            // Create a new view state object
+            var result = nodePromise.pipe(function(nodes) {
+                var r = new ns.ViewState(sparqlService, geoMap, concept, bounds, nodes);
+                return r;
+            });
+            
+            return result;
+        }
+    });
+    
+    
     
 })();
