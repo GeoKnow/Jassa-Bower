@@ -15480,6 +15480,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var service = Jassa.service;
 	var rdf = Jassa.rdf;
+    var sponate = Jassa.sponate;
 	
 	var ns = Jassa.facete;
 	
