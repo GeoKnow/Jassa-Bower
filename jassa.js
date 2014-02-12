@@ -7253,6 +7253,7 @@ module["exports"] = Jassa;
 	
 })();(function() {
 
+    var rdf = Jassa.rdf;
 	var sparql = Jassa.sparql;
 	var util = Jassa.util;
 
