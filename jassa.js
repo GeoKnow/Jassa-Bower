@@ -9784,8 +9784,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 
         createDefaultLabelMap: function(prefLangs, prefLabelPropertyUris, s, p, o) {
 
-            prefLangs = prefLangs || this.defaultPrefLangs;
-            prefLabelPropertyUris = prefLabelPropertyUris || this.prefLabelPropertyUris;
+            prefLangs = prefLangs || ns.SponateUtils.defaultPrefLangs;
+            prefLabelPropertyUris = prefLabelPropertyUris || ns.SponateUtils.prefLabelPropertyUris;
             s = s || 's';
             p = p || 'p';
             o = o || 'o';
