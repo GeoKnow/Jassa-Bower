@@ -9011,7 +9011,7 @@ module["exports"] = Jassa;
 	                   elementB = new sparql.ElementOptional(elementB);
 	                }
 	               
-	                var innerElement = new sparql.ElementGroup([elementA, elementB]);
+	                innerElement = new sparql.ElementGroup([elementA, elementB]);
 	               
 	               /*
 	                 var efa = new sparql.ElementFactoryConst(conceptElement);
@@ -9058,7 +9058,7 @@ module["exports"] = Jassa;
 				//orderBys.push.apply(orderBys, sortConditions);
 
 				
-				innerElement = subQuery;
+				innerElement = subElement;
 			}
 
             
