@@ -16400,6 +16400,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 
     var util = Jassa.util;
     var rdf = Jassa.rdf;
+    
+    // TODO Get rid of this dependency :/
+    var sponate = Jassa.sponate;
+    
     var ns = Jassa.facete;
     
     ns.FacetConfig = Class.create({
@@ -16550,6 +16554,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             createFacetService: function(sparqlService, facetConfig, labelMap) {
                 var facetConceptGenerator = this.createFacetConceptGenerator(facetConfig);
 
+                labelMap = labelMap || new sponate.SponateUtils.createDefaultLabelMap();
+                
                 var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap);
 
                 return facetService;
