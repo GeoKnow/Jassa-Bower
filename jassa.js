@@ -12740,6 +12740,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 (function() {
 	
 	var vocab = Jassa.vocab;
+	var sparql = Jassa.sparql;
 	
 	var ns = Jassa.facete;
 
