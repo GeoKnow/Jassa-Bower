@@ -6310,76 +6310,90 @@ module["exports"] = Jassa;
     	}
 	});
 	
+	
+	ns.QueryExecutionPaginate = Class.create(ns.QueryExecution, {
+	    initialize: function(sparqlService, query, pageSize) {
+	        this.sparqlService = sparqlService;
+	        this.query = query;
+	        this.pageSize = pageSize || 1000;
+	    },
+	    
+        executeSelectRec: function(queryPaginator, prevResult, deferred) {
+            var query = queryPaginator.next();
+            if(!query) {
+                deferred.resolve(prevResult);
+                return;
+            }
+            
+            var self = this;
+            //console.log("Backend: ", this.backend);
+            
+            this.sparqlService.createQueryExecution(query).execSelect().done(function(rs) {
+    
+                if(!rs) {
+                    throw "Null result set for query: " + query;
+                }
+
+                                
+                // If result set size equals pageSize, request more data.           
+                var result;
+                if(!prevResult) {
+                    result = rs;
+                } else {
+                    // Extract the arrays that backs the result set ...
+                    var oldArr = prevResult.getIterator().getArray();
+                    var newArr = rs.getIterator().getArray();
+                    
+                    // ... and concatenate them
+                    var nextArr = oldArr.concat(newArr);
+
+                    var itBinding = new util.IteratorArray(nextArr);
+                    result = new ns.ResultSetArrayIteratorBinding(itBinding);
+                }
+                
+                var resultSetSize = result.getIterator().getArray().length;
+                //console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);
+                if(resultSetSize < self.pageSize) {
+                    deferred.resolve(result);
+                } else {                
+                    return self.executeSelectRec(paginator, result, deferred);
+                }
+                
+            }).fail(function() {
+                deferred.fail();
+            });
+        },
+        
+        execSelect: function(query) {
+            var clone = query.clone();
+            var paginator = new ns.Paginator(clone, this.pageSize);
+            
+            var deferred = $.Deferred();
+            
+            this.executeSelectRec(paginator, null, deferred);
+            
+            return deferred.promise();
+        }
+	});
+	
+
 	ns.SparqlServicePaginate = Class.create(ns.SparqlService, {
 	    initialize: function(sparqlService, pageSize) {
     		this.sparqlService = sparqlService;
-    		this.pageSize = pageSize || 1000;
+    		this.pageSize = pageSize;
 	    },
 	
+	    getServiceId: function() {
+	        return this.sparqlService.getServiceId();
+	    },
+	    
 		getStateHash: function() {
 			return this.sparqlService.getStateHash();
-		},	
+		},
 	
-	/*
-	ns.SparqlServicePaginator.prototype.executeConstructRec = function(paginator, prevResult, deferred) {
-		
-	};
-	*/
-	
-    	executeSelectRec: function(queryPaginator, prevResult, deferred) {
-    		var query = queryPaginator.next();
-    		if(!query) {
-    			deferred.resolve(prevResult);
-    			return;
-    		}
-    		
-    		var self = this;
-    		
-    		
-    		//console.log("Backend: ", this.backend);
-    		
-    		this.sparqlService.execSelect(query).done(function(rs) {
-    
-    			if(!jsonRs) {
-    				throw "Null result set for query: " + query;
-    			}
-    			
-    			// If result set size equals pageSize, request more data.			
-    			var result;
-    			if(!prevResult) {
-    				result = jsonRs;
-    			} else {
-    				prevResult.results.bindings = prevResult.results.bindings.concat(jsonRs.results.bindings);
-    				result = prevResult;
-    			}
-    			
-    			var resultSetSize = jsonRs.results.bindings.length;
-    			//console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);
-    			if(resultSetSize < self.pageSize) {
-    				deferred.resolve(result);
-    			} else {				
-    				return self.executeSelectRec(paginator, result, deferred);
-    			}
-    			
-    		}).fail(function() {
-    			deferred.fail();
-    		});
-    	},
-    	
-    	execSelect: function(query) {
-    		var clone = query.clone();
-    		var paginator = new ns.Paginator(clone, this.pageSize);
-    		
-    		var deferred = $.Deferred();
-    		
-    		this.executeSelectRec(paginator, null, deferred);
-    		
-    		return deferred.promise();
-    	},
-    	
-    	execConstruct: function(query) {
-    		console.error("Not implemented yet");
-    	}
+		createQueryExecution: function(query) {
+		    var result = new ns.QueryExecutionPaginate(this.sparqlService, query, this.pageSize);
+		}
     });
 
 })();
@@ -6586,7 +6600,7 @@ module["exports"] = Jassa;
                  var itBinding = new util.IteratorArray(arr);
                  var r = new ns.ResultSetArrayIteratorBinding(itBinding);
                  return r;
-             }).promise();
+             });//.promise();
              
              return result;
          } 
