@@ -6514,7 +6514,10 @@ module["exports"] = Jassa;
     		this.pageSize = pageSize;
 	    },
 	
-	
+	    getPageSize: function() {
+	        return this.pageSize;
+	    },
+
 	    // Returns the next limit and offset
 	    next: function() {
     		this.query.offset = this.nextOffset === 0 ? null : this.nextOffset;
@@ -6580,8 +6583,10 @@ module["exports"] = Jassa;
                 }
                 
                 var resultSetSize = result.getIterator().getArray().length;
-                //console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);
-                if(resultSetSize < self.pageSize) {
+                //console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);                
+                var pageSize = queryPaginator.getPageSize();
+
+                if(resultSetSize === 0 || resultSetSize < pageSize) {
                     deferred.resolve(result);
                 } else {                
                     return self.executeSelectRec(queryPaginator, result, deferred);
