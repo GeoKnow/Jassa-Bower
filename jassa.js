@@ -6582,7 +6582,7 @@ module["exports"] = Jassa;
                     result = new ns.ResultSetArrayIteratorBinding(itBinding);
                 }
                 
-                var resultSetSize = result.getIterator().getArray().length;
+                var resultSetSize = rs.getIterator().getArray().length;
                 //console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);                
                 var pageSize = queryPaginator.getPageSize();
 
