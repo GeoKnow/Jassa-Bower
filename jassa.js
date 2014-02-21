@@ -6310,10 +6310,10 @@ module["exports"] = Jassa;
     	}
 	});
 	
-	ns.SparqlServicePaginator = Class.create(ns.SparqlService, {
+	ns.SparqlServicePaginate = Class.create(ns.SparqlService, {
 	    initialize: function(sparqlService, pageSize) {
     		this.sparqlService = sparqlService;
-    		this.pageSize = pageSize ? pageSize : 0;
+    		this.pageSize = pageSize || 1000;
 	    },
 	
 		getStateHash: function() {
