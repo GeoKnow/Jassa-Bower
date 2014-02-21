@@ -6492,6 +6492,8 @@ module["exports"] = Jassa;
 })(jQuery);
 (function() {
 
+    var util = Jassa.util;
+    
 	var ns = Jassa.service;	
 	
 
