@@ -6525,7 +6525,7 @@ module["exports"] = Jassa;
 	    initialize: function(sparqlService, query, pageSize) {
 	        this.sparqlService = sparqlService;
 	        this.query = query;
-	        this.pageSize = pageSize || 1000;
+	        this.pageSize = pageSize;
 	    },
 	    
         executeSelectRec: function(queryPaginator, prevResult, deferred) {
@@ -6574,9 +6574,10 @@ module["exports"] = Jassa;
             });
         },
         
-        execSelect: function(query) {
-            var clone = query.clone();
-            var paginator = new ns.Paginator(clone, this.pageSize);
+        execSelect: function() {
+            var clone = this.query.clone();
+            var pageSize = this.pageSize || ns.QueryExecutionPaginate.defaultPageSize;
+            var paginator = new ns.Paginator(clone, pageSize);
             
             var deferred = $.Deferred();
             
@@ -6585,7 +6586,8 @@ module["exports"] = Jassa;
             return deferred.promise();
         }
 	});
-	
+
+	ns.QueryExecutionPaginate.defaultPageSize = 1000;
 
 	ns.SparqlServicePaginate = Class.create(ns.SparqlService, {
 	    initialize: function(sparqlService, pageSize) {
