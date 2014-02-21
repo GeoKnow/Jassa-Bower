@@ -6577,7 +6577,7 @@ module["exports"] = Jassa;
         execSelect: function() {
             var clone = this.query.clone();
             var pageSize = this.pageSize || ns.QueryExecutionPaginate.defaultPageSize;
-            var paginator = new ns.Paginator(clone, pageSize);
+            var paginator = new ns.QueryPaginator(clone, pageSize);
             
             var deferred = $.Deferred();
             
