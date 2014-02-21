@@ -6582,7 +6582,7 @@ module["exports"] = Jassa;
                 if(resultSetSize < self.pageSize) {
                     deferred.resolve(result);
                 } else {                
-                    return self.executeSelectRec(paginator, result, deferred);
+                    return self.executeSelectRec(queryPaginator, result, deferred);
                 }
                 
             }).fail(function() {
