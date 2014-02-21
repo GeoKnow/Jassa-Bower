@@ -4625,6 +4625,22 @@ module["exports"] = Jassa;
 			return this.orderBy;
 		},
 		
+		getLimit: function() {
+		    return this.limit;
+		},
+		
+		getOffset: function() {
+		    return this.offset;
+		},
+		
+		setLimit: function(limit) {
+		    this.limit = limit;
+		},
+		
+		setOffset: function(offset) {
+		    this.offset = offset;
+		},
+		
 		toStringOrderBy: function() {
 			var result = (this.orderBy && this.orderBy.length > 0)
 				? "Order By " + this.orderBy.join(" ") + " "
