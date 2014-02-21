@@ -6603,6 +6603,7 @@ module["exports"] = Jassa;
 	
 		createQueryExecution: function(query) {
 		    var result = new ns.QueryExecutionPaginate(this.sparqlService, query, this.pageSize);
+		    return result;
 		}
     });
 
