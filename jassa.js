@@ -14566,7 +14566,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             
     //debugger;
-            console.log("Created count query:" + result + " for element " + element);
+            //console.log("Created count query:" + result + " for element " + element);
             return result;
         },
         
