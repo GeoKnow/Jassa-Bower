@@ -12219,8 +12219,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var sparql = Jassa.sparql;
 	
-	var ns = Jassa.facete;
 	var rdf = Jassa.rdf;
+
+	var ns = Jassa.facete;
 
 	
 	/**
@@ -12317,8 +12318,18 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 			return result;
 		},
-
+		
+		
 		createQueryCount: function(concept, outputVar) {
+		    var result = ns.QueryUtils.createQueryCount(concept.getElements(), null, concept.getVar(), outputVar, null, true);
+		    
+		    //createQueryCount: function(elements, limit, variable, outputVar, groupVars, useDistinct, options) {
+		    
+		    //var result = sparql.QueryE
+		    return result;
+		},
+
+		createQueryCountDoesNotWorkWithVirtuoso: function(concept, outputVar) {
 			var result = new sparql.Query();
 			
 			result.getProjectVars().add(outputVar, new sparql.E_Count(new sparql.ExprVar(concept.getVar()), true));
