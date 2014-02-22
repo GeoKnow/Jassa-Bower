@@ -6629,7 +6629,7 @@ module["exports"] = Jassa;
             
             var deferred = $.Deferred();
             
-            this.executeSelectRec(paginator, null, deferred, limit);
+            this.executeSelectRec(paginator, null, deferred);
             
             return deferred.promise();
         }
