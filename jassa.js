@@ -1263,15 +1263,17 @@ module["exports"] = Jassa;
          * 
          */
         hashCode: function(obj) {
-//            if(obj == null) {
-//                return '-1';
-//            }            
+
             var result = ns.JsonUtils.stringifyCyclic(obj, function(key, val) {
                 if(_(val).isObject()) {
+
+                    var hashFnName = _(ns.ObjectUtils.defaultHashFnNames).find(function(name) {
+                        return _(val[name]).isFunction();
+                    });
                     
-                    var fnHashCode = val.hashCode;
-                    
-                    if(_(fnHashCode).isFunction()) {
+                    var fnHashCode = val[hashFnName];
+
+                    if(fnHashCode) {
                         val = fnHashCode.apply(val);
                     }
                     
@@ -1283,6 +1285,7 @@ module["exports"] = Jassa;
         }
     };
     
+    ns.ObjectUtils.defaultHashFnNames = ['hashCode']
 })();
 (function() {
 	
@@ -5965,7 +5968,11 @@ module["exports"] = Jassa;
 			
 			return result;
 		},
-			
+		
+		hashCode: function() {
+		   return this.getServiceId() + '/' + getStateHash();
+		},
+		
 		setDefaultGraphs: function(uriStrs) {
 			this.defaultGraphUris = uriStrs ? uriStrs : [];
 		},
@@ -6029,6 +6036,10 @@ module["exports"] = Jassa;
 	        return this.qef.getStateHash();
 	    },
 	    
+	    hashCode: function() {
+	        return 'cached:' + this.qef.hashCode();
+	    },
+
 	    createQueryExecutionStr: function(queryStr) {
 	        var serviceId = this.qef.getServiceId();
 	        var stateHash = this.qef.getStateHash();
@@ -6628,7 +6639,11 @@ module["exports"] = Jassa;
 		getStateHash: function() {
 			return this.sparqlService.getStateHash();
 		},
-	
+
+		hashCode: function() {
+            return 'paginate:' + this.sparqlService.hashCode();
+        },
+
 		createQueryExecution: function(query) {
 		    var result = new ns.QueryExecutionPaginate(this.sparqlService, query, this.pageSize);
 		    return result;
