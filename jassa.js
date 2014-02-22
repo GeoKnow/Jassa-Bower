@@ -5970,7 +5970,7 @@ module["exports"] = Jassa;
 		},
 		
 		hashCode: function() {
-		   return this.getServiceId() + '/' + getStateHash();
+		   return this.getServiceId() + '/' + this.getStateHash();
 		},
 		
 		setDefaultGraphs: function(uriStrs) {
