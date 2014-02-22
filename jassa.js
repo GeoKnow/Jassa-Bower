@@ -18586,19 +18586,19 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         //fetchViewState: function(bounds) {
-        fetchViewState: function(sparqlService, geoMapFactory, concept, bounds) {
+        fetchViewState: function(sparqlService, geoMapFactory, concept, bounds, quadTreeConfig) {
 //            var sparqlService = this.sparqlService;
 //            var geoMapFactory = this.geoMapFactory;
 //            var conceptFactory = this.conceptFactory;
+            quadTreeConfig = quadTreeConfig || {};
             
+            _(quadTreeConfig).defaults(ns.ViewStateFetcher.defaultQuadTreeConfig);
+
+            //quadTreeConfig =
             
             //var concept = conceptFactory.createConcept();
             
             // TODO Make this configurable
-            var quadTreeConfig = {
-                    maxItemsPerTileCount: 1000,//150,
-                    maxGlobalItemCount: 5000
-            };
 
             var geoMap = geoMapFactory.createMapForGlobal();
             // TODO This should be a concept, I assume
@@ -18633,6 +18633,10 @@ or simply: Angular + Magic Sparql = Angular Marql
         }
     });
     
+    ns.ViewStateFetcher.defaultQuadTreeConfig = {
+        maxItemsPerTileCount: 1000,
+        maxGlobalItemCount: 5000
+    };
     
     
 })();
