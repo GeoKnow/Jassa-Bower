@@ -6522,8 +6522,8 @@ module["exports"] = Jassa;
     		var queryOffset = query.getOffset();
             var queryLimit = query.getLimit();
 
-            this.nextOffset = queryOffset ? queryOffset : 0;
-    		this.nextRemaining = (queryLimit || queryLimit === 0) ? queryLimit : null;
+            this.nextOffset = queryOffset || 0;
+    		this.nextRemaining = queryLimit == null ? null : queryLimit;
     		
     		this.pageSize = pageSize;
 	    },
@@ -6534,10 +6534,11 @@ module["exports"] = Jassa;
 
 	    // Returns the next limit and offset
 	    next: function() {
-    		this.query.offset = this.nextOffset === 0 ? null : this.nextOffset;
+	        var offset = this.nextOffset === 0 ? null : this.nextOffset;
+    		this.query.setOffset(offset);
     
     		if(this.nextRemaining == null) {
-    			this.query.limit = this.pageSize;
+    			this.query.setLimit(this.pageSize);
     			this.nextOffset += this.pageSize;
     		} else {
     			var limit = Math.min(this.pageSize, this.nextRemaining);
@@ -6548,7 +6549,7 @@ module["exports"] = Jassa;
     				return null;
     			}
     			
-    			this.query.limit = limit;
+    			this.query.setLimit(limit);
     		}
     		
     		return this.query;
@@ -6565,6 +6566,7 @@ module["exports"] = Jassa;
 	    
         executeSelectRec: function(queryPaginator, prevResult, deferred) {
             var query = queryPaginator.next();
+            console.log('Query Pagination: ' + query);
             if(!query) {
                 deferred.resolve(prevResult);
                 return;
@@ -6572,12 +6574,14 @@ module["exports"] = Jassa;
             
             var self = this;
             //console.log("Backend: ", this.backend);
+            //var totalLimit = this.query.getLimit();
             
             this.sparqlService.createQueryExecution(query).execSelect().done(function(rs) {
     
                 if(!rs) {
                     throw "Null result set for query: " + query;
                 }
+
 
                                 
                 // If result set size equals pageSize, request more data.           
@@ -6589,18 +6593,25 @@ module["exports"] = Jassa;
                     var oldArr = prevResult.getIterator().getArray();
                     var newArr = rs.getIterator().getArray();
                     
+                    
                     // ... and concatenate them
                     var nextArr = oldArr.concat(newArr);
 
+//                    if(totalLimit) {
+//                        nextArr.splice(0, totalLimit);
+//                    }
+                    
                     var itBinding = new util.IteratorArray(nextArr);
                     result = new ns.ResultSetArrayIteratorBinding(itBinding);
                 }
                 
-                var resultSetSize = rs.getIterator().getArray().length;
-                //console.debug("ResultSetSize, PageSize: ", resultSetSize, self.pageSize);                
+                var rsSize = rs.getIterator().getArray().length;
+                //console.debug("rsSize, PageSize: ", rsSize, self.pageSize);                
                 var pageSize = queryPaginator.getPageSize();
 
-                if(resultSetSize === 0 || resultSetSize < pageSize) {
+                // result size is empty or less than the pageSize or
+                // limit reached
+                if(rsSize === 0 || rsSize < pageSize) {
                     deferred.resolve(result);
                 } else {                
                     return self.executeSelectRec(queryPaginator, result, deferred);
@@ -6618,7 +6629,7 @@ module["exports"] = Jassa;
             
             var deferred = $.Deferred();
             
-            this.executeSelectRec(paginator, null, deferred);
+            this.executeSelectRec(paginator, null, deferred, limit);
             
             return deferred.promise();
         }
