@@ -12319,7 +12319,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return result;
 		},
 
-        createQueryCount: function(concept, outputVar) {
+		
+		createQueryCount: function(concept, outputVar) {
+		    var result = ns.QueryUtils.createQueryCount(concept.getElements(), null, concept.getVar(), outputVar, null, true);
+		    
+		    return result;
+		},
+		
+        createQueryCountNotAsConciseAsPossible: function(concept, outputVar) {
             /*
             var subQuery = new sparql.Query();
             
@@ -12340,16 +12347,6 @@ or simply: Angular + Magic Sparql = Angular Marql
  
             return result;          
         },
-
-		
-		createQueryCountDuplicateNesting: function(concept, outputVar) {
-		    var result = ns.QueryUtils.createQueryCount(concept.getElements(), null, concept.getVar(), outputVar, null, true);
-		    
-		    //createQueryCount: function(elements, limit, variable, outputVar, groupVars, useDistinct, options) {
-		    
-		    //var result = sparql.QueryE
-		    return result;
-		},
 
 		createQueryCountDoesNotWorkWithVirtuoso: function(concept, outputVar) {
 			var result = new sparql.Query();
