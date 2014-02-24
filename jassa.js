@@ -14559,14 +14559,14 @@ or simply: Angular + Magic Sparql = Angular Marql
             }
             
             //result.groupBy.push(outputVar);
-            /*
+
             if(groupVars) {
                 _(groupVars).each(function(groupVar) {
                     varQuery.getProjectVars().add(groupVar);
-                    varQuery.getGroupBy().push(new sparql.ExprVar(groupVar));
+                    //varQuery.getGroupBy().push(new sparql.ExprVar(groupVar));
                 });
             }
-            */
+
             
             varQuery.setDistinct(useDistinct);
             if(variable) {
