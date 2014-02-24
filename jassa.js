@@ -12795,6 +12795,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 })();
 (function() {
 	
+    var util = Jassa.util;
+    
 	var ns = Jassa.facete;
 	
 	/**
@@ -12805,18 +12807,22 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 */
 	ns.ConstraintSpec = Class.create({
 		getName: function() {
+            console.log('[ERROR] Override me');		    
             throw 'Override me';
 		},
 		
 		getDeclaredPaths: function() {
+		    console.log('[ERROR] Override me');
             throw 'Override me';
 		},
 		
 		equals: function() {
+	          console.log('[ERROR] Override me');
             throw 'Override me';
 		},
 		
 		hashCode: function() {
+	        console.log('[ERROR] Override me');
 		    throw 'Override me';
 		}
 	});
@@ -12876,6 +12882,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 		    
 		    var r = a && b &&c;
 		    return r;
+		},
+		
+		hashCode: function() {
+		    var result = util.ObjectUtils.hashCode(this, true);
+		    return result;
 		}
 	});
 	
@@ -16304,7 +16315,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var facetConceptItems = this.facetConceptGenerator.createConceptFacetValues(path, isInverse, properties, isNegated);
 			
 
-			var outputVar = rdf.NodeFactory.createVar("_c_");
+			var outputVar = rdf.NodeFactory.createVar('_c_');
 			
 						
             // Initialize the result
