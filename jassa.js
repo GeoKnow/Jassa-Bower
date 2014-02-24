@@ -1262,13 +1262,13 @@ module["exports"] = Jassa;
          * Recursively iterate the object tree and use a .hashCode function if available
          * 
          */
-        hashCode: function(obj) {
+        hashCode: function(obj, skipOnce) {
 
             var result = ns.JsonUtils.stringifyCyclic(obj, function(key, val) {
                 
                 var r = null;
 
-                if(_(val).isObject()) {
+                if(!skipOnce && _(val).isObject()) {
 
                     var hashFnName = _(ns.ObjectUtils.defaultHashFnNames).find(function(name) {
                         return _(val[name]).isFunction();
@@ -1284,6 +1284,10 @@ module["exports"] = Jassa;
 
                 } else {
                     r = val;
+                }
+                
+                if(skipOnce) {
+                    skipOnce = false;
                 }
                 
                 return r;
@@ -16702,7 +16706,7 @@ or simply: Angular + Magic Sparql = Angular Marql
          * 
          */
         hashCode: function() {
-            var result = util.JsonUtils.hashCode(this);
+            var result = util.ObjectUtils.hashCode(this, true);
             return result;
         }
         
@@ -16770,7 +16774,7 @@ or simply: Angular + Magic Sparql = Angular Marql
          * 
          */
         hashCode: function() {
-            var result = util.JsonUtils.hashCode(this);
+            var result = util.ObjectUtils.hashCode(this, true);
             return result;
         }
     });
