@@ -16702,7 +16702,7 @@ or simply: Angular + Magic Sparql = Angular Marql
          * 
          */
         hashCode: function() {
-            var result = util.JsonUtils.stringifyCyclic(this);
+            var result = util.JsonUtils.hashCode(this);
             return result;
         }
         
@@ -16770,7 +16770,7 @@ or simply: Angular + Magic Sparql = Angular Marql
          * 
          */
         hashCode: function() {
-            var result = util.JsonUtils.stringifyCyclic(this);
+            var result = util.JsonUtils.hashCode(this);
             return result;
         }
     });
