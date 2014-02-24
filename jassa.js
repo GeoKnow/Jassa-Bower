@@ -14576,6 +14576,14 @@ or simply: Angular + Magic Sparql = Angular Marql
             var elementVarQuery = new sparql.ElementSubQuery(varQuery);
             
             var result = new sparql.Query();
+            
+            if(groupVars) {
+                _(groupVars).each(function(groupVar) {
+                    result.getProjectVars().add(groupVar);
+                    //result.getGroupBy().push(new sparql.ExprVar(groupVar));
+                });
+            }
+            
             result.getProjectVars().add(outputVar, new sparql.E_Count());
             result.getElements().push(elementVarQuery);
             
