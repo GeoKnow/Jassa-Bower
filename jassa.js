@@ -1265,6 +1265,9 @@ module["exports"] = Jassa;
         hashCode: function(obj) {
 
             var result = ns.JsonUtils.stringifyCyclic(obj, function(key, val) {
+                
+                var r = null;
+
                 if(_(val).isObject()) {
 
                     var hashFnName = _(ns.ObjectUtils.defaultHashFnNames).find(function(name) {
@@ -1274,11 +1277,14 @@ module["exports"] = Jassa;
                     var fnHashCode = val[hashFnName];
 
                     if(fnHashCode) {
-                        val = fnHashCode.apply(val);
+                        r = fnHashCode.apply(val);
                     }
-                    
-                    return val;
+
+                } else {
+                    r = val;
                 }
+                
+                return r;
             });
             
             return result;
