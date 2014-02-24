@@ -12612,6 +12612,14 @@ or simply: Angular + Magic Sparql = Angular Marql
             this.excludeSelfConstraints = excludeSelfConstraints;
         },
         
+        setPath: function(path) {
+            this.path = path;
+        },
+        
+        getPath: function() {
+            return this.path;
+        },
+        
         createConcept: function() {
             var facetConfig = this.facetTreeConfig.getFacetConfig();
             
