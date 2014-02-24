@@ -18818,21 +18818,21 @@ or simply: Angular + Magic Sparql = Angular Marql
         wgs84GeoView: mapParser.parseMap({
             name: 'lonlat',
             template: [{
-                id: conceptWgs84.getVar(), //'?s',
+                id: ns.GeoConcepts.conceptWgs84.getVar(), //'?s',
                 lon: vx, // '?x',
                 lat: vy, // '?y'
                 wkt: function(b) { return 'POINT(' + b.get(vx).getLiteralValue() + ' ' + b.get(vy).getLiteralValue() + ')';}
             }],
-            from: conceptWgs84.getElement()
+            from: ns.GeoConcepts.conceptWgs84.getElement()
         }),
 
         ogcGeoView: mapParser.parseMap({
             name: 'lonlat',
             template: [{
-                id: conceptGeoVocab.getVar(),
+                id: ns.GeoConcepts.conceptGeoVocab.getVar(),
                 wkt: vw
             }],
-            from: conceptGeoVocab.getElement()
+            from: ns.GeoConcepts.conceptGeoVocab.getElement()
         })
     };
 
@@ -18842,12 +18842,12 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.GeoMapFactoryUtils = {
     
         wgs84MapFactory: new sponate.GeoMapFactory(
-                wgs84GeoView,
+                ns.GeoMapUtils.wgs84GeoView,
                 new ns.BBoxExprFactoryWgs84(vx, vy)
         ),
 
         ogcVirtMapFactory: new sponate.GeoMapFactory(
-                ogcGeoView,
+                ns.GeoMapUtils.ogcGeoView,
                 new ns.BBoxExprFactoryWkt(vw, intersectsFnName, geomFromTextFnName)
         )
     };
