@@ -1278,6 +1278,8 @@ module["exports"] = Jassa;
 
                     if(fnHashCode) {
                         r = fnHashCode.apply(val);
+                    } else {
+                        r = val;
                     }
 
                 } else {
