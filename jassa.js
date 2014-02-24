@@ -18796,6 +18796,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     var rdf = Jassa.rdf;
     var sparql = Jassa.sparql;
     var sponate = Jassa.sponate;
+    var facete = Jassa.facete;
     
     var ns = Jassa.geo;
 
