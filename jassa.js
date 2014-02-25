@@ -11870,9 +11870,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 
 	ns.bridgePromise = function(jqPromise, ngDeferred, ngScope, fn) {
-		jqPromise.done(function(data) {
+		jqPromise.done(function() {
 			
-			var d = fn ? fn(data) : data;
+			var d = fn ? fn(arguments) : argument;
 			ngDeferred.resolve(d);
 
 		    if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
@@ -12947,6 +12947,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	ns.ConstraintElementFactory = Class.create({
 		createElementsAndExprs: function(rootFacetNode, constraintSpec) {
+		    console.log('[ERROR] Override me');
 			throw "Override me";
 		}
 	});
@@ -18173,7 +18174,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     
             // Fetch the items
             var baseFlow = this.createFlowForGlobal().find().concept(this.concept);            
-            var result = baseFlow.asList().pipe(function(docs) {
+            var result = baseFlow.asList(true).pipe(function(docs) {
                 //console.log("Global fetching: ", geomToFeatureCount);
                 self.loadTaskAction(node, docs);
                 
@@ -18391,7 +18392,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                 //if(node.data.absoluteGeomToFeatureCount)
 
                 var loadFlow = self.createFlowForBounds(node.getBounds()).find().concept(this.concept);
-                var loadTask = loadFlow.asList().pipe(function(docs) {
+                var loadTask = loadFlow.asList(true).pipe(function(docs) {
                     self.loadTaskAction(node, docs);
                 });
     
