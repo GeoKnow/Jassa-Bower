@@ -16982,12 +16982,12 @@ or simply: Angular + Magic Sparql = Angular Marql
             },
             
             createFacetTreeTagger: function(pathToFilterString) {
-                var tableMod = new ns.FaceteTableMod(); 
-                tableMod.togglePath(new ns.Path());
+                //var tableMod = new ns.FaceteTableMod(); 
+                //tableMod.togglePath(new ns.Path());
                 
                 
                 var pathTagger = new ns.ItemTaggerManager();
-                pathTagger.getTaggerMap()['table'] = new ns.ItemTaggerTablePath(tableMod);
+                //pathTagger.getTaggerMap()['table'] = new ns.ItemTaggerTablePath(tableMod);
                 pathTagger.getTaggerMap()['filter'] = new ns.ItemTaggerFilterString(pathToFilterString);
                 var facetTreeTagger = new ns.FacetTreeTagger(pathTagger);
                 
