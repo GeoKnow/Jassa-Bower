@@ -1167,14 +1167,29 @@ module["exports"] = Jassa;
 	});
 	
 	ns.CollectionUtils = {
+	    /**
+	     * Toggle the membership of an item in a collection and
+	     * returns the item's new membership state (true = member, false = not a member)
+	     * 
+	     * 
+	     * @param collection
+	     * @param item
+	     * 
+	     */
 		toggleItem: function(collection, item) {
+		    var result;
+
 			if(collection.contains(item)) {
 				collection.remove(item);
+				result = false;
 			}
 			else {
 				collection.add(item);
+				result = true;
 			}
-		}	
+			
+			return result;
+		}
 	};
 	
 })();
@@ -6069,7 +6084,6 @@ module["exports"] = Jassa;
 	
 
     
-    
 	
 })(jQuery);(function() {
 	
@@ -6673,8 +6687,77 @@ module["exports"] = Jassa;
 		}
     });
 
+	
 })();
 
+(function() {
+	
+    var util = Jassa.util;
+    var sparql = Jassa.sparql;
+
+	var ns = Jassa.service;	
+	
+	
+	/**
+	 * Transforms query using sorting with limit/offset
+	 * 
+	 * Select { ... } Order By {sortConditions} Limit {limit} Offset {offset} ->
+	 * 
+	 * Select * { { Select { ... } Order By {sortConditions} } } Limit {limit} Offset {offset}
+	 * 
+	 * Warning: This transformation may not work cross-database:
+	 * Database management systems may discard ordering on sub queries (which is SQL compliant). 
+	 * 
+	 */
+    ns.SparqlServiceVirtFix = Class.create(ns.SparqlService, {
+        initialize: function(sparqlService) {
+            this.sparqlService = sparqlService;
+        },
+    
+        getServiceId: function() {
+            return this.sparqlService.getServiceId();
+        },
+        
+        getStateHash: function() {
+            return this.sparqlService.getStateHash();
+        },
+
+        hashCode: function() {
+            return 'virtfix:' + this.sparqlService.hashCode();
+        },
+
+        createQueryExecution: function(query) {
+            
+            var orderBy = query.getOrderBy();
+            var limit = query.getLimit();
+            var offset = query.getOffset();
+            
+            var isTransformNeeded = orderBy.length > 0 && (limit || offset);
+            
+            var q;
+            if(isTransformNeeded) {
+                var subQuery = query.clone();
+                subQuery.setLimit(null);
+                subQuery.setOffset(null);
+                
+                q = new sparql.Query();
+                var e = new sparql.ElementSubQuery(subQuery);
+                q.getElements().push(e);
+                q.setLimit(limit);
+                q.setOffset(offset);
+                q.setResultStar(true);
+                
+            } else {
+                q = query;
+            }
+            
+            var result = this.sparqlService.createQueryExecution(q);
+            return result;
+        }        
+    });
+
+})();	
+	
 (function($) {
 
     var util = Jassa.util;
@@ -6753,7 +6836,32 @@ module["exports"] = Jassa;
 		},
 		
 		
-		
+		/**
+		 * Count the results of a query, whith fallback on timeouts
+		 * 
+		 */
+		fetchCountQuery: function(sparqlService, query, firstTimeoutInMs, fallbackCount)
+		{
+		    var qe = sparqlService.createQueryExecution(query);
+		    qe.setTimeout(timeoutInMs);
+
+		    var countVar = null;
+		    
+		    var result = jQuery.Deferred();
+		    ns.ServiceUtils.fetchInt(qe, countVar).done(function(count) {
+		        result.resolve({
+		            count: count,
+		            hasMoreItems: false
+		        });
+		    }).fail(function() {
+		        // Try counting with the fallback size
+		        
+		    });
+		    
+		    var result = deferred.promise();
+		    return result;
+		},
+
 	    
 	    //ns.globalSparqlCacheQueue = [];
 	    
@@ -11870,9 +11978,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 
 	ns.bridgePromise = function(jqPromise, ngDeferred, ngScope, fn) {
-		jqPromise.done(function() {
+		jqPromise.done(function(data) {
 			
-			var d = fn ? fn(arguments) : argument;
+			var d = fn ? fn(data) : data;
 			ngDeferred.resolve(d);
 
 		    if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
@@ -13701,6 +13809,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     
 })();(function() {
 
+    var rdf = Jassa.rdf;
 	var sparql = Jassa.sparql;
 	
 	var ns = Jassa.facete;
@@ -13904,7 +14013,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		getVar: function() {
 			var varName = this.varNode.getVariableName();
-			var result = sparql.Node.v(varName);
+			var result = rdf.NodeFactory.createVar(varName);
 			return result;			
 		},
 		
@@ -15070,7 +15179,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 				    facetElements = baseElements;
 				}  
 			} else {
-				facetElements.push.apply(baseElements); 
+				facetElements.push.apply(facetElements, baseElements); 
 			}
 			
 
@@ -16994,54 +17103,226 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.facete;
 
     
-    ns.SimpleSortCondition = Class.create({
-        initialize: function(columnId, sortDirection) {
+    /**
+     * 
+     * 
+     * @param sortDir Sort direction; {=0: unspecified, >0: ascending, <0 descending}
+     * @param nullDir Whether to sort null values first or last
+     * 
+     * sortType: 'data' ordinary sort of the data , 'null' sort null values first or last
+     * 
+     */
+    ns.SortCondition = Class.create({
+        initialize: function(columnId, sortDir, sortType) {
             this.columnId = columnId;
-            this.sortDirection = sortDirection;
+            this.sortDir = sortDir == null ? 1 : sortDir;
+            this.sortType = sortType || 'data';
         },
         
         getColumnId: function() {
             return this.columnId;
         },
         
-        getSortDirection: function() {
-            return this.sortDirection;
+        getSortType: function() {
+            return this.sortType;
+        },
+        
+        setSortType: function(sortType) {
+            this.sortType = sortType;
+        },
+        
+        getSortDir: function() {
+            return this.sortDir;
+        },
+        
+        setSortDir: function(sortDir) {
+            this.sortDir = sortDir;
         }
     });
  
-
-    ns.SimpleAggregation = Class.create({
-        initialize: function(columnId, aggregatorName) {
-            this.columnId = columnId;
-            this.aggregatorName = aggregatorName;
-        },
-        
-        getColumnId: function() {
-            return this.columnId;
-        },
-        
-        getAggregatorName: function() {
-            return this.aggregatorName;
-        }        
+    /**
+     * Note used yet.
+     * searchMode: exact, regex, beginsWith, endsWith
+     */
+    ns.FilterString = Class.create({
+        initialize: function(str, mode) {
+            this.str = str;
+            this.mode = mode;
+        }
     });
 
+
+    /**
+     * @param id Id of the column - string recommended; cannot be modified once set
+     * 
+     */
+    ns.ColumnView = Class.create({
+        initialize: function(tableMod, columnId) {
+            this.tableMod = tableMod;
+            this.columnId = columnId;
+           /*
+           this.sortCondition = sortCondition || new ns.SortCondition();
+           this.aggregator = aggregator || null;
+           this.filter = filter || null;
+           */
+        },
+       
+        getId: function() {
+            return this.columnId;
+        },
+       
+        getSortConditions: function() {
+            var result = {};
+
+            var id = this.columnId;
+
+            _(this.tableMod.getSortConditions()).each(function(sc) {
+                var cid = sc.getColumnId();
+                if(cid === id) {
+                    var sortType = sc.getSortType();
+                   
+                    result[sortType] = sc.getSortDir();
+                }
+            });
+           
+            return result;
+        },
+       
+        getAggregator: function() {
+            var result = this.tableMod.getAggregator(this.columnId);
+            return result;
+        },
+       
+        setAggregator: function(aggregator) {
+            //this.tableMod.setAggregator(this.columnId, aggregator);
+            this.tableMod.getAggregators()[this.columnId] = aggregator;
+        }
+    });
+    
+    
+
+    ns.Aggregator = Class.create({
+        initialize: function(name, attrs) {
+            this.name = name;
+            this.attrs = attrs; // Optional attributes;
+        },
+        
+        getName: function() {
+            return this.name;
+        },
+        
+        getAttrs: function() {
+            return this.attrs;
+        }
+    });
+
+    
+    
     
     /**
      * Object that holds modifications to a table
      * 
-     * { myCol1: {sortDirection: 1, aggName: sum, path: foo}, ... }
+     * { myCol1: {sortDir: 1, aggName: sum, path: foo}, ... }
      * - sum(?varForFoo) As myCol1
      * 
      */
     ns.TableMod = Class.create({
         initialize: function() {
-            this.sortConditions = []; // SimpleSortConditions
-            //this.sortOrder = []; // Only references to the columnIds - the sortDir is part of the column
-            this.aggregators = [];
-            this.limitAndOffset = new facete.LimitAndOffset();
-            this.searchStrings = {}; // Mapping from columnId to searchString
+            this.columnIds = []; // Array of active column ids
+
+            this.colIdToColView = {};
+            this.sortConditions = []; // Array of sortConditions in which to apply sort conditions
+
+            this.colIdToAgg = {};
+            
+            this.limitAndOffset = new ns.LimitAndOffset();
         },
         
+        getColumnIds: function() {
+            return this.columnIds;
+        },
+        
+        getColumn: function(id) {
+            return this.colIdToColView[id];
+        },
+        
+        // Returns the active columns
+        getColumns: function() {
+            var self = this;
+            var result = _(this.columnIds).map(function(columnId) {
+                var r = self.colIdToColView[columnId];
+                
+                return r;
+            });
+            
+            
+            return result;
+        },
+        
+        getSortConditions: function() {
+            return this.sortConditions;
+        },
+        
+        getLimitAndOffset: function() {
+            return this.limitAndOffset;
+        },
+        
+        getAggregator: function(columnId) {
+            var result = this.colIdToAgg[columnId];
+            return result;
+        },
+        
+        getAggregators: function() {
+            return this.colIdToAgg;
+        },
+        
+        //setAggregator: function()
+        
+        /**
+         * Adds a column based on a ColumnState object.
+         * 
+         * @param suppressActive default: false; true: Do not add the id to the array of active columns 
+         */
+        addColumn: function(columnId, suppressActive) {
+            var colView = this.colIdToColView[columnId];
+            if(colView) {
+                throw 'Column ' + columnId + ' already part of the table';
+            }
+            
+            colView = new ns.ColumnView(this, columnId);            
+            this.colIdToColView[columnId] = colView;
+            
+            if(!suppressActive) {
+                this.columnIds.push(columnId);
+            }
+            
+            // TODO Fail on duplicate
+            /*
+            var columnId = columnState.getId();
+            this.columnIds.push(columnId);
+            
+            this.idToState[columnId] = columnState;
+            */
+            
+            return colView;
+        },
+        
+        /**
+         * Removes a column by id
+         */
+        removeColumn: function(columnId) {
+            delete this.colIdToColView[columnId];
+            
+            var self = this;
+            util.ArrayUtils.filter(this.columnIds, function(cid) {            
+                var r = columnId != cid;
+                return r;
+             });
+            
+        }
+    });
+
+    /*
         getSortConditions: function() {
             return this.sortConditions;
         },
@@ -17070,11 +17351,388 @@ or simply: Angular + Magic Sparql = Angular Marql
             });
             
             delete this.searchStrings[columnId]; 
+        },
+      */  
+        
+        /**
+         * TODO Should this method return a ColumnViews on the internal state?
+         * Then we could toggle e.g. the sortDirection on a column directly
+         * 
+         * @returns
+         */
+    /*
+        getEffectiveColumnData: function() {
+            
+            var result = [];
+            for(var i = 0; i < this.columnNames.length; ++i) {
+                var columnName = this.columnNames[i];
+                
+                var data = {
+                    index: i,
+                    name: columnName,
+                    sort: {
+                        index: null
+                        condition: null
+                    },
+                    aggregator: null
+                }
+                
+                
+            }
+            
+            return result;
+        }
+    });
+*/
+   
+
+    ns.ExprModFactoryAggCount = Class.create({
+       createExpr: function(baseExpr) {
+           var result = new sparql.E_Count(baseExpr);
+           
+           return result;
+       } 
+    });
+
+    ns.ExprModFactoryAggMin = Class.create({
+        createExpr: function(baseExpr) {
+            var result = new sparql.E_Min(baseExpr);
+            
+            return result;
+        } 
+    });
+     
+    ns.ExprModFactoryAggMax = Class.create({
+        createExpr: function(baseExpr) {
+            var result = new sparql.E_Min(baseExpr);
+            
+            return result;
+        } 
+    });
+
+    
+    ns.ExprModRegistry = {
+        'count': new ns.ExprModFactoryAggCount,
+        'min': new ns.ExprModFactoryAggMin,
+        'max': new ns.ExprModFactoryAggMax
+    }
+    
+    
+    ns.ElementFactoryFacetPaths = Class.create({
+        initialize: function(facetConfig, paths) {
+            this.facetConfig = facetConfig;
+            this.paths = paths || new util.ArrayList();
+        },
+        
+        createElement: function() {
+            var facetConceptGenerator = facete.FaceteUtils.createFacetConceptGenerator(this.facetConfig);
+            var concept = facetConceptGenerator.createConceptResources(new facete.Path());
+
+            var rootFacetNode = this.facetConfig.getRootFacetNode();
+            
+            
+            var pathElements = _(this.paths).map(function(path) {
+                var facetNode = rootFacetNode.forPath(path);
+                
+                console.log('facetNode: ', facetNode);
+                
+                var e = facetNode.getElements(true);
+                
+                
+                // TODO On certain constraints affecting the path, we can skip the Optional
+                var g = new sparql.ElementGroup(e);
+
+                var r;
+                if(e.length !== 0) {
+                    r = new sparql.ElementOptional(g);
+                }
+                else {
+                    r = g;
+                }
+                
+                return r;
+            });
+                        
+            var elements = [];
+            elements.push.apply(elements, concept.getElements());
+            elements.push.apply(elements, pathElements);
+            
+            var tmp = new sparql.ElementGroup(elements);
+            
+            var result = tmp.flatten();
+
+            return result;
         }
     });
 
     
-    ns.FaceteTableMod = Class.create({
+    ns.FacetTableConfig = Class.create({
+        initialize: function(facetConfig, paths, tableMod) {
+            this.facetConfig = facetConfig;
+            this.paths = paths || new util.ArrayList();
+            this.tableMod = tableMod || new ns.TableMod();
+        },
+        
+        getFacetConfig: function() {
+            return this.facetConfig;
+        },
+        
+        getPaths: function() {
+            return this.paths;
+        },
+        
+        getTableMod: function() {
+            return this.tableMod;
+        },
+        
+
+        togglePath: function(path) {
+            // Updates the table model accordingly
+            var status = util.CollectionUtils.toggleItem(this.paths, path);
+            
+            var rootFacetNode = this.facetConfig.getRootFacetNode();
+            var facetNode = rootFacetNode.forPath(path);
+            var varName = facetNode.getVar().getName();
+            
+            if(status) {
+                this.tableMod.addColumn(varName);
+            }
+            else {
+                this.tableMod.removeColumn(varName);
+            }
+        }
+        
+    /*
+        createQueryFactory: function() {
+            // create an ElementFactory based on the paths and the facetConfig
+            var elementFactory = new ns.ElementFactoryFacetPaths(this.facetConfig, this.paths);
+
+            var queryFactory = new ns.QueryFactoryTableMod(elementFactory, tableMod);
+            
+            return queryFactory;
+        }
+    */
+    });
+
+    ns.QueryFactoryFacetTable = Class.create(ns.QueryFactory, {
+        initialize: function(facetTableConfig) {
+            this.facetTableConfig = facetTableConfig;
+        },
+        
+        createQuery: function() {
+            var facetConfig = this.facetTableConfig.getFacetConfig();
+            
+            // TODO Possible source of confusion: the config uses a collection for paths, but here we switch to a native array 
+            var paths = this.facetTableConfig.getPaths().getArray();
+            var tableMod = this.facetTableConfig.getTableMod();
+
+            
+            var elementFactory = new ns.ElementFactoryFacetPaths(facetConfig, paths);
+
+            var queryFactory = new ns.QueryFactoryTableMod(elementFactory, tableMod);
+            
+            var result = queryFactory.createQuery();
+            
+            return result;
+        }
+    });
+    
+    
+    ns.TableUtils = {
+        /**
+         * Create an angular grid option object from a tableMod
+         */
+        createNgGridColumnDefs: function(tableMod) {
+
+            var columnViews = tableMod.getColumns();
+            
+            var result = _(columnViews).each(function(columnView) {
+                var col = {
+                    field: columnView.getId(),
+                    displayName: columnView.getId()
+                };
+                
+                return col;
+            });
+            
+            return result;
+        }
+    };
+    
+    ns.QueryFactoryTableMod = Class.create(ns.QueryFactory, {
+        initialize: function(elementFactory, tableMod) {
+            this.elementFactory = elementFactory;
+            this.tableMod = tableMod;
+        },
+        
+        createQuery: function() {
+            var tableMod = this.tableMod;
+            var element = this.elementFactory.createElement();
+            
+            if(!element) {
+                return null;
+            }
+            
+            
+            var result = new sparql.Query();
+            result.getElements().push(element);
+            
+            var columns = tableMod.getColumns();
+
+            
+            // Map from column id to SPARQL expression representing this column
+            var idToColExpr = {};
+            
+            var aggColumnIds = [];
+            var nonAggColumnIds = [];
+            
+            _(columns).each(function(c) {
+                var columnId = c.getId();
+                var v = rdf.NodeFactory.createVar(columnId);
+                var ev = new sparql.ExprVar(v);
+                
+                
+                var agg = c.getAggregator();
+                if(agg) {
+                    aggColumnIds.push(columnId);
+                    
+                    var aggName = agg.getName();
+                    
+                    var aggExprFactory = ns.ExprModRegistry[aggName];
+                    if(!aggExprFactory) {
+                        throw 'No aggExprFactory for ' + aggName;
+                    }
+                    
+                    var aggExpr = aggExprFactory.createExpr(ev);
+                    
+                    ev = aggExpr;
+
+                    result.getProjectVars().add(v, ev);
+                    
+                } else {
+                    nonAggColumnIds.push(columnId);
+                    result.getProjectVars().add(v);
+                }
+                
+                
+                idToColExpr[columnId] = ev;
+            });
+            
+            if(aggColumnIds.length > 0) {
+                _(nonAggColumnIds).each(function(nonAggColumnId) {
+                    var expr = idToColExpr[nonAggColumnId]; 
+                    result.getGroupBy().push(expr); 
+                });
+            }
+            
+            
+            // Apply limit / offset
+            var lo = tableMod.getLimitAndOffset();
+            result.setLimit(lo.getLimit());
+            result.setOffset(lo.getOffset());
+            
+            // Apply sort conditions
+            var sortConditions = tableMod.getSortConditions();
+            
+            
+            _(sortConditions).each(function(sortCondition) {
+                var columnId = sortCondition.getColumnId();
+
+                var colExpr = idToColExpr[columnId];
+                
+                if(!colExpr) {
+                    console.log('[ERROR] Should not happen');
+                    throw 'Should not happen';
+                }
+
+                // Ordering of null values
+                //var sortCondition = cs.getSortCondition();
+                var sortDir = sortCondition.getSortDir();
+                var sortType = sortCondition.getSortType();
+
+                var sortCond = null;
+
+                switch(sortType) {
+                case 'null':
+                    // Null ordering only works with non-aggregate columns
+                    if(_(aggColumnIds).indexOf(columnId) < 0) {
+
+                        if(sortDir > 0) {
+                            sortCond = new sparql.SortCondition(new sparql.E_LogicalNot(new sparql.E_Bound(colExpr)), 1);
+                        } else if(sortDir < 0) {
+                            sortCond = new sparql.SortCondition(new sparql.E_Bound(colExpr), 1);                    
+                        }
+                    
+                    }
+
+                    break;
+
+                case 'data': 
+                    sortCond = !sortDir ? null : new sparql.SortCondition(colExpr, sortDir);
+
+                    break;
+                
+                default:
+                    console.log('Should not happen');
+                    throw 'Should not happen';
+                }
+                
+                if(sortCond) {
+                    result.getOrderBy().push(sortCond);
+                }
+                
+                
+            });
+            
+            return result;
+        }
+    });
+    
+
+    /*
+     * TODO: How to connect this class with a facetTreeConfig?
+     * We might need a FacetNodeFactoryFacetTreeConfig
+     * 
+     */
+    ns.FaceteTable = Class.create({
+        initialize: function() {
+            //this.pathVarMap = pathVarMap;// Formerly called facetNode
+            this.varNode = varNode;            
+            this.paths = new util.ArrayList();
+            this.tableMod = tableMod;
+        },
+
+        getPaths: function() {
+            return this.paths;
+        },
+        
+        getTableMod: function() {
+            return this.tableMod;
+        },
+        
+        togglePath: function(path) {
+            // Updates the table model accordingly
+            var status = util.CollectionUtils.toggleItem(this.paths, path);
+            
+            var target = this.varNode.forPath(path);
+            var varName = target.getVarName();
+            
+            if(status) {
+                this.tableMode.addColumn(varName);
+            }
+            else {
+                this.tableMode.removeColumn(varName);
+            }
+        }
+    });
+    
+    
+    
+    /*
+     * Old code below, delete once the new code is working 
+     */
+    
+    ns.FaceteTableModOld = Class.create({
         initialize: function() {
            this.columnIds = [];
            //this.columnIdToPath = [];
