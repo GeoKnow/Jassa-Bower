@@ -17097,6 +17097,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 })();
 (function() {
 
+    var rdf = Jassa.rdf;
     var sparql = Jassa.sparql;
     var util = Jassa.util;
     
