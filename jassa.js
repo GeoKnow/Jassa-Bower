@@ -13071,11 +13071,24 @@ or simply: Angular + Magic Sparql = Angular Marql
 //		}
 //	});
 	
+	
+	ns.ElementUtils = {
+	    createElementsTriplesBlock: function(triples) {
+	        var result = [];
+	        
+	        if(triples.length > 0) {
+	            var element = new sparql.ElementTriplesBlock(triples);
+	            result.push(element);
+	        }
+	        
+	        return result;
+	    } 
+	};
 
 	ns.ConstraintElementFactoryExist = Class.create(ns.ConstraintElementFactory, {
 		createElementsAndExprs: function(rootFacetNode, constraintSpec) {
 			var facetNode = rootFacetNode.forPath(constraintSpec.getDeclaredPath());
-			var elements = [new sparql.ElementTriplesBlock(facetNode.getTriples())];		
+			var elements = ns.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
 			var triplesAndExprs = new ns.ElementsAndExprs(elements, []);
 			
 			return result;
@@ -13094,7 +13107,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var pathVar = facetNode.getVar();
 			var exprVar = new sparql.ExprVar(pathVar);
 			
-			var elements = [new sparql.ElementTriplesBlock(facetNode.getTriples())];
+			//var elements = [new sparql.ElementTriplesBlock(facetNode.getTriples())];
+			var elements = ns.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
 	
 			//var valueExpr = constraintSpec.getValue();
 			var valueExpr = sparql.NodeValue.makeNode(constraintSpec.getValue());
