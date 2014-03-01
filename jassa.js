@@ -13579,29 +13579,29 @@ or simply: Angular + Magic Sparql = Angular Marql
 //			return result;
 //		},
 		
-		createElements: function(facetNode, excludePath) {
+		createElementsAndExprs: function(facetNode, excludePath) {
 			//var triples = [];
 			var elements = [];
+			var resultExprs = [];
 			
 			
 			var pathToExprs = {};
 			
 			var self = this;
 
-			_.each(this.constraints, function(constraint) {
+			_(this.constraints).each(function(constraint) {
 				var paths = constraint.getDeclaredPaths();
 				
-				var pathId = _.reduce(
-						paths,
-						function(memo, path) {
-							return memo + " " + path;
-						},
-						""
+				var pathId = _(paths).reduce(
+					function(memo, path) {
+						return memo + ' ' + path;
+					},
+					''
 				);
 
 				// Check if any of the paths is excluded
 				if(excludePath) {
-					var skip = _.some(paths, function(path) {
+					var skip = _(paths).some(function(path) {
 						//console.log("Path.equals", excludePath, path);
 						
 						var tmp = excludePath.equals(path);
@@ -13614,7 +13614,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 				}
 				
 				
-				_.each(paths, function(path) {
+				_(paths).each(function(path) {
 					
 					//if(path.equals(excludePath)) {
 						// TODO Exclude only works if there is only a single path
@@ -13659,9 +13659,21 @@ or simply: Angular + Magic Sparql = Angular Marql
 				}				
 			});
 
-			_.each(pathToExprs, function(exprs) {
+			_(pathToExprs).each(function(exprs) {
 				var orExpr = sparql.orify(exprs);
-				var element = new sparql.ElementFilter([orExpr]);
+				resultExprs.push(orExpr);
+			});
+			
+	        var result = new ns.ElementsAndExprs(elements, resultExprs);
+
+	        return result;
+		}
+	});
+
+		/*
+	    createElements: function() {
+			
+				var element = new sparql.ElementFilter(orExpr);
 
 				//console.log("andExprs" +  element);
 
@@ -13676,6 +13688,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		}
 		
 	});
+	*/
 
 })();
 
@@ -15174,8 +15187,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 			
 			var excludePath = excludeSelfConstraints ? path : null;			
-			var constraintElements = constraintManager.createElements(rootFacetNode, excludePath);
+			//var constraintElements = constraintManager.createElements(rootFacetNode, excludePath);
 
+			var elementsAndExprs = constraintManager.createElementsAndExprs(rootFacetNode, excludePath);
+			var constraintElements = elementsAndExprs.getElements();
+			var constraintExprs = elementsAndExprs.getExprs();
+			
 			var facetNode = rootFacetNode.forPath(path);
 			var facetVar = facetNode.getVar();
 
@@ -15195,6 +15212,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 			} else {
 				facetElements.push.apply(facetElements, baseElements); 
 			}
+			
+			var filterElements = _(constraintExprs).map(function(expr) {
+			    var element = new sparql.ElementFilter(expr);
+			    return element;
+			});
+			
+			facetElements.push.appyl(facetElements, filterElements);
+			
 			
 
 			// TODO Fix the API - it should only need one call
