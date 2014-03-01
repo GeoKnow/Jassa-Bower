@@ -15218,7 +15218,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			    return element;
 			});
 			
-			facetElements.push.appyl(facetElements, filterElements);
+			facetElements.push.apply(facetElements, filterElements);
 			
 			
 
