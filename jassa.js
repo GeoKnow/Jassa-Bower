@@ -5168,7 +5168,7 @@ module["exports"] = Jassa;
 	
 	ns.ElementUtils = {
         createFilterElements: function(exprs) {
-            var result = _(expr).map(function(expr) {
+            var result = _(exprs).map(function(expr) {
                 var r = new sparql.ElementFilter(expr);
                 return r;
             });
