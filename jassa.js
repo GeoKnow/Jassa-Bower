@@ -5147,7 +5147,7 @@ module["exports"] = Jassa;
             var elementA = conceptA.getElement();
             var elementB = conceptB.getElement();
             
-            if(conceptB.isSubjectConcept) {
+            if(conceptB.isSubjectConcept()) {
                 return elementA;
             }
             
