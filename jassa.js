@@ -5132,10 +5132,11 @@ module["exports"] = Jassa;
         initialize: function(conceptFactoryA, conceptFactoryB, joinType) {
             this.conceptFactoryA = conceptFactoryA;
             this.conceptFactoryB = conceptFactoryB;
-            this.joinType = joinType ? ns.JoinType.INNER_JOIN : joinType;
+            this.joinType = joinType || ns.JoinType.INNER_JOIN;
         },
 	    
         createElement: function() {
+
             var conceptA = this.conceptFactoryA.createConcept();
             var conceptB = this.conceptFactoryB.createConcept();
             
