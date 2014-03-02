@@ -5128,6 +5128,10 @@ module["exports"] = Jassa;
 	});
 	
 	
+	/**
+	 * Variables of conceptB are renamed
+	 * 
+	 */
 	ns.ElementFactoryJoinConcept = Class.create(ns.ElementFactory, {
         initialize: function(conceptFactoryA, conceptFactoryB, joinType) {
             this.conceptFactoryA = conceptFactoryA;
@@ -5143,11 +5147,15 @@ module["exports"] = Jassa;
             var elementA = conceptA.getElement();
             var elementB = conceptB.getElement();
             
+            if(conceptB.isSubjectConcept) {
+                return elementA;
+            }
+            
             var joinVarsA = [conceptA.getVar()];
             var joinVarsB = [conceptB.getVar()];
             
-            var rootJoinNode = ns.JoinBuilderElement.create(elementB);
-            var joinNode = rootJoinNode.joinAny(this.joinType, joinVarsB, elementA, joinVarsA);
+            var rootJoinNode = ns.JoinBuilderElement.create(elementA);
+            var joinNode = rootJoinNode.joinAny(this.joinType, joinVarsA, elementB, joinVarsB);
 
             var joinBuilder = joinNode.getJoinBuilder();
             var elements = joinBuilder.getElements();
