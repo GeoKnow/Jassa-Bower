@@ -17276,6 +17276,16 @@ or simply: Angular + Magic Sparql = Angular Marql
             this.colIdToAgg = {};
             
             this.limitAndOffset = new ns.LimitAndOffset();
+            
+            this._isDistinct = true;
+        },
+        
+        isDistinct: function() {
+            return this._isDistinct;
+        },
+        
+        setDistinct: function(isDistinct) {
+            this._isDistinct = isDistinct;
         },
         
         getColumnIds: function() {
@@ -17614,6 +17624,9 @@ or simply: Angular + Magic Sparql = Angular Marql
             }
             
             
+            var isDistinct = tableMod.isDistinct();
+
+            
             var result = new sparql.Query();
             result.getElements().push(element);
             
@@ -17663,6 +17676,9 @@ or simply: Angular + Magic Sparql = Angular Marql
                     var expr = idToColExpr[nonAggColumnId]; 
                     result.getGroupBy().push(expr); 
                 });
+                
+                // Aggregation implies distinct
+                isDistinct = false;
             }
             
             
@@ -17723,6 +17739,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 
                 
             });
+            
+            result.setDistinct(isDistinct);
             
             return result;
         }
