@@ -7360,7 +7360,7 @@ module["exports"] = Jassa;
                     'target-element': targetConcept.getElement().toString(),
                     'target-var': targetConcept.getVar().getName(),
                     'js-service-uri': this.joinSummaryServiceIri,
-                    'js-defaultGraphIris': this.joinSummaryGraphIris
+                    'js-graph-uri': this.joinSummaryGraphIris
                 }
             };
 
