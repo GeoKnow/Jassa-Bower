@@ -7352,6 +7352,7 @@ module["exports"] = Jassa;
                 url: this.apiUrl,
                 dataType: 'json',
                 crossDomain: true,
+                traditional: true, // Serializes JSON arrays by repeating the query string paramater
                 data: {
                     'service-uri': this.sparqlServiceIri,
                     'default-graph-uri': this.defaultGraphIris,
