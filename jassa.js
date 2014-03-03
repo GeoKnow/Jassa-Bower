@@ -7343,8 +7343,12 @@ module["exports"] = Jassa;
             this.sparqlServiceIri = sparqlServiceIri;
             this.defaultGraphIris = defaultGraphIris;
             
+            // TODO Path finding options and strategy should go into generic attributes
+            //this.nPaths = nPaths;
+            //this.maxHops = maxHops;
+            
             this.joinSummaryServiceIri = joinSummaryServiceIri;
-            this.joinSummaryGraphIris = joinSummaryGraphIris || [];
+            this.joinSummaryGraphIris = joinSummaryGraphIris;
         },
     
         findPaths: function(sourceConcept, targetConcept) {
@@ -7362,6 +7366,8 @@ module["exports"] = Jassa;
                     'target-var': targetConcept.getVar().getName(),
                     'js-service-uri': this.joinSummaryServiceIri,
                     'js-graph-uri': this.joinSummaryGraphIris
+                    //'n-paths': this.nPaths,
+                    //'max-hops': this.maxHops
                 }
             };
 
