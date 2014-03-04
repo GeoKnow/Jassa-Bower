@@ -19141,7 +19141,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             var result = [];
                         
             //$.each(nodes, function(index, node) {
-            _each(nodes).each(function(node) {
+            _(nodes).each(function(node) {
                 //console.debug("Inferred minimum item count: ", node.infMinItemCount);
     
                 //if(node.data.absoluteGeomToFeatureCount)
