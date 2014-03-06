@@ -6560,12 +6560,18 @@ module["exports"] = Jassa;
              if(!result) {
 
                  // Check if there is an entry in the result cache
-                 var rawData = resultCache.getItem(cacheKey);
-                 if(rawData) {                     
+                 var cacheData = resultCache.getItem(cacheKey);
+                 if(cacheData) {                     
                      //console.log('[DEBUG] QueryCache: Reusing cache entry for cacheKey: ' + cacheKey);
                      var deferred = $.Deferred();
-                     var data = JSON.parse(rawData);
-                     deferred.resolve(data);
+                     //var cacheData = JSON.parse(rawData);
+                     
+                     var itBinding = new util.ArrayIterator(cacheData.bindings);
+                     var varNames = cacheData.varNames;
+                     var rs = new ns.ResultSetArrayIteratorBinding(itBinding, varNames);
+                     
+                     
+                     deferred.resolve(rs);
                      result = deferred.promise();
                  }
                  else {
@@ -6576,10 +6582,15 @@ module["exports"] = Jassa;
                      result = request.pipe(function(rs) {
                          delete executionCache[cacheKey]; 
 
-                         var arr = rs.getIterator().getArray();
-                         var str = JSONCanonical.stringify(arr); //JSON.stringify(arr);
+                         var cacheData = {
+                             bindings: rs.getBindings(),
+                             varNames: rs.getVarNames()
+                         };
+                         
+                         
+                         //var str = JSONCanonical.stringify(arr); //JSON.stringify(arr);
 
-                         resultCache.setItem(cacheKey, str);
+                         resultCache.setItem(cacheKey, cacheData);
                      
                          return rs;
                      });
@@ -6952,7 +6963,7 @@ module["exports"] = Jassa;
 		    
 		    return result;
 		},
-
+		
            // TODO Maybe move to a conversion utils package.
         jsonToResultSet: function(json) {
         
