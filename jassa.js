@@ -6566,7 +6566,7 @@ module["exports"] = Jassa;
                      var deferred = $.Deferred();
                      //var cacheData = JSON.parse(rawData);
                      
-                     var itBinding = new util.ArrayIterator(cacheData.bindings);
+                     var itBinding = new util.IteratorArray(cacheData.bindings);
                      var varNames = cacheData.varNames;
                      var rs = new ns.ResultSetArrayIteratorBinding(itBinding, varNames);
                      
