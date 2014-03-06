@@ -5930,6 +5930,10 @@ module["exports"] = Jassa;
 		    return this.varNames;
 		},
 		
+		getBindings: function() {
+		    return this.itBinding.getArray();
+		},
+		
 		// Return the binding array
 		getIterator: function() {
 			//return this.itBinding.getArray();
@@ -6038,7 +6042,7 @@ module["exports"] = Jassa;
 		},
 		
 		createQueryExecutionStr: function(queryStr) {
-		    var ajaxOptions = _({}).extend(this.ajaxOptions);
+		    var ajaxOptions = _({}).defaults(this.ajaxOptions);
 		    
 			var result = new ns.QueryExecutionHttp(queryStr, this.serviceUri, this.defaultGraphUris, ajaxOptions, this.httpArgs);
 			return result;
@@ -6067,6 +6071,23 @@ module["exports"] = Jassa;
 //    });
 //
 	
+
+    ns.RequestCache = Class.create({
+        initialize: function(executionCache, resultCache) {
+            this.executionCache = executionCache ? executionCache : {};
+            this.resultCache = resultCache ? resultCache : new Cache();           
+        },
+  
+        getExecutionCache: function() {
+            return this.executionCache;
+        },
+  
+        getResultCache: function() {
+            return this.resultCache;
+        }
+    });
+
+
 	/**
 	 * Result Cache stores result sets - this is an instance of a class
 	 * 
@@ -6080,8 +6101,12 @@ module["exports"] = Jassa;
 	    
 	    initialize: function(queryExecutionFactory, resultCache, executionCache) {
 	        this.qef = queryExecutionFactory;
+	        this.requestCache = new ns.RequestCache();
+	        
+	        /*
             this.executionCache = executionCache ? executionCache : {};
 	        this.resultCache = resultCache ? resultCache : new Cache();
+	        */
 	    },
 	    
 	    getServiceId: function() {
@@ -6104,7 +6129,7 @@ module["exports"] = Jassa;
 	        
 	        var qe = this.qef.createQueryExecution(queryStr);
 
-	        var result = new ns.QueryExecutionCache(qe, cacheKey, this.executionCache, this.resultCache);
+	        var result = new ns.QueryExecutionCache(qe, cacheKey, this.requestCache);
 	        
 	        return result;
 	    }
@@ -6378,7 +6403,7 @@ module["exports"] = Jassa;
 			throw "Not overridden";			
 		},
 		
-		setTimeOut: function(timeSpanInMs) {
+		setTimeout: function(timeoutInMillis) {
 			throw "Not overridden";
 		}
 	});
@@ -6390,10 +6415,8 @@ module["exports"] = Jassa;
 			this.serviceUri = serviceUri;
 			this.defaultGraphUris = defaultGraphUris;
 			
-            this.ajaxOptions = ajaxOptions ? ajaxOptions : {};
+            this.ajaxOptions = ajaxOptions || {};
 			this.httpArgs = httpArgs;
-			
-			//this.timeoutInMillis = null;
 		},
 		
 		/**
@@ -6415,11 +6438,13 @@ module["exports"] = Jassa;
 
 		// Returns an iterator of triples
 		execConstructTriples: function() {
-			return this.execAny(queryString);
+		    throw 'Not implemented yet';
+			//return this.execAny(queryString);
 		},
 	
 		execDescribeTriples: function() {
-			return this.execAny(queryString);
+		    throw 'Not implemented yet';
+			//return this.execAny(queryString);
 		},
 		
 		setTimeout: function(timeoutInMillis) {
@@ -6430,50 +6455,75 @@ module["exports"] = Jassa;
 		    return this.ajaxOptions.timeout;
 		},
 
-
-		/**
-		 * This method is intended to be used by caches,
-		 * 
-		 * A service is not assumed to return the same result for
-		 * a query if this method returned different hashes.   
-		 * 
-		 * 
-		 */
-//		getStateHash: function() {
-//			var idState = {
-//					serviceUri: this.serviceUri,
-//					defaultGraphUris: this.defaultGraphUris
-//			}
-//			
-//			var result = JSON.stringify(idState);
-//			
-//			return result;
-//		},
-//			
-//		setDefaultGraphs: function(uriStrs) {
-//			this.defaultGraphUris = uriStrs ? uriStrs : [];
-//		},
-//	
-//		getDefaultGraphs: function() {
-//			return this.defaultGraphUris;
-//		},
-	
 		execAny: function() {
-			
-//			if(this.proxyServiceUri) {
-//				httpOptions[this.proxyParamName] = serviceUri;
-//				serviceUri = this.proxyServiceUri;
-//			}
-			
-		
-			var result = ns.ServiceUtils.execQuery(this.serviceUri, this.defaultGraphUris, this.queryString, this.httpArgs, this.ajaxOptions);
+
+		    var ajaxSpec = ns.ServiceUtils.createSparqlRequestAjaxSpec(this.serviceUri, this.defaultGraphUris, this.queryString, this.httpArgs, this.ajaxOptions);
+		    var result = $.ajax(ajaxSpec);
 
 			return result;
 		}
 	});
 
-
-	
+//	
+//	ns.HttpService = Class.create({
+//	    exec: function(ajaxSpec) {
+//	        console.log('[ERROR] Not overridden');
+//	        throw 'Not overridden';
+//	    }
+//	});
+//
+//	
+//	
+//	
+//	ns.HttpServiceRaw = Class.create({
+//	    exec: function(ajaxSpec, cacheKey) {
+//	        return $.ajax(ajaxSpec);
+//	    }
+//	});
+//
+//	
+//	
+//	ns.HttpServiceCache = Class.create(ns.HttpService, {
+//	    initialize: function(executionCache, resultCache) {            
+//            this.executionCache = executionCache ? executionCache : {};
+//            this.resultCache = resultCache ? resultCache : new Cache();
+//	    },
+//	   
+//	    exec: function(ajaxSpec, cacheKey) {
+//	        
+//	        //var ajaxSpec = this.ajaxSpec;
+//	        //var cacheKey = this.cacheKey;
+//	        var executionCache = this.executionCache;
+//	        var resultCache = this.resultCache;
+//	        
+//            var result = executionCache[cacheKey];
+//            
+//            if(!result) {
+//                // Check if there is an entry in the result cache
+//                var str = resultCache.getItem(cacheKey);
+//                
+//                if(str) {                     
+//                    //console.log('[DEBUG] QueryCache: Reusing cache entry for cacheKey: ' + cacheKey);
+//                    var deferred = $.Deferred();
+//                    var data = JSON.parse(str);
+//                    deferred.resolve(data);
+//                    result = deferred.promise();
+//                }
+//                else {
+//                    var request = $.ajax(ajaxSpec);
+//                    
+//                    result = request.pipe(function(data) {
+//                        resultCache.setItem(cacheKey, data);
+//                        return data;
+//                    });
+//                    
+//                    executionCache[cacheKey] = result;
+//                }
+//            }
+//            
+//            return result;
+//	    }
+//	});
 
 
 	/**
@@ -6482,76 +6532,59 @@ module["exports"] = Jassa;
 	 * 
 	 */
     ns.QueryExecutionCache = Class.create(ns.QueryExecution, {
-         initialize: function(queryExecution, cacheKey, executionCache, resultCache) {
+         initialize: function(queryExecution, cacheKey, requestCache) {
              this.queryExecution = queryExecution;
              
              this.cacheKey = cacheKey;
-             
-             this.executionCache = executionCache;
-             this.resultCache = resultCache;
+             this.requestCache = requestCache;
+         },
+         
+         setTimeout: function(timeoutInMillis) {
+             this.queryExecution.setTimeout(timeoutInMillis);
          },
          
          execSelect: function() {
              var cacheKey = this.cacheKey;
-             var resultCache = this.resultCache;
-             var executionCache = this.executionCache;
              
-             
+             var requestCache = this.requestCache;
+             var resultCache = requestCache.getResultCache();
+             var executionCache = requestCache.getExecutionCache();
+
              // Check the cache whether the same query is already running
              // Re-use its promise if this is the case
              
              // TODO Reusing promises must take timeouts into account
              
-             var promise = executionCache[cacheKey];
-             var result;
+             var result = executionCache[cacheKey];
              
-             if(!promise) {
-                 var deferred = $.Deferred();
+             if(!result) {
 
                  // Check if there is an entry in the result cache
-                 var data = resultCache.getItem(cacheKey);
-                 if(data) {                     
+                 var rawData = resultCache.getItem(cacheKey);
+                 if(rawData) {                     
                      //console.log('[DEBUG] QueryCache: Reusing cache entry for cacheKey: ' + cacheKey);
+                     var deferred = $.Deferred();
+                     var data = JSON.parse(rawData);
                      deferred.resolve(data);
+                     result = deferred.promise();
                  }
                  else {
                      var request = this.queryExecution.execSelect();
                      
                      executionCache[cacheKey] = request;
                      
-                     request.pipe(function(rs) {
+                     result = request.pipe(function(rs) {
                          delete executionCache[cacheKey]; 
 
-                         var arr = [];
-                         while(rs.hasNext()) {
-                             var binding = rs.nextBinding();
-                             arr.push(binding);
-                         }
-                         
-                         //console.log('[DEBUG] QueryCache: Caching result for cacheKey: ' + cacheKey);
-                         resultCache.setItem(cacheKey, arr);
-                     
-                         deferred.resolve(arr);
-                     }).fail(function() {
-                         deferred.fail();
-                     });
-                                          
-                 }
+                         var arr = rs.getIterator().getArray();
+                         var str = JSONCanonical.stringify(arr); //JSON.stringify(arr);
 
-                 promise = deferred.pipe(function(arr) {
-                     var itBinding = new util.IteratorArray(arr);
-                     var r = new ns.ResultSetArrayIteratorBinding(itBinding);
-                     return r;
-                 });
+                         resultCache.setItem(cacheKey, str);
+                     
+                         return rs;
+                     });
+                 }
              }
-             
-             // Attach to the promise (the same data may be shared between multiple consumers)
-             var result = promise.pipe(function(rs) {
-                 var arr = rs.getIterator().getArray();
-                 var itBinding = new util.IteratorArray(arr);
-                 var r = new ns.ResultSetArrayIteratorBinding(itBinding);
-                 return r;
-             });//.promise();
              
              return result;
          } 
@@ -6867,10 +6900,9 @@ module["exports"] = Jassa;
 		
 		/**
 		 * Count the results of a query, whith fallback on timeouts
-		 * 
+		 * TODO Finish
 		 */
-		fetchCountQuery: function(sparqlService, query, firstTimeoutInMs, fallbackCount)
-		{
+		fetchCountQuery: function(sparqlService, query, firstTimeoutInMs, fallbackCount) {
 		    var qe = sparqlService.createQueryExecution(query);
 		    qe.setTimeout(timeoutInMs);
 
@@ -6895,108 +6927,32 @@ module["exports"] = Jassa;
 	    //ns.globalSparqlCacheQueue = [];
 	    
 	    /**
-	     * Adapted from http://www.openlinksw.com/blog/~kidehen/?id=1653
 	     * 
 	     * @param baseURL
 	     * @param query
 	     * @param callback
 	     * @param format
 	     */
-	    execQuery: function(baseURL, defaultGraphUris, query, httpArgsEx, ajaxOptions) {
-	        var options = {};
-	        
-	        if(ajaxOptions == null) {
-	            ajaxOptions = {};
-	        }
-	        
-	        
-	        options.format = ajaxOptions.format ? ajaxOptions.format : 'application/json'; 
-	        
-	        var params = _.map(defaultGraphUris, function(item) {
-	            var pair = {key: "default-graph-uri", value: item };
-	            return pair;
-	        });
-	        
-	        params.push({key: "query", value: query});
-	    
-	        _.each(httpArgsEx, function(v, k) {
-	            
-	            if(_(v).isArray()) {
-	                for(var i = 0; i < v.length; ++i) {
-	                    var t = v[i];
+		createSparqlRequestAjaxSpec: function(baseUrl, defaultGraphIris, queryString, dataDefaults, ajaxDefaults) {
+            var data = {
+                'query': queryString,
+                'default-graph-uri': defaultGraphIris,
+            };
 
-	                    params.push({key: k, value: t});
-	                }
-	            } else {            
-	                params.push({key: k, value: v});
-	            }
-	        });
-	        
-	        var querypart = '';
-	        _.each(params, function(param) {
-	            querypart += param.key + '=' + encodeURIComponent(param.value) + '&';
-	        });
+            var result = {
+		        url: baseUrl,
+		        dataType: 'json',
+		        crossDomain: true,
+		        traditional: true,
+		        data: data
+		    };
+		    
+		    _(data).defaults(dataDefaults);
+		    _(result).defaults(ajaxDefaults);
+		    
+		    return result;
+		},
 
-	        var url = baseURL + '?' + querypart;
-
-	        var ajaxObj = {
-	            url: url,
-	            dataType: 'json'
-	        };
-
-	        if(ajaxOptions) {
-	            _.extend(ajaxObj, ajaxOptions);
-	        }
-
-	        
-	        var useCache = false;
-	        
-	        var data = null;
-	        var hash = null;
-	        
-	        
-	        var cache = ns.globalSparqlCache;
-	        //var cacheQueue = ns.globalSparqlCacheQueue;
-	        
-//	      while(cacheQueue.length > 0) {
-//	          var item = cacheQueue.pop();
-//	          
-//	          cache[item.hash] = item.response;
-//	      }
-	        
-	        if(useCache) {
-	            hash = JSONCanonical.stringify(ajaxObj); //JSONCanonical.stringify(ajaxObj);
-	            var rawData = cache[hash];
-	            if(rawData) {
-	                data = JSON.parse(rawData);
-	            }
-	            //console.log('SPARQL Data for hash ' + hash, data);    
-	        }
-
-	        var result = $.Deferred();
-	        if(data) { 
-	            result.resolve(data);
-	        } else {
-	            var result = $.ajax(ajaxObj);
-	            
-	            if(useCache) {
-	                result.pipe(function(response) {
-
-	                    
-	                    cache[hash] = JSON.stringify(response);
-	                    //alert(response);
-	                    //c[hash] = response;
-	                    //cache[hash.substr(0, 6)] = response;
-	                    //cacheQueue.push({hash: hash, response: response});
-	                });
-
-	                //ns.running[hash] = result;
-	            }
-	        }
-	        
-	        return result;
-	    },
-	
            // TODO Maybe move to a conversion utils package.
         jsonToResultSet: function(json) {
         
@@ -7015,7 +6971,8 @@ module["exports"] = Jassa;
         }
 	};
 
-})(jQuery);(function() {
+})(jQuery);
+(function() {
 	
     var util = Jassa.util;
     var sparql = Jassa.sparql;
@@ -19651,7 +19608,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                 id: ns.GeoConcepts.conceptWgs84.getVar(), //'?s',
                 lon: vx, // '?x',
                 lat: vy, // '?y'
-                wkt: function(b) { return 'POINT(' + b.get(vx).getLiteralValue() + ' ' + b.get(vy).getLiteralValue() + ')';}
+                wkt: function(b) { return rdf.NodeFactory.createTypedLiteral('POINT(' + b.get(vx).getLiteralValue() + ' ' + b.get(vy).getLiteralValue() + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral'); }
             }],
             from: ns.GeoConcepts.conceptWgs84.getElement()
         }),
