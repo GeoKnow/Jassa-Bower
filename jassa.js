@@ -2385,6 +2385,7 @@ module["exports"] = Jassa;
 	ns.DatatypeLabels = {
 		xinteger: new ns.DatatypeLabelInteger(),
 		xfloat: new ns.DatatypeLabelFloat(),
+		xdouble: new ns.DatatypeLabelFloat(),
 		xstring: new ns.DatatypeLabelString(),
 		decimal: new ns.DatatypeLabelFloat() // TODO Handle Decimal properly
 	};
@@ -2400,6 +2401,7 @@ module["exports"] = Jassa;
 	ns.registerRdfDatype(xsd.str.xinteger, ns.DatatypeLabels.xinteger);
 	ns.registerRdfDatype(xsd.str.xstring, ns.DatatypeLabels.xstring);
 	ns.registerRdfDatype(xsd.str.xfloat, ns.DatatypeLabels.xfloat);
+	ns.registerRdfDatype(xsd.str.xdouble, ns.DatatypeLabels.xdouble);
 
 	ns.registerRdfDatype(xsd.str.decimal, ns.DatatypeLabels.xfloat);
 	
@@ -2426,7 +2428,8 @@ module["exports"] = Jassa;
 
 	
 	
-})();(function() {
+})();
+(function() {
 
 	var util = Jassa.vocab.util;
 	var ns = Jassa.vocab.rdf;
@@ -19868,7 +19871,10 @@ or simply: Angular + Magic Sparql = Angular Marql
                 id: ns.GeoConcepts.conceptWgs84.getVar(), //'?s',
                 lon: vx, // '?x',
                 lat: vy, // '?y'
-                wkt: function(b) { return rdf.NodeFactory.createTypedLiteralFromString('POINT(' + b.get(vx).getLiteralValue() + ' ' + b.get(vy).getLiteralValue() + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral'); }
+                wkt: function(b) {
+					var result = rdf.NodeFactory.createTypedLiteralFromString('POINT(' + b.get(vx).getLiteralValue() + ' ' + b.get(vy).getLiteralValue() + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral');
+					return result;
+				}
             }],
             from: ns.GeoConcepts.conceptWgs84.getElement()
         }),
