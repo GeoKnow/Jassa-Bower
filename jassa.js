@@ -4712,17 +4712,14 @@ module["exports"] = Jassa;
 		
 		getVarsMentioned: function() {
 		    
-	        console.log('Not implemented properly yet. Things may break!');
-
+	        console.log('sparql.Query.getVarsMentioned(): Not implemented properly yet. Things may break!');
+	        // TODO Also include projection, group by, etc in the output - not just the elements
 		    
-		    var result = [];
-		    
-		    _(this.elements).reduce(function(memo, element) {
+		    var result = _(this.elements).reduce(function(memo, element) {
 		        var evs = element.getVarsMentioned();
 		        var r = _(memo).union(evs);
 		        return r;
-		    }, result);
-		    
+		    }, []);		    
 		    
 		    return result;		    
 		},
@@ -4938,8 +4935,26 @@ module["exports"] = Jassa;
 
 	var ns = Jassa.sparql;
 	
+	
+	ns.VarGenerator = Class.create({
+	    initialize: function(generator) {
+	        this.generator = generator;
+	    },
+	    
+	    next: function() {
+	        var varName = this.generator.next();
+	        
+	        var result = rdf.NodeFactory.createVar(varName);
+	        
+	        return result;
+	    }
+	});
 
 	ns.VarUtils = {
+	    /**
+	     * Convert an array of variable names to variable objects
+	     * 
+	     */
 	    createVars: function(varNames) {
 	        var result = varNames.map(function(varName) {
 	            return rdf.NodeFactory.createVar(varName);
@@ -4948,10 +4963,35 @@ module["exports"] = Jassa;
 	        return result;
 	    },
 	    
+	    
+	    /**
+	     * Convert an array of variable objects into an array of variable names
+	     * 
+	     * 
+	     */
 	    getVarNames: function(vars) {
 	        var result = vars.map(function(v) {
 	            return v.getName();
 	        });
+	        
+	        return result;
+	    },
+	    
+	    /**
+	     * Create a generator which yields fresh variables that is not contained in the array 'vars'.
+	     * The new var name will have the given prefix
+	     * 
+	     */
+	    createVarGen: function(prefix, excludeVars) {
+	        if(!prefix) {
+	            prefix = 'v';
+	        }
+	        
+	        var excludeVarNames = this.getVarNames(excludeVars);
+	        var generator = ns.GenSym.create(prefix);
+	        var genVarName = new sparql.GeneratorBlacklist(generator, excludeVarNames);
+
+	        var result = new ns.VarGenerator(genVarName);
 	        
 	        return result;
 	    }
@@ -6839,10 +6879,13 @@ module["exports"] = Jassa;
     var util = Jassa.util;
     var sparql = Jassa.sparql;
     
+    // TODO: Get rid of this dependency
+    var facete = Jassa.facete;
+    
 	var ns = Jassa.service;
 
     // Great! Writing to the object in a deferred done handler causes js to freeze...
-    ns.globalSparqlCache = {};
+    //ns.globalSparqlCache = {};
 
 	ns.ServiceUtils = {
 	
@@ -6914,23 +6957,57 @@ module["exports"] = Jassa;
 		
 		/**
 		 * Count the results of a query, whith fallback on timeouts
+		 * 
+		 * Attempt to count the full result set based on firstTimeoutInMs
+		 * 
+		 * if this fails, repeat the count attempt using the scanLimit
+		 * 
 		 * TODO Finish
 		 */
-		fetchCountQuery: function(sparqlService, query, firstTimeoutInMs, fallbackCount) {
-		    var qe = sparqlService.createQueryExecution(query);
-		    qe.setTimeout(timeoutInMs);
-
-		    var countVar = null;
+		fetchCountQuery: function(sparqlService, query, firstTimeoutInMs, limit) {
 		    
-		    var result = jQuery.Deferred();
-		    ns.ServiceUtils.fetchInt(qe, countVar).done(function(count) {
-		        result.resolve({
+		    var elements = [new sparql.ElementSubQuery(query)];
+		    
+		    var varsMentioned = query.getVarsMentioned();
+		    
+		    var varGen = sparql.VarUtils.createVarGen('c', varsMentioned);
+
+		    var outputVar = varGen.next();
+		    //var outputVar = rdf.NodeFactory.createVar('_cnt_');
+		    
+		    //createQueryCount(elements, limit, variable, outputVar, groupVars, useDistinct, options)
+		    var countQuery = facete.QueryUtils.createQueryCount(elements, null, null, outputVar, null, null, null);
+		    
+		    var qe = sparqlService.createQueryExecution(countQuery);
+		    qe.setTimeout(firstTimeoutInMs);
+		    
+		    var deferred = jQuery.Deferred();
+		    var p1 = ns.ServiceUtils.fetchInt(qe, outputVar); 
+		    p1.done(function(count) {
+		        
+		        deferred.resolve({
 		            count: count,
+		            limit: null,
 		            hasMoreItems: false
 		        });
+
 		    }).fail(function() {
+
 		        // Try counting with the fallback size
-		        
+	            var countQuery = facete.QueryUtils.createQueryCount(elements, limit, null, outputVar, null, null, null);		        
+	            var qe = sparqlService.createQueryExecution(countQuery);
+	            var p2 = ns.ServiceUtils.fetchInt(qe, outputVar); 
+	            p2.done(function(count) {
+	                	                
+	                deferred.resolve({
+	                    count: count,
+	                    limit: limit,
+	                    hasMoreItems: count >= limit // using greater for robustness, although it should never happen
+	                });	            
+	            }).fail(function() {
+	               deferred.fail(); 
+	            });	            
+
 		    });
 		    
 		    var result = deferred.promise();
@@ -14757,7 +14834,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                 }
                 
                 if(subQuery.projectVars.vars.length === 0) {
-                    subQuery.isResultStar = true;
+                    subQuery.setResultStar(true);
                 }
                 
                 subQuery.limit = limit;
@@ -14839,7 +14916,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 				}
 				
 				if(subQuery.projectVars.vars.length === 0) {
-			    	subQuery.isResultStar = true;
+			    	subQuery.setResultStar(true);
 				}
 				
 				subQuery.limit = limit;
