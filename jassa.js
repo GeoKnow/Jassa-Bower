@@ -16481,13 +16481,13 @@ or simply: Angular + Magic Sparql = Angular Marql
 		    var self = this;
 		    promise.done(function(facetItems) {
 		        var selectiveItems = _(facetItems).filter(function(x) { return x.getDistinctValueCount() < scanLimit; });
-		        var selectiveProperties = _(selectiveItems).map(function(x) { return x.getProperty(); });
+		        var selectiveProperties = _(selectiveItems).map(function(x) { return x.getNode(); });
                 // Check which properties had scan counts below the threshold
 		        
 		        var p = self.fetchFacetValueCountsFull(path, isInverse, selectiveProperties, isNegated, scanLimit);
 		        
 		        p.done(function(fis) {
-                    var selectivePropertyNameToItem = _(fis).indexBy(function(x) { return x.getProperty().getUri(); });
+                    var selectivePropertyNameToItem = _(fis).indexBy(function(x) { return x.getNode().getUri(); });
 
                     var r = _(properties).map(function(property) {
                         var propertyName = property.getUri();
