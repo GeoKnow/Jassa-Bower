@@ -2342,6 +2342,7 @@ module["exports"] = Jassa;
 		xboolean: p + "boolean",
 		xint: p + "int",
 		xinteger: p + "integer",
+		xlong: p + "long",
 		decimal: p + "decimal",
 		xfloat: p + "float",
 		xdouble: p + "double",
@@ -2398,6 +2399,7 @@ module["exports"] = Jassa;
 	};
 	
 	ns.registerRdfDatype(xsd.str.xint, ns.DatatypeLabels.xinteger);
+	ns.registerRdfDatype(xsd.str.xlong, ns.DatatypeLabels.xinteger);
 	ns.registerRdfDatype(xsd.str.xinteger, ns.DatatypeLabels.xinteger);
 	ns.registerRdfDatype(xsd.str.xstring, ns.DatatypeLabels.xstring);
 	ns.registerRdfDatype(xsd.str.xfloat, ns.DatatypeLabels.xfloat);
