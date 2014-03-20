@@ -6043,7 +6043,8 @@ module["exports"] = Jassa;
 	ns.SparqlServiceHttp = Class.create(ns.SparqlServiceBaseString, {
 		initialize: function(serviceUri, defaultGraphUris, ajaxOptions, httpArgs) {
 			this.serviceUri = serviceUri;
-			this.setDefaultGraphs(defaultGraphUris);
+            this.defaultGraphUris = defaultGraphUris;
+			//this.setDefaultGraphs(defaultGraphUris);
 			
             this.ajaxOptions = ajaxOptions;
 			this.httpArgs = httpArgs;
@@ -6082,7 +6083,7 @@ module["exports"] = Jassa;
 		},
 		
 		setDefaultGraphs: function(uriStrs) {
-			this.defaultGraphUris = uriStrs ? uriStrs : [];
+			this.defaultGraphUris = uriStrs;// ? uriStrs : [];
 		},
 	
 		getDefaultGraphs: function() {
