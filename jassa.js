@@ -7407,7 +7407,7 @@ module["exports"] = Jassa;
             this.joinSummaryGraphIris = joinSummaryGraphIris;
         },
 
-        createAjaxConfig: function() {
+        createAjaxConfig: function(sourceConcept, targetConcept) {
 			var result = {
                 'service-uri': this.sparqlServiceIri,
                 'default-graph-uri': this.defaultGraphIris,
@@ -7424,8 +7424,8 @@ module["exports"] = Jassa;
 			return result;
         },
 
-        createSparqlService: function() {
-			var data = this.createAjaxConfig();
+        createSparqlService: function(sourceConcept, targetConcept) {
+			var data = this.createAjaxConfig(sourceConcept, targetConcept);
 
             // TODO How can we turn the ajax spec into a (base) URL?
 
@@ -7434,7 +7434,7 @@ module["exports"] = Jassa;
         },
 
         findPaths: function(sourceConcept, targetConcept) {
-			var data = this.createAjaxConfig();
+			var data = this.createAjaxConfig(sourceConcept, targetConcept);
 
             var ajaxSpec = {
                 url: this.apiUrl,
