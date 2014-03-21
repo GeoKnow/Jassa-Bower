@@ -6711,6 +6711,7 @@ module["exports"] = Jassa;
 	        this.sparqlService = sparqlService;
 	        this.query = query;
 	        this.pageSize = pageSize;
+            this.timeoutInMillis = null;
 	    },
 	    
         executeSelectRec: function(queryPaginator, prevResult, deferred) {
@@ -6725,7 +6726,10 @@ module["exports"] = Jassa;
             //console.log("Backend: ", this.backend);
             //var totalLimit = this.query.getLimit();
             
-            this.sparqlService.createQueryExecution(query).execSelect().done(function(rs) {
+            var qe = this.sparqlService.createQueryExecution(query);
+            qe.setTimeout(this.timeoutInMillis);
+
+            qe.execSelect().done(function(rs) {
     
                 if(!rs) {
                     throw "Null result set for query: " + query;
@@ -6781,6 +6785,15 @@ module["exports"] = Jassa;
             this.executeSelectRec(paginator, null, deferred);
             
             return deferred.promise();
+        },
+
+		setTimeout: function(timeoutInMillis) {
+			this.timeoutInMillis = timeoutInMillis;
+
+            if(!this.timeoutMsgShown) {
+                console.log('[WARN] Only preliminary timeout implementation for paginated query execution');
+                this.timeoutMsgShown = true;
+            }
         }
 	});
 
