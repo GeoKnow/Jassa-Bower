@@ -1315,6 +1315,263 @@ module["exports"] = Jassa;
     ns.ObjectUtils.defaultHashFnNames = ['hashCode']
 })();
 (function() {
+
+    var ns = Jassa.util;
+
+    
+    /**
+     * 
+     * Essentially this is a map from state hash of the object
+     * 
+     */
+    ns.SerializationContext = Class.create({
+        initialize: function() {
+            // A hash map that compares keys by reference equality
+            this.idToState = new ns.HashMap(
+                    function(a, b) {
+                        return a == b;
+                    }, function(obj) {
+                        return ns.ObjectUtils.hashCode(obj)
+                    }
+            );
+            
+            
+        },
+        
+        getIdToState: function() {
+            return this.idToState;
+        }
+            
+            
+            // The root key of the object having been serialized
+            // (The key may point to an array object)
+            //this.rootKey = null;
+//            this.idToState = {};
+//        },
+        
+    }); 
+    
+
+    ns.Serializer = Class.create({
+        initialize: function() {
+            this.labelToClass = {};
+            
+            
+            this.labelToFnSerialize = {};
+            this.labelToFnDeserialize = {};
+            
+            
+            // A map from class name to a prototype instance
+            // (i.e. an instance of the class without any ctor arguments passed in)
+            // This is a 'cache' attribute; prototypes are created on demand
+            this.classNameToPrototype = {};
+        },
+    
+        registerOverride: function(classLabel, fnSerialize, fnDeserialize) {
+            this.labelToFnSerialize[classLabel] = fnSerialize;
+            this.labelToFnDeserialize[classLabel] = fnDeserialize;
+        },
+        
+        
+        /**
+         * Find and index all classes that appear as members of the namespace (a JavaScript Object)
+         * 
+         */
+        indexClasses: function(ns) {
+            var tmp = this.findClasses(ns);
+            
+            _(this.labelToClass).extend(tmp);
+            
+            return tmp;
+        },
+        
+
+        findClasses: function(ns) {
+            var result = {};
+            
+            _(ns).each(function(k) {            
+                var classLabel = k.classLabel;
+                if(classLabel) {
+                    result[classLabel] = k;
+                }           
+            });
+            
+            return result;
+        },
+
+
+        /**
+         * Returns the class label for an instance
+         * 
+         */
+        getLabelForClass: function(obj) {
+            var objProto = Object.getPrototypeOf(obj);
+            
+            var result;
+            _(this.labelToClass).find(function(ctor, classLabel) {
+                if(objProto == ctor.prototype) {
+                    result = classLabel;
+                    return true;
+                }           
+            });
+
+            return result;
+        },
+        
+
+        getClassForLabel: function(classLabel) {
+            var result;
+            _(this.labelToClass).find(function(ctor, cl) {
+                if(cl === classLabel) {
+                    result = ctor
+                    return true;
+                }           
+            });
+
+            return result;      
+        },
+
+
+        serialize: function(obj, context) {
+            var result;
+            
+            if(_(obj).isFunction()) {
+                result = undefined;
+            }
+            else if(_(obj).isArray()) {
+                var self = this;
+                
+                result = _(obj).map(function(item) {
+                    var r = self.serialize(item);
+                    return r;
+                });
+            }
+            else if(_(obj).isObject()) {
+                // Try to figure out the class of the object
+                
+                
+                //var objClassLabel = obj.classLabel;
+                
+                var classLabel = this.getLabelForClass(obj);
+
+                
+                var proto;
+                if(classLabel) {
+                    
+                    var proto = this.classNameToPrototype[classLabel];
+                        
+                    if(!proto) {
+                        var clazz = this.getClassForLabel(classLabel);
+
+                        if(clazz) {
+
+                            try {
+                                proto = new clazz();
+                                this.classNameToPrototype[classLabel] = proto;
+                            }
+                            catch(e) {
+                                console.log('[WARN] Failed to create a prototype instance of class ' + classLabel, e);
+                            }
+                        }
+                    }                        
+                }
+                    
+                
+//              if(obj.toJson) {
+//                  // TODO: There must also be a fromJson method
+//                  result = obj.toJson();
+//              } else {
+
+                result = {}; 
+                
+                var self = this;
+                _(obj).each(function(v, k) {
+                    
+                    
+                    var val = self.serialize(v);
+                    
+                    if(proto) {
+                        var compVal = proto[k];
+                        var isEqual = _(val).isEqual(compVal) || (val == null && compVal == null); 
+                        //console.log('is equal: ', isEqual, 'val: ', val, 'compVal: ', compVal);
+                        if(isEqual) {
+                            return;
+                        }
+                    }
+                    
+                    if(!_(val).isUndefined()) {
+                        result[k] = val;
+                    }
+                    //serialize(clazz, k, v);
+                });
+
+//              }
+                
+                if(classLabel) {
+                    result['classLabel'] = classLabel;
+                }
+            }
+            else {
+                result = obj;
+                //throw "unhandled case for " + obj;
+            }
+
+            return result;
+        },
+
+        
+        deserialize: function(obj) {
+            var result;
+            
+            if(_(obj).isArray()) {
+                result = _(obj).map(function(item) {
+                    var r = this.deserialize(item);
+                    return r;
+                });                
+            }
+            else if(_(obj).isObject()) {
+
+                var classLabel = obj.classLabel;
+                
+                if(classLabel) {
+                    var classFn = this.getClassForLabel(classLabel);
+                    
+                    if(!classFn) {
+                        throw 'Unknown class label encountered in deserialization: ' + classLabel;
+                    }
+                    
+                    result = new classFn();
+                } else {
+                    result = {};
+                }
+                
+            
+                var self = this;
+                _(obj).each(function(v, k) {
+                    
+                    if(k === 'classLabel') {
+                        return;
+                    }
+                    
+                    var val = self.deserialize(v);
+                    
+                    result[k] = val;
+                });
+
+
+            } else {
+                result = obj;
+            }
+            
+        
+            return result;
+        }
+    });
+    
+    ns.Serializer.singleton = new ns.Serializer();
+
+})();
+(function() {
 	
 	var ns = Jassa.rdf;
 	
@@ -1328,6 +1585,8 @@ module["exports"] = Jassa;
 	 * TODO Clarify who is responsible for .equals() (just do it like in Jena - Is it the base class or its derivations?)
 	 */
 	ns.Node = Class.create({
+        classLabel: 'Node',
+	    
 		getUri: function() {
 			throw "not a URI node";
 		},
@@ -1426,6 +1685,8 @@ module["exports"] = Jassa;
 	
 
 	ns.Node_Concrete = Class.create(ns.Node, {
+        classLabel: 'Node_Concrete',
+
 		isConcrete: function() {
 			return true;
 		}
@@ -1433,6 +1694,8 @@ module["exports"] = Jassa;
 
 
 	ns.Node_Uri = Class.create(ns.Node_Concrete, {
+	    classLabel: 'Node_Uri',
+	    
 		initialize: function(uri) {
 			this.uri = uri;
 		},
@@ -1451,6 +1714,8 @@ module["exports"] = Jassa;
 	});
 	
 	ns.Node_Blank = Class.create(ns.Node_Concrete, {
+        classLabel: 'Node_Blank',
+
 		// Note: id is expected to be an instance of AnonId
 		initialize: function(anonId) {
 			this.anonId = anonId;
@@ -1478,12 +1743,16 @@ module["exports"] = Jassa;
     // I don't understand the purpose of this class right now
 	// i.e. how it is supposed to differ from ns.Var
 	ns.Node_Variable = Class.create(ns.Node_Fluid, {
+        classLabel: 'Node_Variable',
+
 		isVariable: function() {
 			return true;
 		}
 	});
 
 	ns.Var = Class.create(ns.Node_Variable, {
+        classLabel: 'Var',
+
 		initialize: function(name) {
 			this.name = name;
 		},
@@ -1499,6 +1768,8 @@ module["exports"] = Jassa;
 
 	
 	ns.Node_Literal = Class.create(ns.Node_Concrete, {
+        classLabel: 'Node_Literal',
+	    
 		initialize: function(literalLabel) {
 			this.literalLabel = literalLabel;
 		},
@@ -1551,6 +1822,8 @@ module["exports"] = Jassa;
 	 *   - No getDatatypeUri method, as there is dtype.getUri() 
 	 */
 	ns.LiteralLabel = Class.create({
+        classLabel: 'LiteralLabel',
+	    
 		/**
 		 * Note: The following should hold:
 		 * dtype.parse(lex) == val
@@ -1611,6 +1884,8 @@ module["exports"] = Jassa;
 	});
 	
 	ns.AnonIdStr = Class.create(ns.AnonId, {
+        classLabel: 'AnonIdStr',
+
 		initialize: function(label) {
 			this.label = label;
 		},
@@ -1637,6 +1912,8 @@ module["exports"] = Jassa;
 	
 	
 	ns.DatatypeLabelInteger = Class.create(ns.DatatypeLabel, {
+        classLabel: 'DatatypeLabelInteger',
+	    
 		parse: function(str) {
 			var result = parseInt(str, 10);
 			return result;
@@ -1648,7 +1925,9 @@ module["exports"] = Jassa;
 	});
 
 	ns.DatatypeLabelFloat = Class.create(ns.DatatypeLabel, {
-		parse: function(str) {
+        classLabel: 'DatatypeLabelFloat',
+
+        parse: function(str) {
 			var result = parseFloat(str);
 			return result;
 		},
@@ -1659,6 +1938,8 @@ module["exports"] = Jassa;
 	});
 	
 	ns.DatatypeLabelString = Class.create(ns.DatatypeLabel, {
+        classLabel: 'DatatypeLabelString',
+
 		parse: function(str) {
 			return str
 		},
@@ -1670,6 +1951,8 @@ module["exports"] = Jassa;
 
 	
 	ns.RdfDatatype = Class.create({
+        classLabel: 'RdfDatatype',
+
 		getUri: function() {
 			throw "Not implemented";
 		},
@@ -1689,6 +1972,8 @@ module["exports"] = Jassa;
 
 
 	ns.RdfDatatypeBase = Class.create(ns.RdfDatatype, {
+        classLabel: 'RdfDatatypeBase',
+
 		initialize: function(uri) {
 			this.uri = uri;
 		},
@@ -1699,6 +1984,8 @@ module["exports"] = Jassa;
 	});
 	
 	ns.RdfDatatype_Label = Class.create(ns.RdfDatatypeBase, {
+        classLabel: 'RdfDatatype_Label',
+
 		initialize: function($super, uri, datatypeLabel) {
 			$super(uri);
 			
@@ -2066,6 +2353,9 @@ module["exports"] = Jassa;
 	};
 	
 	ns.Triple = Class.create({
+	    
+        classLabel: 'Triple',
+
 		initialize: function(s, p, o) {
 			this.s = s;
 			this.p = p;
@@ -2103,7 +2393,7 @@ module["exports"] = Jassa;
 			var result = [];
 			ns.Triple.pushVar(result, this.s);
 			ns.Triple.pushVar(result, this.p);
-			ns.Triple.pushVar(result, this.o);	
+			ns.Triple.pushVar(result, this.o);
 			return result;
 		}
 	});
@@ -2113,7 +2403,7 @@ module["exports"] = Jassa;
 		
 		if(node.isVariable()) {
 		    var c = _(array).some(function(item) {
-		        node.equals(item);
+		        return node.equals(item);
 		    });
 		    
 		    if(!c) {
@@ -2128,181 +2418,6 @@ module["exports"] = Jassa;
 	
 })();
 
-
-
-
-//
-//
-//// This node approach is broken...
-//// I thought I could get away with something cheap because this is JavaScript,
-//// but it turns out that good engineering stays good regardless of the target language.
-//
-//ns.Node = function(type, value, language, datatype) {
-//	this.type = type;
-//	this.value = value;
-//	this.language = language;
-//	this.datatype = datatype;
-//};
-//
-//
-//ns.Node.classLabel = 'Node';
-//
-//ns.Node.prototype = {
-//		getValue: function() {
-//			return this.value;
-//		},
-//
-//		getType: function() {
-//			return this.type;
-//		},
-//
-//		getLanguage: function() {
-//			return this.language;
-//		},
-//
-//		getDatatype: function() {
-//			return this.datatype;
-//		},
-//		
-//		equals: function(that) {
-//			var result = _.isEqual(this, that);
-//			return result;
-//		},
-//		
-//		/**
-//		 * Warning: If fnNodeMap does not return a copy, the node will not be copied.
-//		 * In general, Node should be considered immutable!
-//		 * 
-//		 * @param fnNodeMap
-//		 * @returns
-//		 */
-//		copySubstitute: function(fnNodeMap) {
-//			var sub = fnNodeMap(this);		 
-//			var result = (sub == undefined || sub == null) ? this : sub;
-//			return result;
-//		},
-//		
-//		toString: function() {
-//			switch(this.type) {
-//			case -1: return "?" + this.value;
-//			case 0: return "_:" + this.value;
-//			case 1: return "<" + this.value + ">";
-//			case 2: return "\"" + this.value + "\"" + (this.language ? "@" + this.language : "");
-//			case 3: return "\"" + this.value + "\"" + (this.datatype ? "^^<" + this.datatype + ">" : "");
-//			}
-//		},
-//		
-//		isVar: function() {
-//			return this.type === -1;
-//		},
-//		
-//		isUri: function() {
-//			return this.type === ns.Node.Type.Uri;
-//		},
-//		
-//		toJson: function() {
-//			throw "Not implemented yet";
-//		}
-//};
-//
-//
-//ns.Node.Type = {};
-//ns.Node.Type.Variable = -1;
-//ns.Node.Type.BlankNode = 0;
-//ns.Node.Type.Uri = 1;
-//ns.Node.Type.PlainLiteral = 2;
-//ns.Node.Type.TypedLiteral = 3;
-//
-//ns.Node.fromJson = function(talisJson) {
-//	return ns.Node.fromTalisJson(talisJson);
-//};
-//
-//ns.Node.fromTalisJson = function(talisJson) {
-//	var result = new ns.Node();
-//	
-//	if(!talisJson || typeof(talisJson.type) === 'undefined') {
-//		throw "Invalid node: " + JSON.stringify(talisJson);
-//	}
-//	
-//	var type;
-//	switch(talisJson.type) {
-//	case 'bnode': type = 0; break;
-//	case 'uri': type = 1; break;
-//	case 'literal': type = 2; break;
-//	case 'typed-literal': type = 3; break;
-//	default: console.log("Unknown type: '" + talisJson.type + "'");
-//	}
-//	
-//	result.type = type;
-//	result.value = talisJson.value;
-//	result.language = talisJson.lang ? talisJson.lang : "";
-//	result.datatype = talisJson.datatype ? talisJson.datatype : "";
-//
-//	// TODO I thought it happened that a literal hat a datatype set, but maybe I was imaginating things
-//	if(result.datatype) {
-//		result.type = 3;
-//	}
-//	
-//	return result;
-//	/*
-//	var type = -2;
-//	if(node.type == "uri") {
-//		
-//	}*/
-//};
-//
-//ns.Node.isNode = function(candidate) {
-//	return candidate && (candidate instanceof ns.Node);
-//};
-//
-//ns.Node.isUri = function(candidate) {
-//	return ns.Node.isNode(candidate) && candidate.isUri();		
-//};
-//
-//
-//ns.Node.parse = function(str) {
-//	var str = str.trim();
-//	
-//	if(strings.startsWith(str, '<') && strings.endsWith(str, '>')) {		
-//		return ns.Node.uri(str.substring(1, str.length - 1));
-//	} else {
-//		throw "Node.parse not implemented for argument: " + str;
-//	}
-//};
-//
-//ns.Node.uri = function(str) {
-//	return new ns.Node(1, str, null, null);
-//};
-//	
-//ns.Node.v = function(name) {
-//	return new ns.Node(-1, name, null, null);
-//};
-//
-////ns.Node.blank = function(id) {
-////	return new ns.Node(0, id, null, null);
-////};
-////
-////ns.Node.plainLit = function(value, language) {
-////	return new ns.Node(2, value, language, null);
-////};
-////
-////ns.Node.typedLit = function(value, datatype) {
-////	return new ns.Node(3, value, null, datatype);
-////};
-//
-//ns.Node.forValue = function(value) {
-//	var dt = typeof value;		
-//	if(dt === "number") {
-//		return ns.Node.typedLit(value, "http://www.w3.org/2001/XMLSchema#double");
-//	} else {
-//		console.error("No handling for datatype ", td);
-//	}
-//	
-//	//alert(dt);		
-//};
-//
-//
-//// BAM! Overwrite the node class
 (function() {
 
 	var rdf = Jassa.rdf;
@@ -16040,7 +16155,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 	var ns = Jassa.facete;
 	
 	
-	
+	/**
+	 * TODO: Actually this object could take the FacetTreeConfig as its sole config argument (the other arg would be the service)
+	 * 
+	 */
 	ns.FacetTreeServiceImpl = Class.create({
 		initialize: function(facetService, expansionSet, expansionMap, facetStateProvider, pathToFilterString) { //facetStateProvider) {
 			this.facetService = facetService;
@@ -16398,10 +16516,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 
 	ns.FacetServiceImpl = Class.create(ns.FacetService, {
-		initialize: function(sparqlService, facetConceptGenerator, labelMap) {
+		initialize: function(sparqlService, facetConceptGenerator, labelMap, facetNodeTaggerManager) {
 			this.sparqlService = sparqlService;
 			this.facetConceptGenerator = facetConceptGenerator;
 			this.labelMap = labelMap;
+			this.facetNodeTaggerManager = facetNodeTaggerManager;
 		},
 
 /*		
@@ -16499,7 +16618,27 @@ or simply: Angular + Magic Sparql = Angular Marql
 
                 return r;
             });
+            
 
+            // Apply tags
+            result = this.pipeTagging(result);
+
+            return result;
+		},
+		
+		
+		pipeTagging: function(promise) {
+		    var self = this;
+		    
+            var result = promise.pipe(function(items) {
+                //ns.FacetTreeUtils.applyTags(items, self.pathTagger);
+                
+                _(items).each(function(item) {
+                    self.facetNodeTaggerManager.applyTags(item);
+                });
+                
+                return items;
+            });            
             return result;
 		},
 		
@@ -16534,6 +16673,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 	        }).fail(function() {
 	           deferred.fail();
 	        });
+	        
+            // Apply tags
+            deferred = this.pipeTagging(deferred);
+
 	        
 	        return deferred.promise(); 
 		},
@@ -16635,6 +16778,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 		    }).fail(function() {
 		        result.fail.apply(this, arguments);
 		    });
+		    
+            // Apply tags
+            result = this.pipeTagging(result);
+
 		    
 		    return result;
 		},
@@ -17213,10 +17360,12 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.facete;
     
     ns.FacetConfig = Class.create({
-        initialize: function(baseConcept, rootFacetNode, constraintManager) {
+        initialize: function(baseConcept, rootFacetNode, constraintManager, facetNodeTaggerMangager) {
             this.baseConcept = baseConcept;
             this.rootFacetNode = rootFacetNode;
             this.constraintManager = constraintManager;
+            
+            this.facetNodeTaggerMangager = facetNodeTaggerMangager || new ns.ItemTaggerManager();
         },
         
         getBaseConcept: function() {
@@ -17241,6 +17390,10 @@ or simply: Angular + Magic Sparql = Angular Marql
         
         setConstraintManager: function(constraintManager) {
             this.constraintManager = constraintManager;
+        },
+        
+        getFacetNodeTaggerManager: function() {
+            return this.facetNodeTaggerManager;
         },
 
         /**
@@ -17280,7 +17433,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.FacetTreeConfig = Class.create({
         initialize: function(facetConfig, labelMap, expansionSet, expansionMap, facetStateProvider, pathToFilterString) {
             this.facetConfig = facetConfig || ns.FacetConfig.createDefaultFacetConfig();
-            this.labelMap = labelMap; // TODO Use some default
+
+            this.labelMap = labelMap; // TODO Use some default (shouldn't the label map be part of the facetConfig???)
             this.expansionSet = expansionSet || new util.HashSet();
             this.expansionMap = expansionMap || new util.HashMap();
             this.facetStateProvider = facetStateProvider || new ns.FacetStateProviderImpl(10);
@@ -17362,7 +17516,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
                 labelMap = labelMap || new sponate.SponateUtils.createDefaultLabelMap();
                 
-                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap);
+                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap, facetNodeTaggerManager);
 
                 return facetService;
             },
@@ -18303,19 +18457,27 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         applyTags: function(facetNode) {
-            var pathTagger = this.pathTagger;
             
+            ns.FacetTreeUtils.applyTags(this.pathTagger, facetNode);
+            
+            return facetNode;
+        }
+    });
+    
+
+    ns.FacetTreeUtils = {
+        applyTags: function(pathTagger, facetNode) {
             var facetNodes = util.TreeUtils.flattenTree(facetNode, 'children');
-            
+        
             _(facetNodes).each(function(node) {
                 var path = node.item.getPath();
                 var tags = pathTagger.createTags(path);
                 _(node).extend(tags);
-                
-                //console.log('tagging: ' + path, tags, node);
             });
+            
+            return facetNode;
         }
-    });
+    };
     
     
     /**
