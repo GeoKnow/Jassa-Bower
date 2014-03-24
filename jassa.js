@@ -17516,7 +17516,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
                 labelMap = labelMap || new sponate.SponateUtils.createDefaultLabelMap();
                 
-                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap, facetNodeTaggerManager);
+                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap, facetConfig.getFacetNodeTaggerManager());
 
                 return facetService;
             },
