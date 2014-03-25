@@ -18071,24 +18071,23 @@ or simply: Angular + Magic Sparql = Angular Marql
 
     
     ns.FacetTableConfig = Class.create({
-        initialize: function(facetConfig, paths, tableMod) {
+        initialize: function(facetConfig, tableMod, paths) {
             this.facetConfig = facetConfig;
-            this.paths = paths || new util.ArrayList();
             this.tableMod = tableMod || new ns.TableMod();
+            this.paths = paths || new util.ArrayList();
         },
         
         getFacetConfig: function() {
             return this.facetConfig;
         },
-        
-        getPaths: function() {
-            return this.paths;
-        },
-        
+
         getTableMod: function() {
             return this.tableMod;
         },
-        
+
+        getPaths: function() {
+            return this.paths;
+        },        
 
         togglePath: function(path) {
             // Updates the table model accordingly
@@ -18565,8 +18564,22 @@ or simply: Angular + Magic Sparql = Angular Marql
      * Item Tagger for paths of whether they are linked as a table column
      * 
      */
-    ns.ItemTaggerTablePath = Class.create(ns.ItemTagger, {
-        initialize: function(tableMod) {
+    ns.ItemTaggerMembership = Class.create(ns.ItemTagger, {
+        initialize: function(collection) {
+            this.collection = collection;
+        },
+        
+        createTags: function(item) {
+            var isContained = this.collection.contains(item);
+            
+            var result = { isContained: isContained };
+            //console.log('table: ' + path, isContained);
+            return result;
+        }
+    });
+    /*
+    ns.PathTaggerFacetTableConfig = Class.create(ns.ItemTagger, {
+        initialize: function(tableConfig) {
             this.tableMod = tableMod;
         },
         
@@ -18579,6 +18592,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             return result;
         }
     });
+    */
     
     
     
