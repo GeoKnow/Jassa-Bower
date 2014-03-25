@@ -12235,11 +12235,19 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 			
 			
-		    //if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
-			//if (ngScope && !ngScope.$root.$$phase) {
-			if (ngScope && !ngScope.$$phase) {
-		        ngScope.$apply();
-		    }
+			var doRefresh = function() {
+			
+    		    //if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
+    			//if (ngScope && !ngScope.$root.$$phase) {
+    			if (ngScope && !ngScope.$$phase) {
+    		        ngScope.$apply();
+    		    }
+    			else {
+    			    setTimeout(doRefresh, 25);
+    			}
+			}
+			
+			doRefresh();
 			
 		}).fail(function(data) {
 			ngDeferred.reject(data);
