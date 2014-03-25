@@ -16183,7 +16183,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 		    
 			var result = this.fetchFacetTreeRec(path, parentFacetItem);
 			
-			result.done(function(facetTree) { console.log("FacetTree: ", facetTree); });
+			result.done(function(facetTree) {
+			    console.log("FacetTree: ", facetTree);
+			});
 			
 			return result;
 		},
@@ -16485,10 +16487,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	
 	ns.FacetItem = Class.create({
-		initialize: function(path, node, distinctValueCount) {
+		initialize: function(path, node, distinctValueCount, tags) {
 			this.path = path;
 			this.node = node;
 			this.distinctValueCount = distinctValueCount;
+			this.tags = tags || {};
 		},
 
 //		getUri: functino() {
@@ -16504,6 +16507,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		getDistinctValueCount: function() {
 			return this.distinctValueCount;
+		},
+		
+		getTags: function() {
+		    return this.tags;
+		},
+		
+		setTags: function(tags) {
+		    this.tags = tags;
 		}
 	});
 	
@@ -16516,11 +16527,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 
 	ns.FacetServiceImpl = Class.create(ns.FacetService, {
-		initialize: function(sparqlService, facetConceptGenerator, labelMap, facetNodeTaggerManager) {
+		initialize: function(sparqlService, facetConceptGenerator, labelMap, pathTaggerManager) {
 			this.sparqlService = sparqlService;
 			this.facetConceptGenerator = facetConceptGenerator;
 			this.labelMap = labelMap;
-			this.facetNodeTaggerManager = facetNodeTaggerManager;
+			this.pathTaggerManager = pathTaggerManager;
 		},
 
 /*		
@@ -16636,8 +16647,10 @@ or simply: Angular + Magic Sparql = Angular Marql
                 //ns.FacetTreeUtils.applyTags(items, self.pathTagger);
                 
                 _(items).each(function(item) {
-                    //self.facetNodeTaggerManager.applyTags(item);
-                    ns.FacetTreeUtils.applyTags(self.facetNodeTaggerManager, item);
+                    //self.pathTaggerManager.applyTags(item);
+                    //ns.FacetTreeUtils.applyTags(self.pathTaggerManager, item);
+                    var tags = self.pathTaggerManager.createTags(item.getPath());
+                    item.setTags(tags);
                 });
                 
                 return items;
@@ -16747,8 +16760,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 		    
 		    var self = this;
 		    promise.done(function(facetItems) {
-		        var selectiveItems = _(facetItems).filter(function(x) { return x.getDistinctValueCount() < scanLimit; });
-		        var selectiveProperties = _(selectiveItems).map(function(x) { return x.getNode(); });
+		        var selectiveItems = _(facetItems).filter(function(x) {
+		            return x.getDistinctValueCount() < scanLimit;
+		        });
+
+		        var selectiveProperties = _(selectiveItems).map(function(x) {
+		            return x.getNode();
+		        });
+
                 // Check which properties had scan counts below the threshold
 		        
 		        var p = self.fetchFacetValueCountsFull(path, isInverse, selectiveProperties, isNegated, scanLimit);
@@ -17366,12 +17385,12 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.facete;
     
     ns.FacetConfig = Class.create({
-        initialize: function(baseConcept, rootFacetNode, constraintManager, facetNodeTaggerManager) {
+        initialize: function(baseConcept, rootFacetNode, constraintManager, pathTaggerManager) {
             this.baseConcept = baseConcept;
             this.rootFacetNode = rootFacetNode;
             this.constraintManager = constraintManager;
             
-            this.facetNodeTaggerManager = facetNodeTaggerManager || new ns.ItemTaggerManager();
+            this.pathTaggerManager = pathTaggerManager || new ns.ItemTaggerManager();
         },
         
         getBaseConcept: function() {
@@ -17398,8 +17417,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             this.constraintManager = constraintManager;
         },
         
-        getFacetNodeTaggerManager: function() {
-            return this.facetNodeTaggerManager;
+        getPathTaggerManager: function() {
+            return this.pathTaggerManager;
         },
 
         /**
@@ -17522,7 +17541,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
                 labelMap = labelMap || new sponate.SponateUtils.createDefaultLabelMap();
                 
-                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap, facetConfig.getFacetNodeTaggerManager());
+                var facetService = new ns.FacetServiceImpl(sparqlService, facetConceptGenerator, labelMap, facetConfig.getPathTaggerManager());
 
                 return facetService;
             },
@@ -18472,6 +18491,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     
 
     ns.FacetTreeUtils = {
+        //TODO Probably not used anymore
         applyTags: function(pathTagger, facetNode) {
             var facetNodes = util.TreeUtils.flattenTree(facetNode, 'children');
         
