@@ -12229,17 +12229,17 @@ or simply: Angular + Magic Sparql = Angular Marql
 		jqPromise.done(function(data) {
 			
 			var d = fn ? fn(data) : data;
-			ngScope.$apply(function() {
-			    ngDeferred.resolve(d);
-			});
+//			ngScope.$apply(function() {
+			ngDeferred.resolve(d);
+//			});
 
+			
+			
 		    //if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
 			//if (ngScope && !ngScope.$root.$$phase) {
-			/*
 			if (ngScope && !ngScope.$$phase) {
 		        ngScope.$apply();
 		    }
-		    */
 			
 		}).fail(function(data) {
 			ngDeferred.reject(data);
