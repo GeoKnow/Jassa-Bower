@@ -18142,14 +18142,14 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         createDataConcept: function() {
-            var emptyPath = new facete.Path();
+            var emptyPath = new ns.Path();
             var paths = this.paths.getArray().slice(0);
 
             if(!this.paths.contains(emptyPath)) {
                 paths.push(emptyPath);
             }
             
-            var dataElementFactory = new facete.ElementFactoryFacetPaths(this.facetConfig, paths);
+            var dataElementFactory = new ns.ElementFactoryFacetPaths(this.facetConfig, paths);
             var dataElement = dataElementFactory.createDataElement();
             
             var rootFacetNode = this.facetConfig.getRootFacetNode();
