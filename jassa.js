@@ -16638,7 +16638,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 });
                 
                 return items;
-            });            
+            });
+
             return result;
 		},
 		
@@ -16675,10 +16676,11 @@ or simply: Angular + Magic Sparql = Angular Marql
 	        });
 	        
             // Apply tags
-            deferred = this.pipeTagging(deferred);
-
+	        var tmp = this.pipeTagging(deferred);
 	        
-	        return deferred.promise(); 
+	        return tmp.promise();
+            //deferred = this.pipeTagging(deferred);
+	        //return deferred.promise(); 
 		},
 		
 		/**
