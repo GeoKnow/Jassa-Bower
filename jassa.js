@@ -12226,7 +12226,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var d = fn ? fn(data) : data;
 			ngDeferred.resolve(d);
 
-		    if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
+		    //if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
+			//if (ngScope && !ngScope.$root.$$phase) {
+			if (ngScope && !ngScope.$$phase) {
 		        ngScope.$apply();
 		    }
 			
@@ -16180,6 +16182,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                 parentFacetItem = new ns.FacetItem(path, rdf.NodeFactory.createUri(path.getLastStep().getPropertyName()), null);                
             }
 
+            // Apply tags for the root element
 		    
 			var result = this.fetchFacetTreeRec(path, parentFacetItem);
 			
