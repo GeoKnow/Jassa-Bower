@@ -17365,12 +17365,12 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.facete;
     
     ns.FacetConfig = Class.create({
-        initialize: function(baseConcept, rootFacetNode, constraintManager, facetNodeTaggerMangager) {
+        initialize: function(baseConcept, rootFacetNode, constraintManager, facetNodeTaggerManager) {
             this.baseConcept = baseConcept;
             this.rootFacetNode = rootFacetNode;
             this.constraintManager = constraintManager;
             
-            this.facetNodeTaggerMangager = facetNodeTaggerMangager || new ns.ItemTaggerManager();
+            this.facetNodeTaggerManager = facetNodeTaggerManager || new ns.ItemTaggerManager();
         },
         
         getBaseConcept: function() {
