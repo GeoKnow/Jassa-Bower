@@ -18150,7 +18150,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             }
             
             var dataElementFactory = new ns.ElementFactoryFacetPaths(this.facetConfig, paths);
-            var dataElement = dataElementFactory.createDataElement();
+            var dataElement = dataElementFactory.createElement();
             
             var rootFacetNode = this.facetConfig.getRootFacetNode();
             var dataVar = rootFacetNode.getVar();
