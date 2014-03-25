@@ -16636,7 +16636,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 //ns.FacetTreeUtils.applyTags(items, self.pathTagger);
                 
                 _(items).each(function(item) {
-                    self.facetNodeTaggerManager.applyTags(item);
+                    //self.facetNodeTaggerManager.applyTags(item);
+                    ns.FacetTreeUtils.applyTags(self.facetNodeTaggerManager, item);
                 });
                 
                 return items;
