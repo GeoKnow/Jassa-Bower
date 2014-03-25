@@ -12239,7 +12239,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
     		    //if (ngScope && ngScope.$root.$$phase != '$apply' && ngScope.$root.$$phase != '$digest') {
     			//if (ngScope && !ngScope.$root.$$phase) {
-    			if (ngScope && !ngScope.$$phase) {
+    			if (ngScope && !ngScope.$$phase && !ngScope.$root.$$phase) {
     		        ngScope.$apply();
     		    }
     			else {
