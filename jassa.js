@@ -5259,10 +5259,12 @@ module["exports"] = Jassa;
         },
         
         createElement: function() {
-            var elements = _(this.elementFactories).map(function(elementFactory) {
+            var elements = _(this.elementFactories).chain().map(function(elementFactory) {
                 var r = elementFactory.createElement();
                 return r;
-            });
+            }).filter(function(x) {
+                return x != null;
+            }).value();
             
             var result = new sparql.ElementGroup(elements);
             
@@ -13006,8 +13008,29 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 (function() {
 
+    
+    var sparql = Jassa.sparql;
+    
 	var ns = Jassa.facete;
 
+	
+	/**
+	 * Wrapper that returns the element of 'factored' concepts
+	 */
+	ns.ElementFactoryConceptFactory = Class.create(sparql.ElementFactory, {
+	    initialize: function(conceptFactory) {
+	        this.conceptFactory = conceptFactory;
+	    },
+	    
+	    createElement: function() {
+	        var concept = this.conceptFactory.createElement();
+	        var result = concept.getElement();
+	        return result;
+	    }
+	});
+	    
+
+	
 	ns.ConceptFactory = Class.create({
 		createConcept: function() {
 			throw "not overridden";
@@ -13032,8 +13055,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return this.concept;
 		}
 	});
-	
-	
+		
 	ns.ConceptFactoryFacetConfig = Class.create(ns.ConceptFactory, {
 	    initialize: function(facetConfig, path, excludeSelfConstraints) {
 	        this.facetConfig = facetConfig;
