@@ -13023,8 +13023,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 	    },
 	    
 	    createElement: function() {
-	        var concept = this.conceptFactory.createElement();
-	        var result = concept.getElement();
+	        var concept = this.conceptFactory.createConcept();
+	        var result = concept ? concept.getElement() : null;
+	        
 	        return result;
 	    }
 	});
