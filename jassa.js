@@ -12011,8 +12011,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             var label = this.exprEvaluator.eval(this.labelExpr, binding);
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
-            if(this.bestMatchNode == null) {
-                this.bestMatchNode = subject;
+            if(this.bestMatchNode == null && subject.isConstant()) {
+                this.bestMatchNode = subject.getConstant().asNode();
             }
             
             // Determine the score vector for the property and the language
@@ -12067,13 +12067,15 @@ or simply: Angular + Magic Sparql = Angular Marql
         
         getJson: function() {
             var result = null;
-            if(this.bestMatchNode) {
-                if(this.bestMatchNode.isUri()) {
-                    var uri = this.bestMatchNode.getUri();
+            var bestMatchNode = this.bestMatchNode;
+            
+            if(bestMatchNode) {
+                if(bestMatchNode.isUri()) {
+                    var uri = bestMatchNode.getUri();
                     result = ns.extractLabelFromUri(uri);
                 }
                 else {
-                    result = this.bestMatchNode.getLiteralValue();
+                    result = bestMatchNode.getLiteralValue();
                 }
             }
 
@@ -12274,8 +12276,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             var label = this.exprEvaluator.eval(this.labelExpr, binding);
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
-            if(this.bestMatchNode == null) {
-                this.bestMatchNode = subject;
+            if(this.bestMatchNode == null && subject.isConstant()) {
+                this.bestMatchNode = subject.getConstant().asNode();
             }
             
             // Determine the score vector for the property and the language
@@ -12330,13 +12332,15 @@ or simply: Angular + Magic Sparql = Angular Marql
         
         getJson: function() {
             var result = null;
-            if(this.bestMatchNode) {
-                if(this.bestMatchNode.isUri()) {
-                    var uri = this.bestMatchNode.getUri();
+            var bestMatchNode = this.bestMatchNode;
+            
+            if(bestMatchNode) {
+                if(bestMatchNode.isUri()) {
+                    var uri = bestMatchNode.getUri();
                     result = ns.extractLabelFromUri(uri);
                 }
                 else {
-                    result = this.bestMatchNode.getLiteralValue();
+                    result = bestMatchNode.getLiteralValue();
                 }
             }
 
