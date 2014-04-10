@@ -11950,6 +11950,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 
         var result = (i == str.length) ? str : str.substring(i + 1); 
 
+        if(result === '') {
+            result = str; // Rather show the URI than an empty string
+        }
+        
         return result;
     }
     
@@ -12200,6 +12204,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 
         var result = (i == str.length) ? str : str.substring(i + 1); 
 
+        if(result === '') {
+            result = str; // Rather show the URI than an empty string
+        }
+        
         return result;
     }
     
