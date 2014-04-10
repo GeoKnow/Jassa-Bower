@@ -12012,7 +12012,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
             if(this.bestMatchNode == null) {
-                bestMatchNode = subject;
+                this.bestMatchNode = subject;
             }
             
             // Determine the score vector for the property and the language
@@ -12275,7 +12275,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
             if(this.bestMatchNode == null) {
-                bestMatchNode = subject;
+                this.bestMatchNode = subject;
             }
             
             // Determine the score vector for the property and the language
