@@ -557,7 +557,7 @@ module["exports"] = Jassa;
 
 	        _(arr).each(function(item) {
 	            var key = fnKey(item);
-	            map.put(key, item);
+	            result.put(key, item);
 	        });
 	        
 	        return result;
