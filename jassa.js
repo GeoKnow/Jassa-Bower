@@ -11948,7 +11948,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         
         var i = Math.max(a, b);
 
-        var result = (i == str.length) ? str : str.substring(i + 1); 
+        var result = (i === str.length) ? str : str.substring(i + 1); 
 
         if(result === '') {
             result = str; // Rather show the URI than an empty string
@@ -12011,6 +12011,9 @@ or simply: Angular + Magic Sparql = Angular Marql
             var label = this.exprEvaluator.eval(this.labelExpr, binding);
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
+            if(this.bestMatchNode == null) {
+                bestMatchNode = subject;
+            }
             
             // Determine the score vector for the property and the language
             var propertyScore = -1;
@@ -12065,7 +12068,13 @@ or simply: Angular + Magic Sparql = Angular Marql
         getJson: function() {
             var result = null;
             if(this.bestMatchNode) {
-                result = this.bestMatchNode.getLiteralValue();
+                if(this.bestMatchNode.isUri()) {
+                    var uri = this.bestMatchNode.getUri();
+                    result = ns.extractLabelFromUri(uri);
+                }
+                else {
+                    result = this.bestMatchNode.getLiteralValue();
+                }
             }
 
             return result;
@@ -12202,7 +12211,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         
         var i = Math.max(a, b);
 
-        var result = (i == str.length) ? str : str.substring(i + 1); 
+        var result = (i === str.length) ? str : str.substring(i + 1); 
 
         if(result === '') {
             result = str; // Rather show the URI than an empty string
@@ -12265,6 +12274,9 @@ or simply: Angular + Magic Sparql = Angular Marql
             var label = this.exprEvaluator.eval(this.labelExpr, binding);
             var subject = this.exprEvaluator.eval(this.subjectExpr, binding);
            
+            if(this.bestMatchNode == null) {
+                bestMatchNode = subject;
+            }
             
             // Determine the score vector for the property and the language
             var propertyScore = -1;
@@ -12319,7 +12331,13 @@ or simply: Angular + Magic Sparql = Angular Marql
         getJson: function() {
             var result = null;
             if(this.bestMatchNode) {
-                result = this.bestMatchNode.getLiteralValue();
+                if(this.bestMatchNode.isUri()) {
+                    var uri = this.bestMatchNode.getUri();
+                    result = ns.extractLabelFromUri(uri);
+                }
+                else {
+                    result = this.bestMatchNode.getLiteralValue();
+                }
             }
 
             return result;
