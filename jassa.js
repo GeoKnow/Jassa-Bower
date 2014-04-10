@@ -16948,7 +16948,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	                return rdf.NodeFactory.parseRdfTerm(doc.id);
 	            });
 	            */
-	            var map = util.MapUtils.createHashIndex(docs, 'id');
+	            var map = util.MapUtils.indexBy(docs, 'id');
 	            var properties = _(docs).pluck('id');
 
 	            if(properties.length === 0) {
