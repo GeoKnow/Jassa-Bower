@@ -541,6 +541,29 @@ module["exports"] = Jassa;
 	
 	var ns = Jassa.util;
 	
+	ns.MapUtils = {
+	    indexBy: function(arr, keyOrFn, result) {
+	        result = result || new ns.HashMap();
+
+	        var fnKey;
+
+            if(_(keyOrFn).isString()) {
+                fnKey = function(obj) {
+                    return obj[keyOrFn];
+                }
+            } else {
+                fnKey = keyOrFn;
+            }
+
+	        _(arr).each(function(item) {
+	            var key = fnKey(item);
+	            map.put(key, item);
+	        });
+	        
+	        return result;
+	    }
+	};
+	
 	ns.MultiMapUtils = {
 	    get: function(obj, key) {
             return (key in obj)
@@ -16388,8 +16411,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var service = Jassa.service;
 	var rdf = Jassa.rdf;
-    var sponate = Jassa.sponate;
-	
+    var sponate = Jassa.sponate;	
+    var util = Jassa.util;
+
 	var ns = Jassa.facete;
 	
 	
@@ -16726,11 +16750,17 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	
 	ns.FacetItem = Class.create({
-		initialize: function(path, node, distinctValueCount, tags) {
+	    /**
+	     * doc: The json document returned via the sponate mapping of the labelMap.
+	     * Should at least contain the fields 'displayLabel' and 'hiddenLabels'.
+	     * 
+	     */
+		initialize: function(path, node, distinctValueCount, tags, doc) {
 			this.path = path;
 			this.node = node;
 			this.distinctValueCount = distinctValueCount;
 			this.tags = tags || {};
+			this.doc = doc || {};
 		},
 
 //		getUri: functino() {
@@ -16742,6 +16772,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		getPath: function() {
 			return this.path;
+		},
+		
+		getDoc: function() {
+		    return this.doc;
+		},
+
+		setDoc: function(doc) {
+		    this.doc = doc;
 		},
 		
 		getDistinctValueCount: function() {
@@ -16910,6 +16948,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	                return rdf.NodeFactory.parseRdfTerm(doc.id);
 	            });
 	            */
+	            var map = util.MapUtils.createHashIndex(docs, 'id');
 	            var properties = _(docs).pluck('id');
 
 	            if(properties.length === 0) {
@@ -16921,6 +16960,13 @@ or simply: Angular + Magic Sparql = Angular Marql
 
                 promise.done(function(r) {
                     console.log('PropertyCounts', r);
+                    
+                    // This feels a bit hacky, as it sets an attribute on another functions result
+                    _(r).each(function(item) {
+                        var doc = map.get(r.getNode());
+                        item.setDoc(doc);
+                    });
+                    
                     deferred.resolve(r);
                 }).fail(function() {
                     deferred.fail();
