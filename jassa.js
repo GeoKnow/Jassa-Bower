@@ -16963,7 +16963,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                     
                     // This feels a bit hacky, as it sets an attribute on another functions result
                     _(r).each(function(item) {
-                        var doc = map.get(r.getNode());
+                        var doc = map.get(item.getNode());
                         item.setDoc(doc);
                     });
                     
