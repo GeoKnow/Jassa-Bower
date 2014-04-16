@@ -7611,8 +7611,8 @@ module["exports"] = Jassa;
         },
         
         createSparqlService: function(sparqlServiceIri, defaultGraphIris) {
-            var tmp = new service.SparqlServiceHttp(sparqlServiceIri, defaultGraphIris);
-            tmp = new service.SparqlServiceCache(tmp);
+            var tmp = new ns.SparqlServiceHttp(sparqlServiceIri, defaultGraphIris);
+            tmp = new ns.SparqlServiceCache(tmp);
             
             var hash = tmp.getStateHash();
             
@@ -9427,6 +9427,16 @@ module["exports"] = Jassa;
 		    join.isLeftJoin = isLeftJoin;
 		    
 		    return this;
+		},
+		
+		/**
+		 * Specify a set of nodes for which to perform the lookup
+		 * 
+		 * Use of .concept(...) and .nodes(..) is mutually exclusive
+		 * 
+		 */
+		nodes: function(_nodes) {
+		    // TODO Implement me
 		},
 		
 		/**
