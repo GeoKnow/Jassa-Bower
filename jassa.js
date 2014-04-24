@@ -1481,9 +1481,7 @@ module["exports"] = Jassa;
 
 
         serialize: function(obj, context) {
-            if(!context) {
-                context = new ns.SerializationContext();
-            }
+            context = context || new ns.SerializationContext();
             
             var data = this.serializeRec(obj, context);
             
@@ -1499,7 +1497,6 @@ module["exports"] = Jassa;
         serializeRec: function(obj, context) {
             var result;
 
-
             //var id = context.getOrCreateId(obj);
             
             // Get or create an ID for the object
@@ -1508,9 +1505,8 @@ module["exports"] = Jassa;
             
             if(!id) {
                 id = context.nextId();
+                objToId.put(obj, id);
             }
-
-            objToId.put(id, obj);
             
             
             var idToState = context.getIdToState();
@@ -1524,18 +1520,6 @@ module["exports"] = Jassa;
             else if(_(obj).isFunction()) {
                 result = undefined;
             }
-            else if(_(obj).isArray()) {
-                var self = this;
-                
-                var items = _(obj).map(function(item) {
-                    var r = self.serializeRec(item, context);
-                    return r;
-                });
-                
-                result = {
-                    items: items
-                };
-            }
             else if(_(obj).isObject()) {
             
                 result = {};
@@ -1545,6 +1529,32 @@ module["exports"] = Jassa;
                 
                 var classLabel = this.getLabelForClass(obj);
 
+                
+                // TODO Source of Confusion: We use proto to refer toa prototypal instance of some class for the sake of
+                // getting the default values as well as an JavaScript's object prototype... Fix the naming.
+                
+                // TODO Not sure how stable this proto stuff is across browsers
+                var isPrimitiveObject = function(obj) {
+                    var result = _(obj).isUndefined() || _(obj).isNull() || _(obj).isBoolean() || _(obj).isNumber() || _(obj).isDate() || _(obj).isString() || _(obj).isRegExp(); 
+                    return result;
+                };
+                
+                var isSimpleMap = function(obj) {
+                    var objProto = obj.prototype || obj.__proto__;
+                    
+                    var isObject = _(obj).isObject && !isPrimitiveObject(obj);
+ 
+                    var result = isObject && (objProto == null || objProto == Object.__proto__.__proto__);
+                    
+                    return result;
+                };
+                
+                var isSimpleObject = isPrimitiveObject(obj) || isSimpleMap(obj) || _(obj).isArray();
+                
+                if(classLabel == null && !isSimpleObject) {
+                    console.log('Failed to serialize instance without class label', obj);
+                    throw 'Failed to serialize instance without class label';
+                }
                 
                 var proto;
                 if(classLabel) {
@@ -1571,25 +1581,9 @@ module["exports"] = Jassa;
                     proto = {};
                 }
 
-                
-                /*
-                var objChainItem = obj;
-                
-                while(objChainItem != null) {
-                    var propNames = protoChainItem.getOwnPropertyNames();
-                    
-                    
-                    objChainItem = obj.prototype;
-                    protoChainItem = proto ? proto.prototype;
-                }
-                */
-                
-//              if(obj.toJson) {
-//                  // TODO: There must also be a fromJson method
-//                  result = obj.toJson();
-//              } else {
 
-                data = {}; 
+                /*
+                var data = {}; 
                 
                 var self = this;
                 _(obj).each(function(v, k) {
@@ -1609,24 +1603,48 @@ module["exports"] = Jassa;
                     }
                     //serialize(clazz, k, v);
                 });
+                */
+                var data = this.serializeAttrs(obj, context, proto);
 
 //              }
 
-                var x = {
-                    attrs: data
-                };
-
+                var x = {};
+                
                 if(classLabel) {
                     x.classLabel = classLabel;
                 }
-                
-                
+
+                if(_(data).keys().length > 0) {
+                    x['attrs'] = data.attrs;
+
+                    if(data.parent != null) {
+                        x['parent'] = data.parent;
+                    }
+                }
+                    
+
+                // If the object is also an array, serialize its members
+                // Array members are treated just like objects
+                /*
+                var self = this;
+                if(_(obj).isArray()) {
+                    var items = _(obj).map(function(item) {
+                        var r = self.serializeRec(item, context);
+                        return r;
+                    });
+                    
+                    x['items'] = items;
+                }                  
+                */
+                if(_(obj).isArray()) {
+                    x['length'] = obj.length;
+                }
+
                 idToState[id] = x;
 
                 result = {
                     ref: id
-                };
-                
+                };                
             }
             else {
                 //result = {type: 'literal', 'value': obj};//null; //obj;
@@ -1642,52 +1660,179 @@ module["exports"] = Jassa;
         },
 
         
-        deserialize: function(obj) {
-            var result;
-            
-            if(_(obj).isArray()) {
-                result = _(obj).map(function(item) {
-                    var r = this.deserialize(item);
-                    return r;
-                });                
-            }
-            else if(_(obj).isObject()) {
+        /**
+         * Serialize an object's state, thereby taking the prototype chain into account
+         * 
+         * TODO: We assume that noone messed with the prototype chain after an instance of
+         * an 'conceptual' class has been created.
+         * 
+         */
+        serializeAttrs: function(obj, context, proto) {
 
-                var classLabel = obj.classLabel;
-                
-                if(classLabel) {
-                    var classFn = this.getClassForLabel(classLabel);
-                    
-                    if(!classFn) {
-                        throw 'Unknown class label encountered in deserialization: ' + classLabel;
-                    }
-                    
-                    result = new classFn();
-                } else {
-                    result = {};
-                }
-                
+
+            var current = obj;
+            var result = {};
+            var parent = result;
             
+//            while(current != null) {
+                var data = parent['attrs'] = {};
+
+                
                 var self = this;
-                _(obj).each(function(v, k) {
+
+                var keys = _(obj).keys(); 
+                _(keys).each(function(k) {
+                    var v = obj[k];
+
+                //_(obj).each(function(v, k) {
                     
-                    if(k === 'classLabel') {
+                    // Only traverse own properties
+//                    if(!_(obj).has(k)) {
+//                        return;
+//                    }
+                    
+                    var val = self.serializeRec(v, context);
+                    
+                    var compVal = proto[k];
+                    var isEqual = _(val).isEqual(compVal) || (val == null && compVal == null); 
+                    //console.log('is equal: ', isEqual, 'val: ', val, 'compVal: ', compVal);
+                    if(isEqual) {
                         return;
                     }
                     
-                    var val = self.deserialize(v);
+                    if(!_(val).isUndefined()) {
+                        data[k] = val;
+                    }
+                    //serialize(clazz, k, v);
+                });
+
+//                current = current.__proto__;
+//                if(current) {
+//                    parent = parent['parent'] = {};
+//                }
+//            };
+            
+            return result;
+        },
+        
+        
+        /**
+         * @param graph: Object created by serialize(foo)
+         * 
+         */
+        deserialize: function(graph, context) {
+            //context = context || new ns.SerializationContext();
+            
+            var ref = graph.root;
+            var idToState = graph.idToState;
+            var idToObj = {};
+                        
+            var result = this.deserializeRef(ref, idToState, idToObj);
+            
+            return result;
+        },
+        
+        deserializeRef: function(attr, idToState, idToObj) {
+            var ref = attr.ref;
+            var value = attr.value;
+            
+            var result;
+            
+            if(ref != null) {
+                var objectExists = ref in idToObj;
+
+                if(objectExists) {
+                    result = idToObj[ref];
+                }
+                else {
+                    result = this.deserializeState(ref, idToState, idToObj);
+                    
+//                    if(result == null) {
+//                        console.log('Could not deserialize: ' + JSON.stringify(state) + ' with context ' + idToState);
+//                        throw 'Deserialization error';
+//                    }
+                }
+            }
+            else {
+                result = value;
+            }
+            /*
+            else if(!_(value).isUndefined()) {
+                result = value;
+            }
+            else if(_(value).isUndefined()) {
+                // Leave the value 
+            }
+            else {
+                console.log('Should not come here');
+                throw 'Should not come here';
+            }
+            */
+            return result;
+        },
+
+        deserializeState: function(id, idToState, idToObj) {
+            
+            var result;
+            
+            var state = idToState[id];
+
+            if(state == null || !_(state).isObject()) {
+                console.log('State must be an object, was: ', state);
+                throw 'Deserialization error';
+            }
+
+            var attrs = state.attrs;
+            //var items = state.items;
+            var classLabel = state.classLabel;
+            var length = state.length;
+            
+            if(classLabel) {
+                var classFn = this.getClassForLabel(classLabel);
+                
+                if(!classFn) {
+                    throw 'Unknown class label encountered in deserialization: ' + classLabel;
+                }
+                
+                result = new classFn();
+            } else if(length != null) { //items != null) {
+                result = [];
+            } else {
+                result = {};
+            }
+            
+            // TODO get the id
+            idToObj[id] = result;
+            
+        
+            var self = this;
+            if(attrs != null) {
+                var keys = _(attrs).keys(); 
+                _(keys).each(function(k) {
+                    var ref = attrs[k];
+
+                    var val = self.deserializeRef(ref, idToState, idToObj);
                     
                     result[k] = val;
                 });
-
-
-            } else {
-                result = obj;
             }
             
+            if(length != null) {
+                result.length = length;
+            }
+            /*
+            if(items != null) {
+                _(items).each(function(item) {
+                    var r = self.deserializeRef(item, idToState, idToObj);
+
+                    result.push(r);
+                });                
+            }
+            */
         
             return result;
         }
+        
     });
     
     ns.Serializer.singleton = new ns.Serializer();
@@ -2476,7 +2621,7 @@ module["exports"] = Jassa;
 	
 	ns.Triple = Class.create({
 	    
-        classLabel: 'Triple',
+        classLabel: 'jassa.rdf.Triple',
 
 		initialize: function(s, p, o) {
 			this.s = s;
@@ -2757,6 +2902,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.SparqlString = Class.create({
+	    classLabel: 'jassa.sparql.SparqlString',
+	    
 		initialize: function(value, varsMentioned) {			
 			this.value = value;
 			this.varsMentioned = varsMentioned ? varsMentioned : [];
@@ -3507,6 +3654,8 @@ module["exports"] = Jassa;
 
 
 	ns.ExprString = Class.create(ns.Expr, {
+	    classLabel: 'jassa.sparql.ExprString',
+	    
 		initialize: function(sparqlString) {
 			this.sparqlString = sparqlString;
 		},
@@ -4192,14 +4341,15 @@ module["exports"] = Jassa;
 	    
 
 	
-	ns.ElementNamedGraph = function(element, namedGraphNode) {
-		this.element = element;
-		this.namedGraphNode = namedGraphNode;
-	};
-
-	ns.ElementNamedGraph.classLabel = 'ElementNamedGraph';
+	ns.ElementNamedGraph = Class.create(ns.Element, {
+	    
+	    classLabel: 'jassa.sparql.ElementNamedGraph',
+	    
+	    initialize: function(element, namedGraphNode) {
+	        this.element = element;
+	        this.namedGraphNode = namedGraphNode;
+	    },
 	
-	ns.ElementNamedGraph.prototype = {
 		getArgs: function() {
 			return [this.element];
 		},
@@ -4235,7 +4385,7 @@ module["exports"] = Jassa;
 		flatten: function() {
 			return new ns.ElementNamedGraph(this.element.flatten(), this.namedGraphNode);
 		}
-	};
+	});
 	
 
 		
@@ -4247,6 +4397,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.ElementString = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementString',
+	    
 		initialize: function(sparqlString) {
 //			if(_(sparqlString).isString()) {
 //				debugger;
@@ -4304,14 +4456,14 @@ module["exports"] = Jassa;
 	*/
 	
 	
-	ns.ElementSubQuery = function(query) {
-		this.query = query;
-	};
-	
-	ns.ElementSubQuery.classLabel = "ElementSubQuery";
-	
-	ns.ElementSubQuery.prototype = {
-		getArgs: function() {
+	ns.ElementSubQuery = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementSubQuery',
+
+	    initialize: function(query) {
+	        this.query = query;
+	    },
+
+	    getArgs: function() {
 			return [];
 		},
 	
@@ -4340,20 +4492,20 @@ module["exports"] = Jassa;
 		getVarsMentioned: function() {
 		    return this.query.getVarsMentioned();
 		}
-	};
+	});
 	
-	ns.ElementFilter = function(expr) {
-	    if(_(expr).isArray()) {
-	        console.log('[WARN] Array argument for filter is deprecated');
-	        expr = ns.andify(expr);
-	    }
-	    
-		this.expr = expr;
-	};
-	
-	ns.ElementFilter.classLabel = 'ElementFilter';
+	ns.ElementFilter = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementFilter',
 
-	ns.ElementFilter.prototype = {
+	    initialize: function(expr) {
+    	    if(_(expr).isArray()) {
+    	        console.log('[WARN] Array argument for filter is deprecated');
+    	        expr = ns.andify(expr);
+    	    }
+    	    
+    		this.expr = expr;
+	    },
+	
 		getArgs: function() {
 			return [];
 		},
@@ -4397,16 +4549,16 @@ module["exports"] = Jassa;
 			
 			return "Filter(" + this.expr + ")";
 		}
-	};
+	});
 	
 	
-	ns.ElementOptional = function(element) {
-		this.optionalPart = element;
-	};
+	ns.ElementOptional = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementOptional',
+	    
+	    initialize: function(element) {
+	        this.optionalPart = element;
+	    },
 	
-	ns.ElementOptional.classLabel = 'ElementOptional';
-
-	ns.ElementOptional.prototype = {
 		getArgs: function() {
 			return [this.optionalPart];
 		},
@@ -4436,16 +4588,16 @@ module["exports"] = Jassa;
 		toString: function() {
 			return "Optional {" + this.optionalPart + "}";
 		}
-	};
+	});
 	
 	
-	ns.ElementUnion = function(elements) {
-		this.elements = elements ? elements : [];
-	};
+	ns.ElementUnion = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementUnion',
 
-	ns.ElementUnion.classLabel = 'ElementUnion';
+	    initialize: function(elements) {
+	        this.elements = elements ? elements : [];
+	    },
 
-	ns.ElementUnion.prototype = {
 		getArgs: function() {
 			return this.elements;
 		},
@@ -4478,17 +4630,17 @@ module["exports"] = Jassa;
 		toString: function() {
 			return "{" + this.elements.join("} Union {") + "}";
 		}
-	};
+	});
 
 	
-	ns.ElementTriplesBlock = function(triples) {
-		this.triples = triples ? triples : [];
-	};
-	
-	ns.ElementTriplesBlock.classLabel = 'ElementTriplesBlock';
-	
-	ns.ElementTriplesBlock.prototype = {
-		getArgs: function() {
+	ns.ElementTriplesBlock = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementTriplesBlock',
+
+	    initialize: function(triples) {
+	        this.triples = triples ? triples : [];
+	    },
+
+	    getArgs: function() {
 			return [];
 		},
 
@@ -4535,10 +4687,12 @@ module["exports"] = Jassa;
 		toString: function() {
 			return this.triples.join(" . ");
 		}
-	};
+	});
 	
 
 	ns.ElementGroup = Class.create(ns.Element, {
+	    classLabel: 'jassa.sparql.ElementGroup',
+
 	    initialize: function(elements) {
 		    this.elements = elements ? elements : [];
 	    },
@@ -4584,8 +4738,6 @@ module["exports"] = Jassa;
 		}
 	});
 	
-	ns.ElementGroup.classLabel = 'ElementGroup';
-
 	
 
 	
@@ -4720,12 +4872,14 @@ module["exports"] = Jassa;
 //	};
 //	
 	
-	ns.VarExprList = function() {
-		this.vars = [];
-		this.varToExpr = {};
-	};	
-	
-	ns.VarExprList.prototype = {
+	ns.VarExprList = Class.create({
+	    classLabel: 'jassa.sparql.VarExprList',
+
+	    initialize: function() {
+	        this.vars = [];
+	        this.varToExpr = {};
+	    },
+
 		getVarList: function() {
 			return this.vars;
 		},
@@ -4805,45 +4959,49 @@ module["exports"] = Jassa;
 			var result = arr.join(" ");
 			return result;
 		}
-	};
+	});
 	
 	
-	ns.SortCondition = function(expr, direction) {
-		this.expr = expr;
-		this.direction = direction;
-	};
-	
-	ns.SortCondition.prototype = {
-			getExpr: function() {
-				return this.expr;
-			},
-			
-			getDirection: function() {
-				return this.direction;
-			},
-			
-			toString: function() {
-				var result;
-				if(this.direction >= 0) {
-					result = "Asc(" + this.expr + ")";
-				} else if(this.direction < 0) {
-					result = "Desc(" + this.expr + ")";
-				}
-				
-				return result;
-			},
-			
-			copySubstitute: function(fnNodeMap) {
-				var exprCopy = this.expr.copySubstitute(fnNodeMap);
-				
-				var result = new ns.SortCondition(exprCopy, this.direction);
-				
-				return result;
+	ns.SortCondition = Class.create({
+	    classLabel: 'jassa.sparql.SortCondition',
+	    
+	    initialize: function(expr, direction) {
+	        this.expr = expr;
+	        this.direction = direction;
+	    },
+
+		getExpr: function() {
+			return this.expr;
+		},
+		
+		getDirection: function() {
+			return this.direction;
+		},
+		
+		toString: function() {
+			var result;
+			if(this.direction >= 0) {
+				result = "Asc(" + this.expr + ")";
+			} else if(this.direction < 0) {
+				result = "Desc(" + this.expr + ")";
 			}
-	};
+			
+			return result;
+		},
+		
+		copySubstitute: function(fnNodeMap) {
+			var exprCopy = this.expr.copySubstitute(fnNodeMap);
+			
+			var result = new ns.SortCondition(exprCopy, this.direction);
+			
+			return result;
+		}
+	});
 	
 	
 	ns.Query = Class.create({
+	    classLabel: 'jassa.sparql.Query',
+	    
 		initialize: function() {
 			this.type = 0; // select, construct, ask, describe
 			
@@ -8058,6 +8216,8 @@ module["exports"] = Jassa;
 	
 	
     ns.AccumulatorFactoryFn = Class.create({
+        classLabel: 'AccumulatorFactoryFn',
+        
         initialize: function(fn, referencedVars) {
             this.fn = fn;
             this.referencedVars = referencedVars;
@@ -8074,6 +8234,8 @@ module["exports"] = Jassa;
     });
     
     ns.AccumulatorFn = Class.create({
+        classLabel: 'AccumulatorFn',
+        
         initialize: function(fn) {
             this.fn = fn;
             // TODO Is this really a node, or an arbitrary object?
@@ -8110,6 +8272,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.AttrPath = Class.create({
+        classLabel: 'AttrPath',
+
 		initialize: function(steps) {
 			this.steps = steps ? steps : [];
 		},
@@ -8221,6 +8385,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.Pattern = Class.create({
+        classLabel: 'Pattern',
+
 		callVisitor: function(name, self, args) {
 			var result = ns.callVisitor(name, self, args);
 			return result;
@@ -8365,26 +8531,28 @@ module["exports"] = Jassa;
 	};
 	
 	ns.PatternCustomAgg = Class.create(ns.Pattern, {
-	   initialize: function(customAggFactory) {
-	       this.customAggFactory = customAggFactory;
-	   },
-	
-	   getCustomAggFactory: function() {
-	       return this.customAggFactory;
-	   },
-	   
-	   getClassName: function() {
-	       return 'PatternCustomAgg';
-	   },
-	   
-       getVarsMentioned: function() {
-           var result = this.customAggFactory.getVarsMentioned();
-           return result;
-       },
+	    classLabel: 'PatternCustomAgg',
+    
+	    initialize: function(customAggFactory) {
+	        this.customAggFactory = customAggFactory;
+	    },
+    
+	    getCustomAggFactory: function() {
+	        return this.customAggFactory;
+	    },
        
-       getSubPatterns: function() {
-           return [];
-       }
+	    getClassName: function() {
+	        return 'PatternCustomAgg';
+	    },
+       
+	    getVarsMentioned: function() {
+	        var result = this.customAggFactory.getVarsMentioned();
+	        return result;
+	    },
+       
+	    getSubPatterns: function() {
+	        return [];
+	    }
 	});
 	
 	/**
@@ -8395,6 +8563,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.PatternLiteral = Class.create(ns.Pattern, {
+	    classLabel: 'PatternLiteral',
+
 		initialize: function(expr, aggregatorName) {
 			this.expr = expr;
 			this.aggregatorName = aggregatorName;
@@ -8433,6 +8603,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.PatternObject = Class.create(ns.Pattern, {
+	    classLabel: 'PatternObject',
+
 		initialize: function(attrToPattern) {
 
 		    //console.log('attrToPattern', attrToPattern);
@@ -8543,6 +8715,9 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.PatternMap = Class.create(ns.Pattern, {
+	    classLabel: 'PatternMap',
+
+	    
 		initialize: function(keyExpr, subPattern, isArray) {
 			this.keyExpr = keyExpr;
 			this.subPattern = subPattern;
@@ -8601,6 +8776,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.PatternRef = Class.create(ns.Pattern, {
+	    classLabel: 'PatternRef',
+
 		initialize: function(stub) {
 			this.stub = stub;
 			this.refSpec = null;
@@ -8810,6 +8987,9 @@ module["exports"] = Jassa;
 	 */
 		
 	ns.Aggregator = Class.create({
+	    classLabel: 'Aggregator',
+
+	    
 		getPattern: function() {
 			throw new 'override me';
 		},
@@ -8821,26 +9001,31 @@ module["exports"] = Jassa;
 
 	
 	ns.AggregatorCustomAgg = Class.create(ns.Aggregator, {
-	   initialize: function(patternCustomAgg, customAgg) {
-	       this.customAgg = customAgg;
-	   },
+	    classLabel: 'AggregatorCustomAgg',
+	    
+	    
+	    initialize: function(patternCustomAgg, customAgg) {
+	        this.customAgg = customAgg;
+	    },
 	   
-	   getPattern: function() {
-	       return this.pattenCustomAgg;
-	   },
+	    getPattern: function() {
+	        return this.pattenCustomAgg;
+	    },
 	   
-	   process: function(binding, context) {
-	       this.customAgg.processBinding(binding);
-	   },
+	    process: function(binding, context) {
+	        this.customAgg.processBinding(binding);
+	    },
 	   
-	   getJson: function(retainRdfNodes) {
-	       var result = this.customAgg.getJson(retainRdfNodes);
-	       return result;
-	   }
+	    getJson: function(retainRdfNodes) {
+	        var result = this.customAgg.getJson(retainRdfNodes);
+	        return result;
+	    }
 	});
 	
 	
 	ns.AggregatorLiteral = Class.create(ns.Aggregator, {
+	    classLabel: 'AggregatorLiteral',
+
 		initialize: function(patternLiteral) {
 			this.patternLiteral = patternLiteral;
 			
@@ -8917,7 +9102,8 @@ module["exports"] = Jassa;
 	});
 	
 	ns.AggregatorObject = Class.create(ns.Aggregator, {
-		
+	    classLabel: 'AggregatorObject',
+
 		/**
 		 * An aggregator factory must have already taken
 		 * care of initializing the attrToAggr map.
@@ -8951,6 +9137,8 @@ module["exports"] = Jassa;
 	
 	
 	ns.AggregatorMap = Class.create(ns.Aggregator, {
+	    classLabel: 'AggregatorMap',
+
 		initialize: function(patternMap) {
 			this.patternMap = patternMap;
 			
@@ -9055,6 +9243,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.AggregatorRef = Class.create(ns.Aggregator, {
+	    classLabel: 'AggregatorRef',
+
 		initialize: function(patternRef) {
 			// th
 			this.name = '' + (ns.AggregatorRefCounter++);
@@ -9113,6 +9303,8 @@ module["exports"] = Jassa;
 	 * 
 	 */
 	ns.AggregatorFactory = Class.create({
+	    classLabel: 'AggregatorFactory',
+
 		initialize: function() {
 			//this.pattern = pattern;
 			
@@ -11079,6 +11271,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	
 	ns.Mapping = Class.create({
+	    classLabel: 'jassa.sponate.Mapping',
+	    
 		initialize: function(name, pattern, elementFactory, patternRefs) {
 			// TODO Remove the name attribute
 		    this.name = name;
@@ -12633,6 +12827,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.sponate;
 
     ns.GeoMapFactory = Class.create({
+        classLabel: 'GeoMapFactory',
+        
         initialize: function(baseSponateView, bboxExprFactory) {
             //this.template = template;
             //this.baseElement = baseElement;
@@ -13648,6 +13844,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 	});
 	
 	ns.ConstraintSpecPathValue = Class.create(ns.ConstraintSpecSinglePath, {
+        classLabel: 'jassa.facete.ConstraintSpecPathValue',
+
 		initialize: function($super, name, path, value) {
 			$super(name, path);
 			this.value = value;
@@ -13687,6 +13885,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 * 
 	 */
 	ns.ConstraintSpecExpr = Class.create(ns.ConstraintSpec, {
+        classLabel: 'jassa.facete.ConstraintSpecExpr',
+
 		/**
 		 * expr: sparql.Expr
 		 * varToPath: util.Map<Var, Path>
@@ -17844,6 +18044,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     var ns = Jassa.facete;
     
     ns.FacetConfig = Class.create({
+        classLabel: 'jassa.facete.FacetConfig',
+        
         initialize: function(baseConcept, rootFacetNode, constraintManager, pathTaggerManager) {
             this.baseConcept = baseConcept;
             this.rootFacetNode = rootFacetNode;
@@ -17915,6 +18117,8 @@ or simply: Angular + Magic Sparql = Angular Marql
      * 
      */
     ns.FacetTreeConfig = Class.create({
+        classLabel: 'jassa.facete.FacetTreeConfig',
+        
         initialize: function(facetConfig, labelMap, expansionSet, expansionMap, facetStateProvider, pathToFilterString) {
             this.facetConfig = facetConfig || ns.FacetConfig.createDefaultFacetConfig();
 
