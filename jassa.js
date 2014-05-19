@@ -2885,6 +2885,109 @@ module["exports"] = Jassa;
 	 */
 	ns.Node = Jassa.rdf.Node;
 
+	
+	
+	
+	
+    ns.PrefixMappingImpl = Class.create({
+        initialize: function(prefixes) {
+            this.prefixes = prefixes ? prefixes : {};
+        },
+        
+        expandPrefix: function(prefixed) {
+            throw 'Not implemented yet - sorry';
+        },
+        
+        getNsPrefixMap: function() {
+            return this.prefixes;
+        },
+        
+        getNsPrefixURI: function(prefix) {
+            return this.prefixes[prefix];
+        },
+        
+        /**
+         * Answer the prefix for the given URI, or null if there isn't one.
+         */
+        getNsURIPrefix: function(uri) {
+            var result = null;
+            var bestNs = null;
+            
+            _(this.prefixes).each(function(u, prefix) {
+                if(_(uri).startsWith(u)) {
+                    if(!bestNs || (u.length > bestNs.length)) {
+                        result = prefix;
+                        bestNs = u;
+                    }
+                }
+            });
+   
+           return result;
+        },
+
+        qnameFor: function(uri) {
+            
+        },
+        
+        removeNsPrefix: function(prefix) {
+            delete this.prefixes[prefix];
+        },
+        
+        samePrefixMappingAs: function(other) {
+            throw 'Not implemented yet - Sorry';
+        },
+        
+        setNsPrefix: function(prefix, uri) {
+            this.prefixes[prefix] = uri;
+            
+            return this;
+        },
+        
+        setNsPrefixes: function(obj) {
+            var json = _(obj.getNsPrefixMap).isFunction() ? obj.getNsPrefixMap() : obj;
+
+            var self = this;
+            _(json).each(function(uri, prefix) {
+                self.setNsPrefix(prefix, uri);
+            });
+            
+            return this;
+        },
+
+        shortForm: function(uri) {
+            var prefix = this.getNsPrefixURI(uri);
+            
+            var result;
+            if(prefix) {
+                var u = this.prefixes[u];
+                var qname = uri.substring(u.length);
+                
+                result = prefix + ':' + qname;
+            } else {
+                result = uri;
+            }
+            
+            return resul;t
+        },
+        
+        addPrefix: function(prefix, urlBase) {
+            this.prefixes[prefix] = urlBase;
+        },
+        
+        getPrefix: function(prefix) {
+            var result = this.prefixes[prefix];
+            return result;
+        },
+        
+        addJson: function(json) {
+            _.extend(this.prefixes, json);
+        },
+        
+        getJson: function() {
+            return this.prefixes;
+        }
+    });
+
 })();(function() {
 
 	var rdf = Jassa.rdf;
@@ -3824,7 +3927,18 @@ module["exports"] = Jassa;
 		},
 		
 		makeNode: function(node) {
-			return new ns.NodeValueNode(node);
+		    var result = new ns.NodeValueNode(node);
+		    return result;
+
+		    /*
+		    var result;
+		    if(node.isVariable()) {
+		        return new ns.ExprVar(node);
+ 		    } else {
+ 		        result = new ns.NodeValueNode(node);
+ 		    }
+		    return result;
+		    */
 		}
 
 		
@@ -4007,6 +4121,8 @@ module["exports"] = Jassa;
 	var xsd = Jassa.vocab.xsd;
 
 	
+	var util = Jassa.util;
+
 	var ns = Jassa.sparql;
 
 	
@@ -4871,7 +4987,8 @@ module["exports"] = Jassa;
 //		return result;
 //	};
 //	
-	
+
+	// http://jena.apache.org/documentation/javadoc/arq/com/hp/hpl/jena/sparql/core/VarExprList.html
 	ns.VarExprList = Class.create({
 	    classLabel: 'jassa.sparql.VarExprList',
 
@@ -4880,8 +4997,14 @@ module["exports"] = Jassa;
 	        this.varToExpr = {};
 	    },
 
+	    
+	    // TODO Deprecate
 		getVarList: function() {
 			return this.vars;
+		},
+		
+		getVars: function() {
+		    return this.vars;  
 		},
 			
 		getExprMap: function() {
@@ -4889,11 +5012,25 @@ module["exports"] = Jassa;
 		},
 
 		add: function(v, expr) {
+		    if(this.contains(v)) {
+		       console.log('VarExprList already contained ' + v);
+		       throw 'Bailing out';
+		    }
+		    
 			this.vars.push(v);
 			
 			if(expr) {
 				this.varToExpr[v.getName()] = expr;
 			}
+		},
+		
+		contains: function(v) {
+		    var result = _(this.vars).some(function(item) {
+		        var r = v.equals(item);
+		        return r;
+		    });
+		    
+		    return result;
 		},
 		
 		getExpr: function(v) {
@@ -4903,9 +5040,23 @@ module["exports"] = Jassa;
 		    return result;
 		},
 		
-		
+		// TODO Remove this method - add all is for another varExprList
+		/*
 		addAll: function(vars) {
+		    console.log('DEPRECATED - DONT USE');
 			this.vars.push.apply(this.vars, vars);
+		},
+		*/
+		
+		// Addition will overwrite existing vars
+		addAll: function(varExprList) {
+		    var vs = varExprList.getVars();
+		    
+		    var self = this;
+		    _(vs).each(function(v) {
+		        var expr = varExprList.getExpr(v);
+		        self.add(v, expr);
+		    });		    
 		},
 		
 		entries: function() {
@@ -5008,8 +5159,9 @@ module["exports"] = Jassa;
 			this.distinct = false;
 			this.reduced = false;
 			
-			this._isResultStar = false;
+			this.resultStar = false;
 			
+			// TODO Rename to project(ion)
 			this.projectVars = new ns.VarExprList();
 			//this.projectVars = []; // The list of variables to appear in the projection
 			//this.projectExprs = {}; // A map from variable to an expression
@@ -5031,25 +5183,41 @@ module["exports"] = Jassa;
 		},
 	
 		isResultStar: function() {
-		    return this._isResultStar;
+		    return this.resultStar;
 		},
 		
-		setResultStar: function(_isResultStar) {
-		  this._isResultStar =  _isResultStar;
+		setResultStar: function(enable) {
+	        this.resultStar = (enable === true) ? true : false;
 		},
 		
+		getQueryPattern: function() {
+		    return this.elements[0];
+		},
+		
+		setQueryPattern: function(element) {
+		    util.ArrayUtils.clear(this.elements);
+		    this.elements.push(element);
+		},
+		
+		// TODO Deprecate
 		getElements: function() {
 			return this.elements;
 		},
 				
+		// TODO This should only return the variables!!
 		getProjectVars: function() {
 			return this.projectVars;
 		},
 
+		// TODO Remove this method
 		setProjectVars: function(projectVars) {
 			this.projectVars = projectVars;
 		},
 		
+		getProject: function() {
+		    return this.projectVars;
+		},
+
 		getGroupBy: function() {
 			return this.groupBy;
 		},
@@ -5126,7 +5294,7 @@ module["exports"] = Jassa;
 			result.type = this.type;
 			result.distinct = this.distinct;
 			result.reduced = this.reduced;
-			result._isResultStar = this._isResultStar;
+			result.resultStar = this.resultStar;
 			result.limit = this.limit;
 			result.offset = this.offset;
 	 				
@@ -5206,8 +5374,21 @@ module["exports"] = Jassa;
 			}
 		},
 		
+		isDistinct: function() {
+		    return this.distinct;
+		},
+		
+		
 		setDistinct: function(enable) {
 			this.distinct = (enable === true) ? true : false;
+		},
+		
+		isReduced: function() {
+		    return this.reduced;
+		},
+		
+		setReduced: function(enable) {
+            this.reduced = (enable === true) ? true : false;		    
 		},
 
 		toString: function() {
@@ -5220,7 +5401,7 @@ module["exports"] = Jassa;
 
 			
 		toStringProjection: function() {
-			if(this._isResultStar) {
+			if(this.resultStar) {
 				return "*";
 			}
 
@@ -7804,7 +7985,7 @@ module["exports"] = Jassa;
             return [];
         }
         
-        var projectVarList = query.getProjectVars().getVarList();
+        var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
         var projectVarNameList = sparql.VarUtils.getVarNames(projectVarList);
 
         var result = _(projectVarNameList).map(function(varName) {
@@ -7893,7 +8074,7 @@ module["exports"] = Jassa;
             var result = qe.execSelect().pipe(function(rs) {
                 var data = [];
                 
-                var projectVarList = query.getProjectVars().getVarList();
+                var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
                 
                 while(rs.hasNext()) {
                     var binding = rs.next();
@@ -7912,7 +8093,7 @@ module["exports"] = Jassa;
         getSchema: function() {
             var query = this.query;
 
-            //var projectVarList = query.getProjectVars().getVarList();
+            //var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
             //var projectVarNameList = sparql.VarUtils.getVarNames(projectVarList);
 
             var colDefs = ns.createNgGridOptionsFromQuery(query);
@@ -10045,7 +10226,7 @@ module["exports"] = Jassa;
 				subQuery.setLimit(limit);
 				subQuery.setOffset(offset);
 				subQuery.setDistinct(true);
-				subQuery.getProjectVars().add(idVar);
+				subQuery.getProject().add(idVar);
 				outerElement = new sparql.ElementGroup([
 				                                   subElement,
 				                                   oe]);
@@ -10118,7 +10299,7 @@ module["exports"] = Jassa;
 			// Query generation
 			var query = new sparql.Query();
 			query.getElements().push(outerElement);
-			_(vars).each(function(v) { query.getProjectVars().add(v); });
+			_(vars).each(function(v) { query.getProject().add(v); });
 			if(idExpr != null) {
 				//console.log('Expr' + JSON.stringify(idExpr));
 				
@@ -10450,7 +10631,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 		}
 	});
 
-	
+	// Use sparql.PrefixMapping instead
+	/*
 	ns.PrefixMap = Class.create({
 		initialize: function(prefixes) {
 			this.prefixes = prefixes ? prefixes : {};
@@ -10473,6 +10655,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return this.prefixes;
 		}
 	});
+	*/
 
 
 	/*
@@ -10516,7 +10699,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		initialize: function(schema) {
 			this.schema = schema ? schema : new ns.Schema();
-			this.prefixMap = new ns.PrefixMap();
+			this.prefixMapping = new sparql.PrefixMappingImpl();
 			
 			// TODO We should not map to element directly, but to ElementProvider
 			this.tableNameToElementFactory = {};
@@ -10534,8 +10717,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return this.schema;
 		},
 		
-		getPrefixMap: function() {
-			return this.prefixMap;
+		getPrefixMapping: function() {
+			return this.prefixMapping;
 		},
 		
 		getPatternParser: function() {
@@ -10581,7 +10764,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		 * 
 		 */
 		createTable: function(context, name, elementStr) {
-			var prefixes = context.getPrefixMap().getJson();
+			var prefixes = context.getPrefixMapping().getNsPrefixMap();//getJson();
 
 			var vars = sparql.extractSparqlVars(elementStr);
 
@@ -10702,12 +10885,13 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 	
 	ns.MapParser = Class.create({
-	    initialize: function(prefixMap, patternParser) {
+	    initialize: function(prefixMapping, patternParser) {
+	        this.prefixMapping = prefixMapping;
 	        this.patternParser = patternParser || new ns.ParserPattern();
 	    },
 	    
 	    parseMap: function(spec) {
-	        var result = ns.SponateUtils.parseMap(spec, this.prefixMap, this.patternParser);
+	        var result = ns.SponateUtils.parseMap(spec, this.prefixMapping, this.patternParser);
 	        return result;
 	    }
 	});
@@ -10719,7 +10903,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	     * 
 	     * TODO Add fallback to default patternParser if none provided
 	     */
-	    parseMap: function(spec, prefixMap, patternParser) {
+	    parseMap: function(spec, prefixMapping, patternParser) {
             var name = spec.name;
 
             var jsonTemplate = spec.template;
@@ -10734,8 +10918,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 
                 var elementStr = from;
                 
-                if(prefixMap != null) {
-                    var prefixes = prefixMap.getJson();
+                if(prefixMapping != null) {
+                    var prefixes = prefixMapping.getNsPrefixMap();
                     //var vars = sparql.extractSparqlVars(elementStr);
                     var str = sparql.expandPrefixes(prefixes, elementStr);
                 }
@@ -11330,7 +11514,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			this.service = service;
 
 			this.context = new ns.Context();
-			this.context.getPrefixMap().addJson(prefixes);
+			this.context.getPrefixMapping().setNsPrefixes(prefixes);
 		},
 
 		addMap: function(obj, name) {
@@ -11358,7 +11542,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		 * 
 		 */
 		addMapSpec: function(spec) {
-		    var map = ns.SponateUtils.parseMap(spec, this.context.getPrefixMap(), this.context.getPatternParser());
+		    var map = ns.SponateUtils.parseMap(spec, this.context.getPrefixMapping(), this.context.getPatternParser());
 	            
 		    var name = spec.name; //mapping.getName();
 
@@ -13259,7 +13443,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var result = new sparql.Query();
 			result.setDistinct(true);
 			
-			result.getProjectVars().add(concept.getVar());
+			result.getProject().add(concept.getVar());
 			var resultElements = result.getElements();
 			var conceptElements = concept.getElements();
 
@@ -13279,7 +13463,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             /*
             var subQuery = new sparql.Query();
             
-            subQuery.getProjectVars().add(concept.getVar());
+            subQuery.getProject().add(concept.getVar());
             subQuery.setDistinct(true);
 
             var subQueryElements = subQuery.getElements();
@@ -13290,7 +13474,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             var subQuery = ns.ConceptUtils.createQueryList(concept);
             
             var result = new sparql.Query();
-            result.getProjectVars().add(outputVar, new sparql.E_Count());
+            result.getProject().add(outputVar, new sparql.E_Count());
 
             result.getElements().push(subQuery);
  
@@ -13300,7 +13484,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		createQueryCountDoesNotWorkWithVirtuoso: function(concept, outputVar) {
 			var result = new sparql.Query();
 			
-			result.getProjectVars().add(outputVar, new sparql.E_Count(new sparql.ExprVar(concept.getVar()), true));
+			result.getProject().add(outputVar, new sparql.E_Count(new sparql.ExprVar(concept.getVar()), true));
 
 			var resultElements = result.getElements();
 			var conceptElements = concept.getElements();
@@ -13680,7 +13864,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			}
 			
 			//var varsMentioned = query.getVarsMentioned();
-			var varsMentioned = query.getProjectVars().getVarList();
+			var varsMentioned = query.getProject();//.getVarList();
 			
 
 			var varNames = _.map(varsMentioned, function(v) {
@@ -15667,7 +15851,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
             if(groupVars) {
                 _(groupVars).each(function(groupVar) {
-                    varQuery.getProjectVars().add(groupVar);
+                    varQuery.getProject().add(groupVar);
                     //varQuery.getGroupBy().push(new sparql.ExprVar(groupVar));
                 });
             }
@@ -15675,7 +15859,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             varQuery.setDistinct(useDistinct);
             if(variable) {
-                varQuery.getProjectVars().add(variable)
+                varQuery.getProject().add(variable)
             } else {
                 varQuery.setResultStar(true);
             }
@@ -15686,12 +15870,12 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             if(groupVars) {
                 _(groupVars).each(function(groupVar) {
-                    result.getProjectVars().add(groupVar);
+                    result.getProject().add(groupVar);
                     result.getGroupBy().push(new sparql.ExprVar(groupVar));
                 });
             }
             
-            result.getProjectVars().add(outputVar, new sparql.E_Count());
+            result.getProject().add(outputVar, new sparql.E_Count());
             result.getElements().push(elementVarQuery);
             
             //exp, new sparql.E_Count(exprVar, useDistinct));
@@ -15748,12 +15932,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 			//result.groupBy.push(outputVar);
 			if(groupVars) {
 				_(groupVars).each(function(groupVar) {
-					result.getProjectVars().add(groupVar);
+					result.getProject().add(groupVar);
 					result.getGroupBy().push(new sparql.ExprVar(groupVar));
 				});
 			}
 			
-			result.getProjectVars().add(outputVar, new sparql.E_Count(exprVar, useDistinct));
+			result.getProject().add(outputVar, new sparql.E_Count(exprVar, useDistinct));
 			//ns.applyQueryOptions(result, options);
 			
 	//debugger;
@@ -16816,6 +17000,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	var rdf = Jassa.rdf;
     var sponate = Jassa.sponate;	
     var util = Jassa.util;
+    var sparql = Jassa.sparql;
 
 	var ns = Jassa.facete;
 	
@@ -17279,7 +17464,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             var query = ns.QueryUtils.createQueryCount(elements, null, countVar, outputVar, [groupVar], true);
             
-            var countExpr = query.getProjectVars().getExpr(outputVar);
+            var countExpr = query.getProject().getExpr(outputVar);
             //console.log('sort cond: ' + countExpr);
             query.getOrderBy().push(new sparql.SortCondition(countExpr, -1));
             
@@ -17536,8 +17721,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 var limitQuery = new sparql.Query();
                 var limitElements = limitQuery.getElements();
 
-                limitQuery.getProjectVars().add(groupVar);
-                limitQuery.getProjectVars().add(countVar);
+                limitQuery.getProject().add(groupVar);
+                limitQuery.getProject().add(countVar);
 
                 limitElements.push.apply(limitElements, elements);
                 limitQuery.setLimit(scanLimit);
@@ -17546,8 +17731,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 /*
                 var distinctQuery = new sparql.Query();
                 distinctQuery.setDistinct(true);
-                distinctQuery.getProjectVars().add(groupVar);
-                distinctQuery.getProjectVars().add(countVar);
+                distinctQuery.getProject().add(groupVar);
+                distinctQuery.getProject().add(countVar);
                 distinctQuery.getElements().push(new sparql.ElementSubQuery(limitQuery));
                 distinctQuery.setLimit(limit);
                 */
@@ -17573,8 +17758,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 		        var elementUnion = new sparql.ElementUnion(unionElements);		    
 		        
                 finalQuery = new sparql.Query();
-		        finalQuery.getProjectVars().add(groupVar);
-		        finalQuery.getProjectVars().add(outputVar);
+		        finalQuery.getProject().add(groupVar);
+		        finalQuery.getProject().add(outputVar);
 
 		        var finalElements = finalQuery.getElements();
                 finalQuery.getElements().push(elementUnion);
@@ -18079,12 +18264,14 @@ or simply: Angular + Magic Sparql = Angular Marql
             return this.facetTreeConfig;
         },
         
-        createFacetValueFetcher: function(path, filterText) {
+        createFacetValueFetcher: function(path, filterText, excludeSelfConstraints) {
 
+            excludeSelfConstraints = excludeSelfConstraints || true;
+            
             var facetConfig = this.facetTreeConfig.getFacetConfig();
 
             var facetConceptGenerator = ns.FaceteUtils.createFacetConceptGenerator(facetConfig);
-            var concept = facetConceptGenerator.createConceptResources(path, true);
+            var concept = facetConceptGenerator.createConceptResources(path, excludeSelfConstraints);
             var constraintTaggerFactory = new ns.ConstraintTaggerFactory(facetConfig.getConstraintManager());
             
             var store = new sponate.StoreFacade(this.sparqlService);
@@ -19086,11 +19273,11 @@ or simply: Angular + Magic Sparql = Angular Marql
                     
                     ev = aggExpr;
 
-                    result.getProjectVars().add(v, ev);
+                    result.getProject().add(v, ev);
                     
                 } else {
                     nonAggColumnIds.push(columnId);
-                    result.getProjectVars().add(v);
+                    result.getProject().add(v);
                 }
                 
                 
