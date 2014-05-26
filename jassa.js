@@ -13364,6 +13364,14 @@ or simply: Angular + Magic Sparql = Angular Marql
 		return result;
 	};
 	
+	
+	ns.PathUtils = {
+        parsePathSpec: function(pathSpec) {
+            var result = (pathSpec instanceof ns.Path) ? pathSpec : ns.Path.parse(pathSpec); 
+
+            return result;
+        }        	        
+	};
 
 	/**
 	 * Combines a path with a direction
@@ -18825,7 +18833,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         initialize: function(facetConfig, labelMap, expansionSet, expansionMap, facetStateProvider, pathToFilterString) {
             this.facetConfig = facetConfig || ns.FacetConfig.createDefaultFacetConfig();
 
-            this.labelMap = labelMap; // TODO Use some default (shouldn't the label map be part of the facetConfig???)
+            //this.labelMap = labelMap; // TODO Use some default (shouldn't the label map be part of the facetConfig???)
             this.expansionSet = expansionSet || new util.HashSet();
             this.expansionMap = expansionMap || new util.HashMap();
             this.facetStateProvider = facetStateProvider || new ns.FacetStateProviderImpl(10);
@@ -18836,9 +18844,13 @@ or simply: Angular + Magic Sparql = Angular Marql
             return this.facetConfig;
         },
         
-        getLabelMap: function() {
-            return this.labelMap;
+        setFacetConfig: function(facetConfig) {
+            this.facetConfig = facetConfig;
         },
+        
+//        getLabelMap: function() {
+//            return this.labelMap;
+//        },
         
         getExpansionSet: function() {
             return this.expansionSet;
