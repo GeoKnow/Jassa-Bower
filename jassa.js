@@ -18785,7 +18785,7 @@ or simply: Angular + Magic Sparql = Angular Marql
             return this.labelMap;
         },
         
-        setLabelMap: function() {
+        setLabelMap: function(labelMap) {
             this.labelMap = labelMap;
         },
         
