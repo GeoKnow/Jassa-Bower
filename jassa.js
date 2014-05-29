@@ -9986,8 +9986,9 @@ module["exports"] = Jassa;
 		
 		/**
 		 * Specify a set of nodes for which to perform the lookup
+		 * If concept is specified, nodes will be applied to the concept
 		 * 
-		 * Use of .concept(...) and .nodes(..) is mutually exclusive
+		 * //Use of .concept(...) and .nodes(..) is mutually exclusive
 		 * 
 		 */
 		nodes: function(_nodes) {
@@ -17354,13 +17355,17 @@ or simply: Angular + Magic Sparql = Angular Marql
                 parentFacetItem = new ns.FacetItem(path, rdf.NodeFactory.createUri(path.getLastStep().getPropertyName()), null);                
             }
 
+            parentFacetItem.setDoc({
+                displayLabel: 'Items'
+            });
+            
             // Apply tags for the root element
 		    
 			var result = this.fetchFacetTreeRec(path, parentFacetItem);
 			
-			result.done(function(facetTree) {
-			    console.log("FacetTree: ", facetTree);
-			});
+//			result.done(function(facetTree) {
+//			    console.log("FacetTree: ", facetTree);
+//			});
 			
 			return result;
 		},
