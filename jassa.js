@@ -17359,8 +17359,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 displayLabel: 'Items'
             });
     
-            var tags = this.pathTaggerManager.createTags(path);
-            parentFacetItem.setTags(tags);
+            //var tags = this.pathTaggerManager.createTags(path);
+            //parentFacetItem.setTags(tags);
             
             // Apply tags for the root element
 		    
