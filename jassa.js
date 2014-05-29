@@ -17358,6 +17358,9 @@ or simply: Angular + Magic Sparql = Angular Marql
             parentFacetItem.setDoc({
                 displayLabel: 'Items'
             });
+    
+            var tags = this.pathTaggerManager.createTags(path);
+            parentFacetItem.setTags(tags);
             
             // Apply tags for the root element
 		    
