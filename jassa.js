@@ -9213,6 +9213,7 @@ module["exports"] = Jassa;
 
 	/*
 	 * Aggregators
+	 *     TODO: Possibly rename aggregators to accumulators and pattern to aggregators.
 	 */
 		
 	ns.Aggregator = Class.create({
@@ -9879,7 +9880,7 @@ module["exports"] = Jassa;
 	
 	
 	ns.QueryConfig = Class.create({
-		initialize: function(criteria, limit, offset, concept, _isLeftJoin) {
+		initialize: function(criteria, limit, offset, concept, _isLeftJoin, nodes) {
 			this.criteria = criteria;
 			this.limit = limit;
 			this.offset = offset;
@@ -9887,26 +9888,58 @@ module["exports"] = Jassa;
 			// HACK The following two attributes belong together, factor them out into a new class
 			this.concept = concept;
 			this._isLeftJoin = _isLeftJoin;
+			
+			// Note: For each element in the nodes array, corresponding data will be made available.
+			// Thus, if nodes is an empty array, no results will be fetched; set to null to ignore the setting
+			this.nodes = nodes;
 		},
 		
 		getCriteria: function() {
-			return this.criteria;
+			return this.criteria;		
+		},
+		
+		setCriteria: function(criteria) {
+		    this.criteria = criteria;
 		},
 		
 		getLimit: function() {
 			return this.limit;
 		},
 		
+		setLimit: function(limit) {
+		    this.limit = limit;
+		},
+		
 		getOffset: function() {
 			return this.offset;
+		},
+		
+		setOffset: function(offset) {
+		    this.offset = offset;
 		},
 		
 		getConcept: function() {
 		    return this.concept;
 		},
 		
+		setConcept: function(concept) {
+		    this.concept = concept;
+		},
+		
 		isLeftJoin: function() {
 		    return this._isLeftJoin;
+		},
+		
+		setLeftJoin: function(isLeftJoin) {
+		    this._isLeftJoin = isLeftJoin;
+		},
+		
+		getNodes: function() {
+		    return this.nodes;
+		},
+		
+		setNodes: function(nodes) {
+		    this.nodes = nodes;
 		}
 	});
 	
@@ -9964,22 +9997,17 @@ module["exports"] = Jassa;
 	ns.QueryFlow = Class.create({
 		initialize: function(store, criteria) {
 			this.store = store;
-			this.config = {};
+			this.config = new ns.QueryConfig();
 			
-			this.config.criteria = criteria;
-//			this.criteria = criteria;
-//			
-//			this.limit = null;
-//			this.offset = null;
+			this.config.setCriteria(criteria);
 		},
 		
 		/**
 		 * Join the lookup with the given concept
 		 */
 		concept: function(_concept, isLeftJoin) {
-		    var join = this.config.join = {};
-		    join.concept = _concept;
-		    join.isLeftJoin = isLeftJoin;
+		    this.config.setConcept(_concept);
+		    this.config.setLeftJoin(isLeftJoin);
 		    
 		    return this;
 		},
@@ -9992,36 +10020,22 @@ module["exports"] = Jassa;
 		 * 
 		 */
 		nodes: function(_nodes) {
-		    // TODO Implement me
-		},
-		
-		/**
-		 * find().nodes(someNodes).asList();
-		 */
-		/*
-		nodes: function(ns) {
+		    this.config.setNodes(_nodes);
 		    
+		    return this;
 		},
-		*/
 		
 		skip: function(offset) {
-			this.config.offset = offset;
+			this.config.setOffset(offset);
 			
 			return this;
 		},
 		
 		limit: function(limit) {
-			this.config.limit = limit;
+			this.config.setLimit(limit);
 			
 			return this;
-		},
-		
-		/*
-		find: function(criteria) {
-			this.criteria = criteria;
-			return this;
-		},
-		*/
+		},		
 		
 		asList: function(retainRdfNodes) {
 			var promise = this.execute(retainRdfNodes);
@@ -10050,27 +10064,12 @@ module["exports"] = Jassa;
 		
 		// TODO This is a hack right now - not sure how to design the execution yet
 		execute: function(retainRdfNodes) {
-//			var config = {
-//				criteria: this.criteria,
-//				limit: this.limit,
-//				offset: this.offset
-//			};
-		    var c = this.config;
-		    var j = this.config.join || {};
-		    
-			var config = new ns.QueryConfig(c.criteria, c.limit, c.offset, j.concept, j.isLeftJoin);
-			
-			var result = this.store.execute(config, retainRdfNodes);
+			var result = this.store.execute(this.config, retainRdfNodes);
 			return result;
 		},
 		
         count: function() {
-            var c = this.config;
-            var j = this.config.join || {};
-            
-            var config = new ns.QueryConfig(c.criteria, c.limit, c.offset, j.concept, j.isLeftJoin);
-            
-            var result = this.store.executeCount(config);
+            var result = this.store.executeCount(this.config);
             return result;          
         }		
 	});
@@ -14024,99 +14023,6 @@ or simply: Angular + Magic Sparql = Angular Marql
     
 	var ns = Jassa.facete;
 	
-	/**
-	 * ConstraintSpecs can be arbitrary objects, however they need to expose the
-	 * declared paths that they affect.
-	 * DeclaredPaths are the ones part of spec, affectedPaths are those after considering the constraint's sparql element. 
-	 * 
-	 */
-	ns.ConstraintSpec = Class.create({
-		getName: function() {
-            console.log('[ERROR] Override me');		    
-            throw 'Override me';
-		},
-		
-		getDeclaredPaths: function() {
-		    console.log('[ERROR] Override me');
-            throw 'Override me';
-		},
-		
-		equals: function() {
-	          console.log('[ERROR] Override me');
-            throw 'Override me';
-		},
-		
-		hashCode: function() {
-	        console.log('[ERROR] Override me');
-		    throw 'Override me';
-		}
-	});
-	
-
-	/**
-	 * The class of constraint specs that are only based on exactly one path.
-	 * 
-	 * Offers the method getDeclaredPath() (must not return null)
-	 * Do not confuse with getDeclaredPaths() which returns the path as an array
-	 * 
-	 */
-	ns.ConstraintSpecSinglePath = Class.create(ns.ConstraintSpec, {
-		initialize: function(name, path) {
-			this.name = name;
-			this.path = path;
-		},
-		
-		getName: function() {
-			return this.name;
-		},
-		
-		getDeclaredPaths: function() {
-			return [this.path];
-		},
-		
-		getDeclaredPath: function() {
-			return this.path;
-		}
-	});
-
-
-	ns.ConstraintSpecPath = Class.create(ns.ConstraintSpecSinglePath, {
-		initialize: function($super, name, path) {
-			$super(name, path);
-		}
-	});
-	
-	ns.ConstraintSpecPathValue = Class.create(ns.ConstraintSpecSinglePath, {
-        classLabel: 'jassa.facete.ConstraintSpecPathValue',
-
-		initialize: function($super, name, path, value) {
-			$super(name, path);
-			this.value = value;
-		},
-
-		getValue: function() {
-			return this.value;
-		},
-		
-		equals: function(that) {
-		    if(!that instanceof ns.ConstraintSpecPathValue) {
-		        return false;
-		    }
-		    
-		    var a = this.name == that.name;
-		    var b = this.path.equals(that.path);
-		    var c = this.value.equals(that.value);
-		    
-		    var r = a && b &&c;
-		    return r;
-		},
-		
-		hashCode: function() {
-		    var result = util.ObjectUtils.hashCode(this, true);
-		    return result;
-		}
-	});
-	
 	
 	/**
 	 * Not used yet; its only here as an idea.
@@ -14127,24 +14033,25 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 * These mappings must be disjoint.
 	 * 
 	 */
-	ns.ConstraintSpecExpr = Class.create(ns.ConstraintSpec, {
-        classLabel: 'jassa.facete.ConstraintSpecExpr',
-
-		/**
-		 * expr: sparql.Expr
-		 * varToPath: util.Map<Var, Path>
-		 * varToNode: sparql.Binding
-		 */
-		initialize: function(expr, varToPath, varToNode) {
-			this.expr = expr;
-			this.varToPath = varToPath;
-			this.varToNode = varToNode;
-		},
-		
-		getPaths: function() {
-			// extract the paths from varToPath
-		}
-	});
+	
+//	ns.ConstraintSpecExpr = Class.create(ns.ConstraintSpec, {
+//        classLabel: 'jassa.facete.ConstraintSpecExpr',
+//
+//		/**
+//		 * expr: sparql.Expr
+//		 * varToPath: util.Map<Var, Path>
+//		 * varToNode: sparql.Binding
+//		 */
+//		initialize: function(expr, varToPath, varToNode) {
+//			this.expr = expr;
+//			this.varToPath = varToPath;
+//			this.varToNode = varToNode;
+//		},
+//		
+//		getPaths: function() {
+//			// extract the paths from varToPath
+//		}
+//	});
 	
 //	ns.ConstraintSpecBBox = Class.create(ns.ConstraintSpecSinglePath, {
 //		
@@ -14161,6 +14068,160 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var ns = Jassa.facete;
 
+    /**
+     * ConstraintSpecs can be arbitrary objects, however they need to expose the
+     * declared paths that they affect.
+     * DeclaredPaths are the ones part of spec, affectedPaths are those after considering the constraint's sparql element. 
+     * 
+     */
+    ns.Constraint = Class.create({
+        getName: function() {
+            console.log('[ERROR] Override me');         
+            throw 'Override me';
+        },
+        
+        getDeclaredPaths: function() {
+            console.log('[ERROR] Override me');
+            throw 'Override me';
+        },
+        
+        createElementsAndExprs: function(facetNode) {
+            console.log('[ERROR] Override me');
+            throw 'Override me';            
+        },
+        
+        equals: function() {
+              console.log('[ERROR] Override me');
+            throw 'Override me';
+        },
+        
+        hashCode: function() {
+            console.log('[ERROR] Override me');
+            throw 'Override me';
+        }
+    });
+    
+
+    /**
+     * The class of constraint specs that are only based on exactly one path.
+     * 
+     * Offers the method getDeclaredPath() (must not return null)
+     * Do not confuse with getDeclaredPaths() which returns the path as an array
+     * 
+     */
+    ns.ConstraintBasePath = Class.create(ns.Constraint, {
+        initialize: function(name, path) {
+            this.name = name;
+            this.path = path;
+        },
+        
+        getName: function() {
+            return this.name;
+        },
+        
+        getDeclaredPaths: function() {
+            return [this.path];
+        },
+        
+        getDeclaredPath: function() {
+            return this.path;
+        }
+    });
+
+
+    /*
+    ns.ConstraintBasePath = Class.create(ns.ConstraintBaseSinglePath, {
+        initialize: function($super, name, path) {
+            $super(name, path);
+        }
+    });
+    */
+    
+    ns.ConstraintBasePathValue = Class.create(ns.ConstraintBasePath, {
+        classLabel: 'jassa.facete.ConstraintSpecPathValue',
+
+        initialize: function($super, name, path, value) {
+            $super(name, path);
+            this.value = value;
+        },
+
+        getValue: function() {
+            return this.value;
+        },
+        
+        equals: function(that) {
+            if(!that instanceof ns.ConstraintSpecPathValue) {
+                return false;
+            }
+            
+            var a = this.name == that.name;
+            var b = this.path.equals(that.path);
+            var c = this.value.equals(that.value);
+            
+            var r = a && b &&c;
+            return r;
+        },
+        
+        hashCode: function() {
+            var result = util.ObjectUtils.hashCode(this, true);
+            return result;
+        }
+    });
+	
+
+    ns.ConstraintExists = Class.create(ns.ConstraintBasePath, {
+        classLabel: 'jassa.facete.ConstraintExists',
+
+        initialize: function($super, name, path) {
+            $super(name, path);
+        },
+        
+        createElementsAndExprs: function(facetNode) {
+            var result = ns.ConstraintUtils.createConstraintExists(facetNode, this.path);
+            return result;
+        }
+    });
+
+    
+    ns.ConstraintLang = Class.create(ns.ConstraintBasePathValue, {
+        classLabel: 'jassa.facete.ConstraintLang',
+        
+        initialize: function($super, name, path, langStr) {
+            $super(name, path, langStr);
+        },
+        
+        createElementsAndExprs: function(facetNode) {
+            var result = ns.ConstraintUtils.createConstraintLang(facetNode, this.path, this.value);
+            return result;
+        }
+    });
+
+    ns.ConstraintEquals = Class.create(ns.ConstraintBasePathValue, {
+        classLabel: 'jassa.facete.ConstraintEquals',
+        
+        initialize: function($super, name, path, node) {
+            $super(name, path, node);
+        },
+        
+        createElementsAndExprs: function(facetNode) {
+            var result = ns.ConstraintUtils.createConstraintEquals(facetNode, this.path, this.value);
+            return result;
+        }
+    });
+    
+    ns.ConstraintRegex = Class.create(ns.ConstraintBasePathValue, {
+        classLabel: 'jassa.facete.ConstraintRegex',
+        
+        initialize: function($super, name, path, regexStr) {
+            $super(name, path, regexStr);
+        },
+        
+        createElementsAndExprs: function(facetNode) {
+            var result = ns.ConstraintUtils.createConstraintRegex(facetNode, this.path, this.regexStr);
+            return result;
+        }
+    });
+    
 	
 	
 	// The three basic constraint types: mustExist, equals, and range.
@@ -14183,18 +14244,15 @@ or simply: Angular + Magic Sparql = Angular Marql
 //			throw "Override me";
 //		}
 //	});
-
+/*
 	ns.ConstraintElementFactoryExist = Class.create(ns.ConstraintElementFactory, {
 		createElementsAndExprs: function(rootFacetNode, constraintSpec) {
-			var facetNode = rootFacetNode.forPath(constraintSpec.getDeclaredPath());
-			var elements = sparql.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
-			var triplesAndExprs = new ns.ElementsAndExprs(elements, []);
-			
-			return result;
+		    var result = ns.ConstraintUtils.createExists(rootFacetNode, constraint)
 		}
 	});
+*/
 
-
+	/*
     ns.ConstraintElementFactoryLang = Class.create(ns.ConstraintElementFactory, {
         createElementsAndExprs: function(rootFacetNode, constraintSpec) {
             var facetNode = rootFacetNode.forPath(constraintSpec.getDeclaredPath());
@@ -14215,7 +14273,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             return result;
         }
     });
-
+*/
+	/*
     ns.ConstraintElementFactoryRegex = Class.create(ns.ConstraintElementFactory, {
         createElementsAndExprs: function(rootFacetNode, constraintSpec) {
             var facetNode = rootFacetNode.forPath(constraintSpec.getDeclaredPath());
@@ -14241,12 +14300,13 @@ or simply: Angular + Magic Sparql = Angular Marql
             return result;
         }
     });
-
+*/
 	
 	/**
 	 * constraintSpec.getValue() must return an instance of sparql.NodeValue
 	 * 
 	 */
+/*	
 	ns.ConstraintElementFactoryEqual = Class.create(ns.ConstraintElementFactory, {
 		createElementsAndExprs: function(rootFacetNode, constraintSpec) {
 			var facetNode = rootFacetNode.forPath(constraintSpec.getDeclaredPath());
@@ -14269,7 +14329,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return result;
 		}
 	});
-	
+*/	
 	
 //	ns.ConstraintElementSparqlExpr = Class.create(ns.ConstraintElementFactory, {
 //		createElement: function(rootFacetNode, constraintSpec) {
@@ -14494,9 +14554,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 })();(function() {
 	
-	var sparql = Jassa.sparql;
-	
-	var ns = Jassa.facete;
+    var vocab = Jassa.vocab;
+    var sparql = Jassa.sparql;
+    
+    var ns = Jassa.facete;
 	
 	
 	ns.ElementsAndExprs = Class.create({
@@ -14525,6 +14586,83 @@ or simply: Angular + Magic Sparql = Angular Marql
 		}
 	});
 
+	
+    
+    ns.ConstraintUtils = {
+        createConstraintExists: function(rootFacetNode, path) {
+
+            var facetNode = rootFacetNode.forPath(path);
+            var elements = sparql.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
+            var triplesAndExprs = new ns.ElementsAndExprs(elements, []);
+            
+            return result;
+        },
+        
+        createConstraintLang: function(rootFacetNode, path, langStr) {
+            var facetNode = rootFacetNode.forPath(path);
+
+            var pathVar = facetNode.getVar();
+            var exprVar = new sparql.ExprVar(pathVar);
+
+            var elements = sparql.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
+
+            // NOTE Value is assumed to be node holding a string, maybe check it here
+            var val = langStr; //constraintSpec.getValue().getLiteralValue();
+
+            var exprs = [new sparql.E_LangMatches(new sparql.E_Lang(exprVar), val)];
+            
+            var result = new ns.ElementsAndExprs(elements, exprs);
+            
+            //console.log('constraintSpec.getValue() ', constraintSpec.getValue());
+            return result;
+        },
+        
+        createConstraintRegex: function(rootFacetNode, path, str) {
+            var facetNode = rootFacetNode.forPath(path);
+
+            var pathVar = facetNode.getVar();
+            var exprVar = new sparql.ExprVar(pathVar);
+            
+            //var elements = [new sparql.ElementTriplesBlock(facetNode.getTriples())];
+            var elements = sparql.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
+    
+            //var valueExpr = constraintSpec.getValue();
+            //var valueExpr = sparql.NodeValue.makeNode(constraintSpec.getValue());
+            
+            // NOTE Value is assumed to be node holding a string, maybe check it here
+            var val = str; //constraintSpec.getValue().getLiteralValue();
+    
+    
+            var exprs = [new sparql.E_Regex(exprVar, val, 'i')];
+            
+            var result = new ns.ElementsAndExprs(elements, exprs);
+            
+            //console.log('constraintSpec.getValue() ', constraintSpec.getValue());
+            return result;
+        },
+        
+        createConstraintEquals: function(rootFacetNode, path, node) {
+            var facetNode = rootFacetNode.forPath(path);
+
+            var pathVar = facetNode.getVar();
+            var exprVar = new sparql.ExprVar(pathVar);
+            
+            //var elements = [new sparql.ElementTriplesBlock(facetNode.getTriples())];
+            var elements = sparql.ElementUtils.createElementsTriplesBlock(facetNode.getTriples());
+    
+            //var valueExpr = constraintSpec.getValue();
+            var valueExpr = sparql.NodeValue.makeNode(node); //constraintSpec.getValue());
+    
+    
+            var exprs = [new sparql.E_Equals(exprVar, valueExpr)];
+            
+            var result = new ns.ElementsAndExprs(elements, exprs);
+            
+            //console.log('constraintSpec.getValue() ', constraintSpec.getValue());
+            return result;
+        }
+    };
+    	
 	
 	/**
 	 * @Deprecated in favor of the more generic ElementsAndExprs
@@ -14580,282 +14718,25 @@ or simply: Angular + Magic Sparql = Angular Marql
 	var sparql = Jassa.sparql;
 	
 	var ns = Jassa.facete;
-	
-	
-	ns.createDefaultConstraintElementFactories = function() {
-		var result = new util.ObjectMap();
-	
-		result.put("exist", new ns.ConstraintElementFactoryExist());
-		result.put("equal", new ns.ConstraintElementFactoryEqual());
-		//registry.put("range", new facete.ConstaintElementFactoryRange());		
-		result.put("bbox", new ns.ConstraintElementFactoryBBoxRange());
 
-	    result.put("regex", new ns.ConstraintElementFactoryRegex());
-	    result.put("lang", new ns.ConstraintElementFactoryLang());
 
-		
-		return result;
-	};
-	
-	
 	/**
-	 * A class which is backed by a a jassa.util.list<Constraint>
-	 * Only the backing list's .toArray() method is used, essentially
-	 * using the list as a supplier.
+	 * TODO Rename to constraint list
 	 * 
-	 * The question is, whether the methods
-	 * .getConstraintSteps()
-	 * .getConstraintsByPath()
-	 * 
-	 * justify a list wrapper.
-	 * Or maybe these should be static helpers?
-	 * 
-	 *  
-	 */
-	ns.ConstraintList = Class.create({
-	    classLabel: 'jassa.facete.ConstraintList', 
-	        
-	    initialize: function(list) {
-	        this.list = list || new util.ArrayList();
-	    },
-
-        /**
-         * Yields all constraints having at least one
-         * variable bound to the exact path
-         * 
-         * Note: In general, a constraint may make use of multiple paths
-         */
-        getConstraintsByPath: function(path) {
-            var result = [];
-            
-            var constraints = this.constraints;
-            
-            for(var i = 0; i < constraints.length; ++i) {
-                var constraint = constraints[i];
-                
-                var paths = constraint.getDeclaredPaths();
-                
-                var isPath = _.some(paths, function(p) {
-                    var tmp = p.equals(path);
-                    return tmp;
-                });
-                
-                if(isPath) {
-                    result.push(constraint);
-                }
-            }
-            
-            return result;
-        },
-        
-
-        getConstrainedSteps: function(path) {
-            //console.log("getConstrainedSteps: ", path);
-            //checkNotNull(path);
-            
-            var tmp = [];
-            
-            var steps = path.getSteps();
-            var constraints = this.constraints;
-            
-            for(var i = 0; i < constraints.length; ++i) {
-                var constraint = constraints[i];
-                //console.log("  Constraint: " + constraint);
-
-                var paths = constraint.getDeclaredPaths();
-                //console.log("    Paths: " + paths.length + " - " + paths);
-                
-                for(var j = 0; j < paths.length; ++j) {
-                    var p = paths[j];
-                    var pSteps = p.getSteps();
-                    var delta = pSteps.length - steps.length; 
-                    
-                    //console.log("      Compare: " + delta, p, path);
-                    
-                    var startsWith = p.startsWith(path);
-                    //console.log("      Startswith: " + startsWith);
-                    if(delta == 1 && startsWith) {
-                        var step = pSteps[pSteps.length - 1];
-                        tmp.push(step);
-                    }
-                }
-            }
-            
-            var result = _.uniq(tmp, function(step) { return "" + step; });
-            
-            //console.log("Constraint result", constraints.length, result.length);
-            
-            return result;
-        },
-        
-        getConstraints: function() {
-            return this.constraints;  
-        },
-        
-        addConstraint: function(constraint) {
-            this.constraints.push(constraint);
-        },
-        
-        // Fcuking hack because of legacy code and the lack of a standard collection library...
-        // TODO Make the constraints a hash set (or a list set)
-        removeConstraint: function(constraint) {
-            var result = false;
-
-            var cs = this.constraints;
-            
-            var n = [];
-            for(var i = 0; i < cs.length; ++i) {
-                var c = cs[i];
-                
-                if(!c.equals(constraint)) {
-                    n.push(c);
-                } else {
-                    result = true;
-                }
-            }
-            
-            this.constraints = n;
-            return result;
-        },
-
-        toggleConstraint: function(constraint) {
-            var wasRemoved = this.removeConstraint(constraint);
-            if(!wasRemoved) {
-                this.addConstraint(constraint);
-            }
-        }
-	});
-
-	
-	/**
-	 * The constraint compiler provides a method for transforming a constraintList
-	 * into corresponding SPARQL elements.
-	 * 
-	 * The compiler is initialized with a constraintElementFactory. The compiler
-	 * just delegates to these factories.
-	 * 
-	 */
-	ns.ConstraintCompiler = Class.create({
-        initialize: function(cefRegistry) {            
-            if(!cefRegistry) {
-                cefRegistry = ns.createDefaultConstraintElementFactories(); 
-            }
-            
-            this.cefRegistry = cefRegistry;
-        },
-        
-        getCefRegistry: function() {
-            return this.cefRegistry;
-        },
-        
-        
-        createElementsAndExprs: function(constraintList, facetNode, excludePath) {
-            //var triples = [];
-            var elements = [];
-            var resultExprs = [];
-            
-            
-            var pathToExprs = {};
-            
-            var self = this;
-
-            var constraints = constraintList.toArray();
-            
-            _(constraints).each(function(constraint) {
-                var paths = constraint.getDeclaredPaths();
-                
-                var pathId = _(paths).reduce(
-                    function(memo, path) {
-                        return memo + ' ' + path;
-                    },
-                    ''
-                );
-
-                // Check if any of the paths is excluded
-                if(excludePath) {
-                    var skip = _(paths).some(function(path) {
-                        //console.log("Path.equals", excludePath, path);
-                        
-                        var tmp = excludePath.equals(path);
-                        return tmp;
-                    });
-
-                    if(skip) {
-                        return;
-                    }
-                }
-                
-                
-                _(paths).each(function(path) {
-                    
-                    //if(path.equals(excludePath)) {
-                        // TODO Exclude only works if there is only a single path
-                        // Or more generally, if all paths were excluded...
-                        // At least that somehow seems to make sense
-                    //}
-                    
-                    var fn = facetNode.forPath(path);
-                    
-                    //console.log("FNSTATE", fn);
-                    
-                    var tmpElements = fn.getElements();
-                    elements.push.apply(elements, tmpElements);
-                });
-                
-                var constraintName = constraint.getName();
-                var cef = self.cefRegistry.get(constraintName);
-                if(!cef) {
-                    throw "No constraintElementFactory registered for " + constraintName;
-                }
-                
-                var ci = cef.createElementsAndExprs(facetNode, constraint);
-                
-                //var ci = constraint.instanciate(facetNode);
-                var ciElements = ci.getElements();
-                var ciExprs = ci.getExprs();
-                
-                if(ciElements) {
-                    elements.push.apply(elements, ciElements);
-                }               
-                
-                if(ciExprs && ciExprs.length > 0) {
-                
-                    var exprs = pathToExprs[pathId];
-                    if(!exprs) {
-                        exprs = [];
-                        pathToExprs[pathId] = exprs;
-                    }
-                    
-                    var andExpr = sparql.andify(ciExprs);
-                    exprs.push(andExpr);
-                }               
-            });
-
-            _(pathToExprs).each(function(exprs) {
-                var orExpr = sparql.orify(exprs);
-                resultExprs.push(orExpr);
-            });
-            
-            var result = new ns.ElementsAndExprs(elements, resultExprs);
-
-            return result;
-        }	    
-	});
-	
-	
-	/**
 	 * A constraint manager is a container for ConstraintSpec objects.
 	 * 
 	 * @param cefRegistry A Map<String, ConstraintElementFactory>
 	 */
 	ns.ConstraintManager = Class.create({
-		initialize: function(cefRegistry, constraints) {
+	    classLabel: 'jassa.facete.ConstraintList',
+	    
+		initialize: function(constraints) {
 			
-			if(!cefRegistry) {
-				cefRegistry = ns.createDefaultConstraintElementFactories(); 
-			}
+//			if(!cefRegistry) {
+//				cefRegistry = ns.createDefaultConstraintElementFactories(); 
+//			}
 			
-			this.cefRegistry = cefRegistry;
+			//this.cefRegistry = cefRegistry;
 			this.constraints = constraints || [];
 		},
 		
@@ -14863,14 +14744,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 		 * Returns a new constraintManager with a new array of the original constraints
 		 */
 		shallowClone: function() {
-		    var result = new ns.ConstraintManager(this.cefRegistry, this.constraints.slice(0));
+		    var result = new ns.ConstraintManager(this.constraints.slice(0));
 		    return result;
 		},
-		
-		getCefRegistry: function() {
-			return this.cefRegistry;
-		},
-		
+
 		/**
 		 * Yields all constraints having at least one
 		 * variable bound to the exact path
@@ -15043,13 +14920,13 @@ or simply: Angular + Magic Sparql = Angular Marql
 					elements.push.apply(elements, tmpElements);
 				});
 				
-				var constraintName = constraint.getName();
-				var cef = self.cefRegistry.get(constraintName);
-				if(!cef) {
-					throw "No constraintElementFactory registered for " + constraintName;
-				}
+				//var constraintName = constraint.getName();
+//				var cef = self.cefRegistry.get(constraintName);
+//				if(!cef) {
+//					throw "No constraintElementFactory registered for " + constraintName;
+//				}
 				
-				var ci = cef.createElementsAndExprs(facetNode, constraint);
+				var ci = constraint.createElementsAndExprs(facetNode);
 				
 				//var ci = constraint.instanciate(facetNode);
 				var ciElements = ci.getElements();
@@ -15204,6 +15081,271 @@ or simply: Angular + Magic Sparql = Angular Marql
 //		//substitute
 //	}
 //});
+
+
+///**
+//* A class which is backed by a a jassa.util.list<Constraint>
+//* Only the backing list's .toArray() method is used, essentially
+//* using the list as a supplier.
+//* 
+//* The question is, whether the methods
+//* .getConstraintSteps()
+//* .getConstraintsByPath()
+//* 
+//* justify a list wrapper.
+//* Or maybe these should be static helpers?
+//* 
+//*  
+//*/
+//ns.ConstraintList = Class.create({
+// classLabel: 'jassa.facete.ConstraintList', 
+//     
+// initialize: function(list) {
+//     this.list = list || new util.ArrayList();
+// },
+//
+//   /**
+//    * Yields all constraints having at least one
+//    * variable bound to the exact path
+//    * 
+//    * Note: In general, a constraint may make use of multiple paths
+//    */
+//   getConstraintsByPath: function(path) {
+//       var result = [];
+//       
+//       var constraints = this.constraints;
+//       
+//       for(var i = 0; i < constraints.length; ++i) {
+//           var constraint = constraints[i];
+//           
+//           var paths = constraint.getDeclaredPaths();
+//           
+//           var isPath = _.some(paths, function(p) {
+//               var tmp = p.equals(path);
+//               return tmp;
+//           });
+//           
+//           if(isPath) {
+//               result.push(constraint);
+//           }
+//       }
+//       
+//       return result;
+//   },
+//   
+//
+//   getConstrainedSteps: function(path) {
+//       //console.log("getConstrainedSteps: ", path);
+//       //checkNotNull(path);
+//       
+//       var tmp = [];
+//       
+//       var steps = path.getSteps();
+//       var constraints = this.constraints;
+//       
+//       for(var i = 0; i < constraints.length; ++i) {
+//           var constraint = constraints[i];
+//           //console.log("  Constraint: " + constraint);
+//
+//           var paths = constraint.getDeclaredPaths();
+//           //console.log("    Paths: " + paths.length + " - " + paths);
+//           
+//           for(var j = 0; j < paths.length; ++j) {
+//               var p = paths[j];
+//               var pSteps = p.getSteps();
+//               var delta = pSteps.length - steps.length; 
+//               
+//               //console.log("      Compare: " + delta, p, path);
+//               
+//               var startsWith = p.startsWith(path);
+//               //console.log("      Startswith: " + startsWith);
+//               if(delta == 1 && startsWith) {
+//                   var step = pSteps[pSteps.length - 1];
+//                   tmp.push(step);
+//               }
+//           }
+//       }
+//       
+//       var result = _.uniq(tmp, function(step) { return "" + step; });
+//       
+//       //console.log("Constraint result", constraints.length, result.length);
+//       
+//       return result;
+//   },
+//   
+//   getConstraints: function() {
+//       return this.constraints;  
+//   },
+//   
+//   addConstraint: function(constraint) {
+//       this.constraints.push(constraint);
+//   },
+//   
+//   // Fcuking hack because of legacy code and the lack of a standard collection library...
+//   // TODO Make the constraints a hash set (or a list set)
+//   removeConstraint: function(constraint) {
+//       var result = false;
+//
+//       var cs = this.constraints;
+//       
+//       var n = [];
+//       for(var i = 0; i < cs.length; ++i) {
+//           var c = cs[i];
+//           
+//           if(!c.equals(constraint)) {
+//               n.push(c);
+//           } else {
+//               result = true;
+//           }
+//       }
+//       
+//       this.constraints = n;
+//       return result;
+//   },
+//
+//   toggleConstraint: function(constraint) {
+//       var wasRemoved = this.removeConstraint(constraint);
+//       if(!wasRemoved) {
+//           this.addConstraint(constraint);
+//       }
+//   }
+//});
+//
+//
+///**
+//* TODO This is dead code and should be removed
+//* 
+//* The constraint compiler provides a method for transforming a constraintList
+//* into corresponding SPARQL elements.
+//* 
+//* The compiler is initialized with a constraintElementFactory. The compiler
+//* just delegates to these factories.
+//* 
+//*/
+//ns.ConstraintCompiler = Class.create({
+//   initialize: function(cefRegistry) {            
+//       if(!cefRegistry) {
+//           cefRegistry = ns.createDefaultConstraintElementFactories(); 
+//       }
+//       
+//       this.cefRegistry = cefRegistry;
+//   },
+//   
+//   getCefRegistry: function() {
+//       return this.cefRegistry;
+//   },
+//   
+//   
+//   createElementsAndExprs: function(constraintList, facetNode, excludePath) {
+//       //var triples = [];
+//       var elements = [];
+//       var resultExprs = [];
+//       
+//       
+//       var pathToExprs = {};
+//       
+//       var self = this;
+//
+//       var constraints = constraintList.toArray();
+//       
+//       _(constraints).each(function(constraint) {
+//           var paths = constraint.getDeclaredPaths();
+//           
+//           var pathId = _(paths).reduce(
+//               function(memo, path) {
+//                   return memo + ' ' + path;
+//               },
+//               ''
+//           );
+//
+//           // Check if any of the paths is excluded
+//           if(excludePath) {
+//               var skip = _(paths).some(function(path) {
+//                   //console.log("Path.equals", excludePath, path);
+//                   
+//                   var tmp = excludePath.equals(path);
+//                   return tmp;
+//               });
+//
+//               if(skip) {
+//                   return;
+//               }
+//           }
+//           
+//           
+//           _(paths).each(function(path) {
+//               
+//               //if(path.equals(excludePath)) {
+//                   // TODO Exclude only works if there is only a single path
+//                   // Or more generally, if all paths were excluded...
+//                   // At least that somehow seems to make sense
+//               //}
+//               
+//               var fn = facetNode.forPath(path);
+//               
+//               //console.log("FNSTATE", fn);
+//               
+//               var tmpElements = fn.getElements();
+//               elements.push.apply(elements, tmpElements);
+//           });
+//           
+//           var constraintName = constraint.getName();
+//           var cef = self.cefRegistry.get(constraintName);
+//           if(!cef) {
+//               throw "No constraintElementFactory registered for " + constraintName;
+//           }
+//           
+//           var ci = cef.createElementsAndExprs(facetNode, constraint);
+//           
+//           //var ci = constraint.instanciate(facetNode);
+//           var ciElements = ci.getElements();
+//           var ciExprs = ci.getExprs();
+//           
+//           if(ciElements) {
+//               elements.push.apply(elements, ciElements);
+//           }               
+//           
+//           if(ciExprs && ciExprs.length > 0) {
+//           
+//               var exprs = pathToExprs[pathId];
+//               if(!exprs) {
+//                   exprs = [];
+//                   pathToExprs[pathId] = exprs;
+//               }
+//               
+//               var andExpr = sparql.andify(ciExprs);
+//               exprs.push(andExpr);
+//           }               
+//       });
+//
+//       _(pathToExprs).each(function(exprs) {
+//           var orExpr = sparql.orify(exprs);
+//           resultExprs.push(orExpr);
+//       });
+//       
+//       var result = new ns.ElementsAndExprs(elements, resultExprs);
+//
+//       return result;
+//   }     
+//});
+
+/*  
+ns.createDefaultConstraintElementFactories = function() {
+    var result = new util.ObjectMap();
+
+    result.put("exist", new ns.ConstraintElementFactoryExist());
+    result.put("equal", new ns.ConstraintElementFactoryEqual());
+    //registry.put("range", new facete.ConstaintElementFactoryRange());     
+    result.put("bbox", new ns.ConstraintElementFactoryBBoxRange());
+
+    result.put("regex", new ns.ConstraintElementFactoryRegex());
+    result.put("lang", new ns.ConstraintElementFactoryLang());
+
+    
+    return result;
+};
+*/  
+
 (function() {
     
     var ns = Jassa.facete;
