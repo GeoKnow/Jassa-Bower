@@ -18261,7 +18261,8 @@ ns.createDefaultConstraintElementFactories = function() {
                 //var subElement = new sparql.ElementSubQuery(distinctQuery);
                 
                 //var countQuery = ns.QueryUtils.createQueryCount([subElement], null, countVar, outputVar, [groupVar], false);
-                var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], false); 
+                //var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], false); 
+                var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], true);
                 
                 return countQuery;
 		    });
