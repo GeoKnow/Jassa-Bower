@@ -665,7 +665,10 @@ module["exports"] = jassa;
 	
 	        replace: function(target, source) {
 	            this.clear(target);
-	            target.push.apply(target, source);
+
+	            if(source) {
+	                target.push.apply(target, source);
+	            }
 	        },
 	
 	
