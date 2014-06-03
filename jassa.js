@@ -15366,7 +15366,7 @@ ns.createDefaultConstraintElementFactories = function() {
             _(constraints).each(function(constraint) {
                 var constraintType = constraint.getName();
                  
-                if(constraintType == 'equal') {
+                if(constraintType === 'equals') {
                     var node = constraint.getValue();
                     equalConstraints[node.toString()] = node;
                 }
