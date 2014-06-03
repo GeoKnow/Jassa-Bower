@@ -18143,7 +18143,7 @@ ns.createDefaultConstraintElementFactories = function() {
 		
 		
 		fetchFacetValueCountsThresholded: function(path, isInverse, properties, isNegated, scanLimit, maxQueryLength) {
-		    scanLimit = 1000;
+		    scanLimit = 10000;
 		    // Check the scan counts (i.e. how many triples we would have to scan in order to compute the counts of distinct values)
 		    var querySpecs = this.createQuerySpecsFacetValueScanCounts(path, isInverse, properties, isNegated, scanLimit, maxQueryLength);
 		    var promise = this.processQuerySpecsFacetValueCounts(path, isInverse, properties, querySpecs);
@@ -18261,8 +18261,12 @@ ns.createDefaultConstraintElementFactories = function() {
                 //var subElement = new sparql.ElementSubQuery(distinctQuery);
                 
                 //var countQuery = ns.QueryUtils.createQueryCount([subElement], null, countVar, outputVar, [groupVar], false);
-                //var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], false); 
-                var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], true);
+                var countQuery = ns.QueryUtils.createQueryCount(elements, scanLimit, countVar, outputVar, [groupVar], false);
+                
+                // TODO: The count is just a check for the scan counts, but not for the distinct values...
+                // This means, for each p1 that is below the scan limit, we can do another query
+                
+                //var countQuery = ns.QueryUtils.createQueryCount(elements, null, countVar, outputVar, [groupVar], true);
                 
                 return countQuery;
 		    });
@@ -18998,7 +19002,13 @@ ns.createDefaultConstraintElementFactories = function() {
          * 
          */
         hashCode: function() {
-            var result = util.ObjectUtils.hashCode(this, true);
+            
+            // We omit the facetNode attribute, as this one should not be changed 'on the outside' anyway;
+            // internal changes cause angular's digest loop to execute twice
+            // TODO HACK We shouldn't abuse hashCode() for hacking about issues which are specific to how we do things with angular
+            var shallowCopy = _(this).omit('rootFacetNode');
+            
+            var result = util.ObjectUtils.hashCode(shallowCopy, true);
             return result;
         }
         
