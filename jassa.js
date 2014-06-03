@@ -14153,7 +14153,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         equals: function(that) {
-            if(!that instanceof ns.ConstraintSpecPathValue) {
+            if(!that instanceof ns.ConstraintBasePathValue) {
                 return false;
             }
             
