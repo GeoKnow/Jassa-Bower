@@ -492,7 +492,7 @@ var Class = (function() {
  * (modules are just namespaces, and it feels pretty obstrusive writing them in upper camel case)
  * 
  */
-var Jassa = {
+var jassa = {
 	vocab: {
 		util: {},
 		xsd: {},
@@ -527,6 +527,9 @@ var Jassa = {
 	}
 };
 
+// Upper case version for legacy code 
+var Jassa = jassa;
+
 // Export for nodejs
 var module;
 
@@ -534,7 +537,7 @@ if(!module) {
     module = {};
 }
 
-module["exports"] = Jassa;
+module["exports"] = jassa;
 
 
 (function() {
@@ -1345,7 +1348,7 @@ module["exports"] = Jassa;
 
         /**
          * Recursively iterate the object tree and use a .hashCode function if available
-         * 
+         * TODO Add support to exclude attributes
          */
         hashCode: function(obj, skipOnce) {
 
@@ -14138,7 +14141,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     */
     
     ns.ConstraintBasePathValue = Class.create(ns.ConstraintBasePath, {
-        classLabel: 'jassa.facete.ConstraintSpecPathValue',
+        //classLabel: 'jassa.facete.ConstraintSpecPathValue',
 
         initialize: function($super, name, path, value) {
             $super(name, path);
@@ -14172,8 +14175,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.ConstraintExists = Class.create(ns.ConstraintBasePath, {
         classLabel: 'jassa.facete.ConstraintExists',
 
-        initialize: function($super, name, path) {
-            $super(name, path);
+        initialize: function($super, path) {
+            $super('exists', path);
         },
         
         createElementsAndExprs: function(facetNode) {
@@ -14186,8 +14189,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.ConstraintLang = Class.create(ns.ConstraintBasePathValue, {
         classLabel: 'jassa.facete.ConstraintLang',
         
-        initialize: function($super, name, path, langStr) {
-            $super(name, path, langStr);
+        initialize: function($super, path, langStr) {
+            $super('lang', path, langStr);
         },
         
         createElementsAndExprs: function(facetNode) {
@@ -14199,8 +14202,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.ConstraintEquals = Class.create(ns.ConstraintBasePathValue, {
         classLabel: 'jassa.facete.ConstraintEquals',
         
-        initialize: function($super, name, path, node) {
-            $super(name, path, node);
+        initialize: function($super, path, node) {
+            $super('equals', path, node);
         },
         
         createElementsAndExprs: function(facetNode) {
@@ -14212,8 +14215,8 @@ or simply: Angular + Magic Sparql = Angular Marql
     ns.ConstraintRegex = Class.create(ns.ConstraintBasePathValue, {
         classLabel: 'jassa.facete.ConstraintRegex',
         
-        initialize: function($super, name, path, regexStr) {
-            $super(name, path, regexStr);
+        initialize: function($super, path, regexStr) {
+            $super('regex', path, regexStr);
         },
         
         createElementsAndExprs: function(facetNode) {
@@ -18942,6 +18945,9 @@ ns.createDefaultConstraintElementFactories = function() {
         
         initialize: function(baseConcept, rootFacetNode, constraintManager, labelMap, pathTaggerManager) {
             this.baseConcept = baseConcept;
+            
+            // TODO ISSUE: We may modify the rootFacetNode during an update cycle, which triggers a new cycle, and thus
+            // negatively impacts performance. The easiest solution would be to exclude this method from the watch list.
             this.rootFacetNode = rootFacetNode;
             this.constraintManager = constraintManager;
             
