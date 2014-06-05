@@ -676,6 +676,47 @@ module["exports"] = jassa;
 	            var newArr = _(arr).filter(fn);            
 	            this.replace(arr, newArr);
 	            return arr;
+	        },
+	        
+	        indexesOf: function(arr, val, fnEquals) {
+	            if(!fnEquals) {
+	                ns.defaultEquals;
+	            } 
+	            
+	            var result = [];
+
+	            _(arr).each(function(item, index) {
+	                var isEqual = fnEquals(val, it);
+	                if(isEqual) {
+	                    result.push(index);
+	                }
+	            });
+	            
+	            return result;
+	        },
+	        
+	        copyWithoutIndexes: function(arr, indexes) {
+	            var map = {};
+	            _(indexes).each(function(index) {
+	                map[index] = true;
+	            });
+	            
+	            var result = [];
+
+	            for(var i = 0; i < arr.length; ++i) {
+	                var omit = map[i];
+	                if(!omit) {
+	                    result.push(arr[i]);
+	                }
+	            }
+	            
+	            return result;
+	        },
+	        
+	        removeIndexes: function(arr, indexes) {
+	            var tmp = copyWithoutIndexes(arr, indexes);	            
+	            this.replace(arr, tmp);
+	            return arr;
 	        }
 	};
 	
@@ -16798,6 +16839,12 @@ ns.createDefaultConstraintElementFactories = function() {
 		 * This method signature is not final yet.
 		 *
 		 * TODO Possibly add support for specifying the p ond o variables
+		 * 
+		 * @param path The path for which to describe the set of facets
+		 * @param isInverse Whether at the given path the outgoing or incoming facets should be described
+		 * @param enableOptimization Returns the concept (?p a Property, ?p) in cases where (?s ?p ?o, ?p) would be returned.
+		 * @param singleProperty Whether to create a concept where only a single property at the given path is selected. Useful for creating concepts for individual properties
+		 * TODO Add @param resourceLimit If given, this limit will be applied for the resources at each node of the path (maybe the limit should be part of the path object???)  
 		 */
 		createConceptFacetsCore: function(path, isInverse, enableOptimization, singleProperty) { //excludeSelfConstraints) {
 
@@ -16917,11 +16964,13 @@ ns.createDefaultConstraintElementFactories = function() {
 		 * Creates a concept that fetches all facets at a given path
 		 *
 		 * Note that the returned concept does not necessarily
-		 * offer access to the facet's values.
+		 * offer access to the facet's values (see first example).
 		 * 
 		 * Examples:
 		 * - ({?s a rdf:Property}, ?s)
 		 * - ({?s a ex:Foo . ?s ?p ?o }, ?p)
+		 * 
+         * TODO We should add arguments to support scanLimit and resourceLimit (such as: only derive facets based on distinct resources within the first 1000000 triples)
 		 * 
 		 */
 		createConceptFacets: function(path, isInverse) {
@@ -16944,6 +16993,7 @@ ns.createDefaultConstraintElementFactories = function() {
 		 * Examples:
 		 * - ({?p a rdf:Propery . ?s ?p ?o }, ?p, ?o })
 		 * - ({?s a ex:Foo . ?o ?p ?s }, ?p, ?o)
+		 * 
 		 * 
 		 * @return  
 		 */
