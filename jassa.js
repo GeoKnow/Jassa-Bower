@@ -679,9 +679,7 @@ module["exports"] = jassa;
 	        },
 	        
 	        indexesOf: function(arr, val, fnEquals) {
-	            if(!fnEquals) {
-	                ns.defaultEquals;
-	            } 
+	            fnEquals = fnEquals || ns.defaultEquals;
 	            
 	            var result = [];
 
