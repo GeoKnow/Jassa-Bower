@@ -19551,6 +19551,8 @@ ns.createDefaultConstraintElementFactories = function() {
         
         /**
          * Removes a column by id
+         * 
+         * Also removes dependent objects, such as sort conditions and aggregations 
          */
         removeColumn: function(columnId) {
             delete this.colIdToColView[columnId];
@@ -19559,8 +19561,13 @@ ns.createDefaultConstraintElementFactories = function() {
             util.ArrayUtils.filter(this.columnIds, function(cid) {            
                 var r = columnId != cid;
                 return r;
-             });
+            });
             
+            util.ArrayUtils.filter(this.sortConditions, function(sc) {
+                var r = columnId != sc.getColumnId();
+            });
+
+            delete this.colIdToAgg[columnId];
         }
     });
 
