@@ -686,7 +686,7 @@ module["exports"] = jassa;
 	            var result = [];
 
 	            _(arr).each(function(item, index) {
-	                var isEqual = fnEquals(val, it);
+	                var isEqual = fnEquals(val, item);
 	                if(isEqual) {
 	                    result.push(index);
 	                }
@@ -714,7 +714,7 @@ module["exports"] = jassa;
 	        },
 	        
 	        removeIndexes: function(arr, indexes) {
-	            var tmp = copyWithoutIndexes(arr, indexes);	            
+	            var tmp = this.copyWithoutIndexes(arr, indexes);	            
 	            this.replace(arr, tmp);
 	            return arr;
 	        }
