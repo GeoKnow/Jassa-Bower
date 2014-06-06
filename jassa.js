@@ -659,7 +659,7 @@ module["exports"] = jassa;
 	        chunk: function(arr, chunkSize) {    
                 var result = [];
                 for (var i = 0; i < arr.length; i += chunkSize) {
-                    var chunk = nodes.slice(i, i + chunkSize);
+                    var chunk = arr.slice(i, i + chunkSize);
         
                     result.push(chunk);
                 }
