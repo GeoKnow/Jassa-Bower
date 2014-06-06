@@ -7716,7 +7716,8 @@ module["exports"] = jassa;
 	        var queries = this.chunkQuery(query, v, nodes, maxChunkSize);
 	        
 	        var promises = _(queries).map(function(query) {
-	            var r = sparqlService.execSelect(query);
+	            var qe = sparqlService.createQueryExecution(query);
+	            var r = qe.execSelect();
 	            return r;
 	        });
 	        
