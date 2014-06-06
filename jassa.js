@@ -656,7 +656,17 @@ module["exports"] = jassa;
 	
 	
 	ns.ArrayUtils = {
-	
+	        chunk: function(arr, chunkSize) {    
+                var result = [];
+                for (var i = 0; i < arr.length; i += chunkSize) {
+                    var chunk = nodes.slice(i, i + chunkSize);
+        
+                    result.push(chunk);
+                }
+                
+                return result;
+	        },
+
 	        clear: function(arr) {
 	            while(arr.length > 0) {
 	                arr.pop();
@@ -7105,7 +7115,7 @@ module["exports"] = jassa;
 	     * Given an array of nodes, this method returns:
 	     * (a) the array of nodes for which cache entries exist
 	     * (b) the array of nodes for which NO cache entries exist
-	     * (c) the array of nodes for which it is know that no data exists
+	     * (c) the array of nodes for which it is known that no data exists
 	     * (c) chunked arrays of nodes for which no cache entries exist
 	     * (d) the maxChunkSize used to create the chunks
 	     * 
@@ -7652,7 +7662,75 @@ module["exports"] = jassa;
     //ns.globalSparqlCache = {};
 
 	ns.ServiceUtils = {
-	
+
+	    // FIXME constrainQueryVar, constrainQueryExprVar, chunkQuery should go to a different place, such as sparql.QueryUtils
+	        
+	    constrainQueryVar: function(query, v, nodes) {
+            var exprVar = new sparql.ExprVar(v);
+            var result = constrainQueryExprVar(query, exprVar, nodes);
+            return result;
+	    },
+
+	    constrainQueryExprVar: function(query, exprVar, nodes) {
+            var result = query.clone();
+            var e = new sparql.ElementFilter(new sparql.E_OneOf(exprVar, chunk));
+            result.getElements().push(e);
+            
+            return result;
+	    },
+
+	    /**
+	     * Returns an array of queries where the variable v has been constraint to elements in nodes.
+	     */
+	    chunkQuery: function(query, v, nodes, maxChunkSize) {
+            var chunks = util.ArrayUtils.chunk(nodes, maxChunkSize);
+            var exprVar = new sparql.ExprVar(v);
+
+            var self = this;
+            var result = _(chunks).map(function(chunk) {
+                var r = self.constrainQueryExprVar(query, exprVar, nodes);
+                return r;
+            });
+            
+            return result;
+	    },
+
+	    mergeResultSets: function(arrayOfResultSets) {
+            var bindings = [];
+            var varNames = [];
+            _(arrayOfResultSets).each(function(rs) {
+                var vns = rs.getVarNames();
+                varNames = _(varNames).union(vns);
+                
+                var arr = rs.getIterator().getArray();
+                bindings.push.apply(bindings, arr);
+            });
+	        
+	        var itBinding = new util.IteratorArray(bindings);
+	        var result = new ns.ResultSetArrayIteratorBinding(itBinding, varNames);
+
+	        return result;
+	    },
+	    
+	    execSelectForNodes: function(sparqlService, query, v, nodes, maxChunkSize) {
+	        var queries = this.chunkQuery(query, v, nodes, maxChunkSize);
+	        
+	        var promises = _(queries).map(function(query) {
+	            var r = sparqlService.execSelect(query);
+	            return r;
+	        });
+	        
+            var masterTask = jQuery.when.apply(window, promises);
+            
+            var self = this;
+            var result = masterTask.pipe(function(/* arguments will be result sets */) {
+                var r = self.mergeResultSets(arguments);
+                return r;
+            });
+
+            return result;
+	    },
+	        
 		/**
 		 * TODO Rather use .close()
 		 * 
@@ -9939,6 +10017,11 @@ module["exports"] = jassa;
 			this.nodes = nodes;
 		},
 		
+		shallowClone: function() {
+		    var r = new ns.QueryConfig(this.criteria, this.limit, this.offset, this.concept, this._isLeftJoin, this.nodes);
+		    return r;
+		},
+		
 		getCriteria: function() {
 			return this.criteria;		
 		},
@@ -10163,7 +10246,7 @@ module["exports"] = jassa;
 		
 		
 
-		createQueries: function(config) {
+		createQuerySpec: function(config) {
 			// TODO Compile the criteria to
 			// a) SPARQL filters
 			// b) post processors
@@ -10174,6 +10257,7 @@ module["exports"] = jassa;
 			var offset = config.getOffset();
 			var concept = config.getConcept();
 			var isLeftJoin = config.isLeftJoin();
+			var nodes = config.getNodes();
 			
 			//console.log('context', JSON.stringify(this.context), this.context.getNameToMapping());
 			
@@ -10339,14 +10423,16 @@ module["exports"] = jassa;
                 innerElement: innerElement,
                 outerElement: outerElement,
                 idVar: idVar,
+                idExpr: idExpr,
                 vars: vars,
                 sortConditions: sortConditions,
                 pattern: pattern,
-                criteria: criteria
+                criteria: criteria,
+                nodes: nodes
             };
             
-            console.log('innerElement: ' + innerElement);
-            console.log('outerElement: ' + outerElement);
+            //console.log('innerElement: ' + innerElement);
+            //console.log('outerElement: ' + outerElement);
             
 
             
@@ -10355,7 +10441,7 @@ module["exports"] = jassa;
 
 		
 		execute: function(config, retainRdfNodes) {
-		    var spec = this.createQueries(config);
+		    var spec = this.createQuerySpec(config);
 		    
 		    var result = this.executeData(spec, retainRdfNodes);
 		    
@@ -10363,7 +10449,13 @@ module["exports"] = jassa;
 		},
 		
 		executeCount: function(config) {
-            var spec = this.createQueries(config);
+            var spec = this.createQuerySpec(config);
+
+            if(spec.nodes) {
+                console.log('Counting if nodes are provided is not implemented yet');
+                throw 'Counting if nodes are provided is not implemented yet';
+            }
+                
 
             var element = spec.innerElement;
             var idVar = spec.idVar;
@@ -10380,6 +10472,7 @@ module["exports"] = jassa;
 		executeData: function(spec, retainRdfNodes) {
 		    var outerElement = spec.outerElement;
 		    var idExpr = spec.idExpr;
+		    var idVar = spec.idVar;
 		    var sortConditions = spec.sortConditions;
 		    var vars = spec.vars;
 		    var pattern = spec.pattern;
@@ -10404,59 +10497,19 @@ module["exports"] = jassa;
 			}
 			//query.setLimit(10);
 			
-			
-			// TODO: We need to deal with references
-			var processResult = function(it) {
-				var instancer = new ns.AggregatorFacade(pattern);
-				//var instancer = new sponate.PatternVisitorData(pattern);
-				//var instancer = new sponate.FactoryAggregator();
-				// TODO
-				
-				while(it.hasNext()) {
-					var binding = it.nextBinding();
-					
-					instancer.process(binding);
-				}
-				
-				var json = instancer.getJson(retainRdfNodes);
-				
-				
-				
-				//console.log('Final json: ' + JSON.stringify(json));
-				
-				var result;
-				if(_(json).isArray()) {
+			var rsPromise;
+			if(spec.nodes) {
+			    rsPromise = service.ServiceUtils.execSelectForNodes(this.sparqlService, query, idVar, spec.nodes);
+			}
+			else {
+	            var qe = this.sparqlService.createQueryExecution(query);
+	            rsPromise = qe.execSelect();			    
+			}
 
-				    var filtered;
-				    if(retainRdfNodes) {
-				        filtered = json;
-				    }
-				    else {
-    					var filtered = _(json).filter(function(item) {												
-    						var isMatch = criteria.match(item);
-    						return isMatch;
-    					})
-    					
-    					var all = json.length;
-    					var fil = filtered.length;
-    					var delta = all - fil;
-    
-    					console.log('[DEBUG] ' + delta + ' items filtered on the client ('+ fil + '/' + all + ' remaining) using criteria ' + JSON.stringify(criteria));
-				    }
-
-				    result = new util.IteratorArray(filtered);
-				    
-				} else {
-				    console.log('[ERROR] Implement me');
-					throw 'Implement me';
-				}
-				
-				return result;
-			};
-
-			
-			var qe = this.sparqlService.createQueryExecution(query);
-			var result = qe.execSelect().pipe(processResult);			
+			var result = rsPromise.pipe(function(rs) {
+			    var r = ns.SponateUtils.processResultSet(rs, pattern, retainRdfNodes, false);
+			    return r;
+			});
 			
 			return result;
 			//console.log('' + query);
@@ -10640,6 +10693,55 @@ or simply: Angular + Magic Sparql = Angular Marql
  * 
  */
 
+//  var processResult = function(it) {
+//  var instancer = new ns.AggregatorFacade(pattern);
+//  //var instancer = new sponate.PatternVisitorData(pattern);
+//  //var instancer = new sponate.FactoryAggregator();
+//  // TODO
+//  
+//  while(it.hasNext()) {
+//      var binding = it.nextBinding();
+//      
+//      instancer.process(binding);
+//  }
+//  
+//  var json = instancer.getJson(retainRdfNodes);
+//  
+//  
+//  
+//  //console.log('Final json: ' + JSON.stringify(json));
+//  
+//  var result;
+//  if(_(json).isArray()) {
+//
+//      var filtered;
+//      if(retainRdfNodes) {
+//          filtered = json;
+//      }
+//      else {
+//          var filtered = _(json).filter(function(item) {                                              
+//              var isMatch = criteria.match(item);
+//              return isMatch;
+//          })
+//          
+//          var all = json.length;
+//          var fil = filtered.length;
+//          var delta = all - fil;
+//
+//          console.log('[DEBUG] ' + delta + ' items filtered on the client ('+ fil + '/' + all + ' remaining) using criteria ' + JSON.stringify(criteria));
+//      }
+//
+//      result = new util.IteratorArray(filtered);
+//      
+//  } else {
+//      console.log('[ERROR] Implement me');
+//      throw 'Implement me';
+//  }
+//  
+//  return result;
+//};
+//
+//
 (function() {
 	
 	/*
@@ -10966,7 +11068,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 	}	
 	
-})();(function() {
+})();
+(function() {
 
 	// TODO Differntiate between developer utils and user utils
 	// In fact, the latter should go to the facade file
@@ -10991,6 +11094,48 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	ns.SponateUtils = {
 
+	    // TODO: We need to deal with references
+	    processResultSet: function(rs, pattern, retainRdfNodes, doClientFiltering) {
+            var accumulator = new ns.AggregatorFacade(pattern);
+            
+            while(rs.hasNext()) {
+                var binding = rs.nextBinding();
+                
+                accumulator.process(binding);
+            }
+            
+            var json = accumulator.getJson(retainRdfNodes);
+            
+            //console.log('Final json: ' + JSON.stringify(json));
+            
+            var result;
+            if(_(json).isArray()) {
+
+                var filtered = json;
+
+                if(doClientFiltering && !retainRdfNodes) {
+                    var filtered = _(json).filter(function(item) {                                              
+                        var isMatch = criteria.match(item);
+                        return isMatch;
+                    })
+                    
+                    var all = json.length;
+                    var fil = filtered.length;
+                    var delta = all - fil;
+
+                    console.log('[DEBUG] ' + delta + ' items filtered on the client ('+ fil + '/' + all + ' remaining) using criteria ' + JSON.stringify(criteria));
+                }
+
+                result = new util.IteratorArray(filtered);
+                
+            } else {
+                console.log('[ERROR] Implement me');
+                throw 'Implement me';
+            }
+            
+            return result;
+        },
+	        
 	    /**
 	     * Parse a sponate mapping spec JSON object and return a sponate.Mapping object 
 	     * 
@@ -19715,6 +19860,7 @@ ns.createDefaultConstraintElementFactories = function() {
     });
 
     
+    // TODO: Maybe this class should be TableModFacet and inherit from TableMod?
     ns.FacetTableConfig = Class.create({
         initialize: function(facetConfig, tableMod, paths) {
             this.facetConfig = facetConfig;
@@ -19733,7 +19879,22 @@ ns.createDefaultConstraintElementFactories = function() {
         getPaths: function() {
             return this.paths;
         },        
-
+                
+        /**
+         * Return the path for a given column id
+         */
+        getPath: function(colId) {
+            var index = _(this.tableMod.getColumnIds()).indexOf(colId);
+            var result = this.paths.get(index);
+            return result;
+        },
+        
+        getColumnId: function(path) {
+            var index = _(this.paths.toArray()).indexOf(path);
+            result = this.tableMod.getColumnIds()[index];
+            return result;
+        },
+        
         togglePath: function(path) {
             // Updates the table model accordingly
             var status = util.CollectionUtils.toggleItem(this.paths, path);
