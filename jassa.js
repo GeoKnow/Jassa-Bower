@@ -7673,7 +7673,7 @@ module["exports"] = jassa;
 
 	    constrainQueryExprVar: function(query, exprVar, nodes) {
             var result = query.clone();
-            var e = new sparql.ElementFilter(new sparql.E_OneOf(exprVar, chunk));
+            var e = new sparql.ElementFilter(new sparql.E_OneOf(exprVar, nodes));
             result.getElements().push(e);
             
             return result;
