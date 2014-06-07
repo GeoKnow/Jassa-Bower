@@ -8199,7 +8199,8 @@ module["exports"] = jassa;
         
         _(varList).each(function(v) {
             var varName = v.getName();
-            result[varName] = '' + binding.get(v);
+            //result[varName] = '' + binding.get(v);
+            result[varName] = binding.get(v);
         });
 
         return result;
