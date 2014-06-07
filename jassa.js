@@ -903,7 +903,7 @@ module["exports"] = jassa;
 		}
 		
 		return result;
-	}
+	};
 	
 	
 	/**
@@ -917,13 +917,13 @@ module["exports"] = jassa;
 	    },
 	    
 	    put: function(key, value) {
-	        var v = map.get(key);
+	        var v = this.map.get(key);
 	        if(v) {
 	            throw 'Key ' + v + ' already inserted';
 	        }
 	        
 	        this.keys.push(key);
-	        map.put(key, value);
+	        this.map.put(key, value);
 	    },
 	    
 	    get: function(key) {
@@ -1064,7 +1064,7 @@ module["exports"] = jassa;
 			var result = [];
 			
 			_.each(this.hashToBucket, function(bucket) {
-				var keys = _(bucket).pluck('key')
+				var keys = _(bucket).pluck('key');
 				result.push.apply(result, keys);
 			});
 			
@@ -1206,7 +1206,7 @@ module["exports"] = jassa;
 	
 	        var result = !!found;
 	        return result;
-	    },
+	    }
 	    
 	    /*
 	    get: function(index) {
@@ -1382,7 +1382,7 @@ module["exports"] = jassa;
                         return;
                     }
                     
-                    seen.push(val)
+                    seen.push(val);
                     
                     if(fn) {
                         val = fn(key, val);
@@ -1573,7 +1573,7 @@ module["exports"] = jassa;
             var result;
             _(this.classNameToClass).find(function(ctor, cl) {
                 if(cl === classLabel) {
-                    result = ctor
+                    result = ctor;
                     return true;
                 }           
             });
@@ -1661,7 +1661,7 @@ module["exports"] = jassa;
                 var proto;
                 if(classLabel) {
                     
-                    var proto = this.classNameToPrototype[classLabel];
+                    proto = this.classNameToPrototype[classLabel];
                         
                     if(!proto) {
                         var clazz = this.getClassForLabel(classLabel);
@@ -2664,19 +2664,19 @@ module["exports"] = jassa;
 		        var d = str.charAt(l);
 		        
 		        if(!d) {
-                    var result = ns.NodeFactory.createTypedLiteralFromString(val, 'http://www.w3.org/2001/XMLSchema#string');		            
+                    result = ns.NodeFactory.createTypedLiteralFromString(val, 'http://www.w3.org/2001/XMLSchema#string');
 		        }
 		        //console.log('d is ' + d);
 		        switch(d) {
 		        case '':
 		        case '@':
-		            var langTag = str.substr(l + 1)
-		            var result = ns.NodeFactory.createPlainLiteral(val, langTag);
+		            var langTag = str.substr(l + 1);
+		            result = ns.NodeFactory.createPlainLiteral(val, langTag);
 		            break;
 		        case '^':
 		            var type = str.substr(l + 2);
 		            var typeStr = ns.parseUri(type);
-		            var result = ns.NodeFactory.createTypedLiteralFromString(val, typeStr);
+		            result = ns.NodeFactory.createTypedLiteralFromString(val, typeStr);
 		            break;
 		        default: 
 	                console.log('[ERROR] Excepted @ or ^^');
@@ -2833,7 +2833,7 @@ module["exports"] = jassa;
 		xstring: p + "string",
 	
 		date: p + "date",
-	    dateTime: p + "dateTime"		
+	    dateTime: p + "dateTime"
 	};
 	
 	
@@ -2972,7 +2972,7 @@ module["exports"] = jassa;
 	// String versions
 	ns.str = {
 		lon: p + "long",
-		lat: p + "lat",
+		lat: p + "lat"
 	};
 		
 	util.initNodes(ns);
@@ -3061,7 +3061,8 @@ module["exports"] = jassa;
             
             var result;
             if(prefix) {
-                var u = this.prefixes[u];
+
+                var u = this.prefixes[uri];
                 var qname = uri.substring(u.length);
                 
                 result = prefix + ':' + qname;
@@ -3069,7 +3070,7 @@ module["exports"] = jassa;
                 result = uri;
             }
             
-            return resul;t
+            return result;
         },
         
         addPrefix: function(prefix, urlBase) {
@@ -3492,7 +3493,8 @@ module["exports"] = jassa;
 			},
 	
 			copy: function(args) {
-				var result = newUnaryExpr(ns.E_Like, args);
+
+				var result = ns.newUnaryExpr(ns.E_Like, args);
 				return result;
 			},
 	
@@ -3618,7 +3620,7 @@ module["exports"] = jassa;
 			},
 			
 			copy: function(args) {
-				var result = newUnaryExpr(ns.E_Lang, args);
+				var result = ns.newUnaryExpr(ns.E_Lang, args);
 				return result;
 			},
 			
@@ -3645,7 +3647,7 @@ module["exports"] = jassa;
 			},
 			
 			copy: function(args) {
-				var result = newUnaryExpr(ns.E_Bound, args);
+				var result = ns.newUnaryExpr(ns.E_Bound, args);
 				return result;
 			},
 			
@@ -3951,7 +3953,7 @@ module["exports"] = jassa;
 		        if(node.getLiteralDatatypeUri() === xsd.xstring.getUri()) {
 		            result = '"' + node.getLiteralLexicalForm() + '"'; 
 		        }
-		        else if(node.datatype === xsd.xdouble.value) {
+		        else if(node.dataType === xsd.xdouble.value) {
 		            // TODO This is a hack - why is it here???
 		            return parseFloat(this.node.value);		            
 		        }
@@ -4149,7 +4151,7 @@ module["exports"] = jassa;
 	};
 	
 	ns.datatypeFragment = function(node) {
-		return node.datatype ? '^^<' + node.datatype + '>' : "";
+		return node.dataType ? '^^<' + node.datatype + '>' : "";
 	};
 	
 
@@ -4691,6 +4693,7 @@ module["exports"] = jassa;
 			}
 			
 			// FIXME: Should we clone the attributes too?
+      // FIXME: query not defined
 			var result = new ns.ElementSubQuery(query);
 			return result;
 		},
@@ -5206,7 +5209,7 @@ module["exports"] = jassa;
 					arr.push("(" + expr + " As " + v + ")");
 				} else {
 					arr.push("" + v);				
-				};
+				}
 			}
 			
 			var result = arr.join(" ");
@@ -5336,15 +5339,7 @@ module["exports"] = jassa;
 		getOffset: function() {
 		    return this.offset;
 		},
-		
-		setLimit: function(limit) {
-		    this.limit = limit;
-		},
-		
-		setOffset: function(offset) {
-		    this.offset = offset;
-		},
-		
+
 		toStringOrderBy: function() {
 			var result = (this.orderBy && this.orderBy.length > 0)
 				? "Order By " + this.orderBy.join(" ") + " "
@@ -5464,7 +5459,7 @@ module["exports"] = jassa;
 				this.setDistinct(options.distinct);
 			}
 		},
-		
+
 		setOffset: function(offset) {
 			this.offset = offset ? offset : null;
 		},
@@ -5579,7 +5574,7 @@ module["exports"] = jassa;
 					next.push(new ctor(a, b));
 				} else {
 					next.push(a);
-				};
+				}
 			}
 			
 			open = next;
@@ -5765,7 +5760,7 @@ module["exports"] = jassa;
 			}, []);
 			
 			return result;
-		},
+		}
 	};
 
 	
@@ -6032,6 +6027,7 @@ module["exports"] = jassa;
 			}
 
 			// Rename all variables that are in common
+      // FIXME: fnNodeEquals is not defined (commented out in sponate-utils.js as of 2014-06-05)
 			var result = new util.HashBidiMap(ns.fnNodeEquals);
 			//var rename = {};
 
@@ -6103,7 +6099,7 @@ module["exports"] = jassa;
 			var newElement = element.copySubstitute(fnSubst);
 			
 			return newElement;
-		},
+		}
 
 		
 		/**
@@ -6204,7 +6200,7 @@ module["exports"] = jassa;
                 
                 var nodeValue = sparql.NodeValue.makeNode(node);
                 
-                var expr = new sparql.E_Equal(exprVar, nodeValue);
+                var expr = new sparql.E_Equals(exprVar, nodeValue);
                 
                 return expr;
             });
@@ -6236,7 +6232,7 @@ module["exports"] = jassa;
         initialize: function(joinBuilder, alias, targetJoinVars) {
             this.joinBuilder = joinBuilder;
             this.alias = alias;
-            this.targetJoinVars;
+            this.targetJoinVars = targetJoinVars;
         },
         
         getJoinBuilder: function() {
@@ -6611,8 +6607,7 @@ module["exports"] = jassa;
             var rootNode = this.getRootNode();
             
             var result = this.getElementsRec(rootNode);
-            return result;
-            
+
             //var result = [];
             /*
             var rootNode = this.getRootNode();
@@ -6642,9 +6637,10 @@ module["exports"] = jassa;
 
     ns.JoinBuilderUtils = {
         getChildren: function(node) {
+            // FIXME: getJoinNodes not defined
             return node.getJoinNodes();
         }
-    }
+    };
 
     ns.JoinBuilderElement.create = function(rootElement, rootAlias, defaultJoinVars) {
         
@@ -6664,6 +6660,7 @@ module["exports"] = jassa;
      * 
      */
     ns.JoinBuilderElement.createWithEmptyRoot = function(varNames, rootAlias) {
+        // FIXME: varNamesToNodes not defined
         var vars = sparql.VarUtils.varNamesToNodes(varNames);
         
         var joinBuilder = new ns.JoinBuilderElement(null, vars, rootAlias);
@@ -6992,13 +6989,14 @@ module["exports"] = jassa;
 		},
 		
 		createQueryCache: function(sparqlService, query, indexExpr) {
+      // FIXME: SparqlService.getServiceState() not defined
 			var key = 'cache:/' + sparqlService.getServiceId() + '/' + sparqlService.getServiceState() + '/' + query + '/' + indexExpr;
 			
 			console.log('cache requested with id: ' + key);
 			
 			var cache = this.keyToCache.getItem(key);
 			if(cache == null) {
-				cache = new ns.QueryCacheBindingHashSingle(sparqlService, query, indexExpr)
+				cache = new ns.QueryCacheBindingHashSingle(sparqlService, query, indexExpr);
 				this.keyToCache.addItem(key, cache);
 			}
 			
@@ -7006,6 +7004,26 @@ module["exports"] = jassa;
 		}
 	});
 	
+	
+
+	/*
+	ns.SparqlLookpServiceCache = Class.create({
+	    initialize: function(sparqlLookupService, cache) {
+	        this.sparqlLookupService = sparqlLookupService;
+	        
+	        this.cache = cache || new Cache();
+	    },
+	    
+	    lookup: function(nodes) {
+	        // Make nodes unique
+	        var uniq = _(nodes).uniq(); // TODO equality
+	        
+	        
+	        
+	        
+	    }
+	})
+	*/
 	
 	
 	ns.QueryCacheBindingHashSingle = Class.create({
@@ -7741,7 +7759,7 @@ module["exports"] = jassa;
 		consumeResultSet: function(rs) {
 			while(rs.hasNext()) {
 				rs.nextBinding();
-			};
+			}
 		},
 			
 		resultSetToList: function(rs, variable) {
@@ -7870,7 +7888,7 @@ module["exports"] = jassa;
 		createSparqlRequestAjaxSpec: function(baseUrl, defaultGraphIris, queryString, dataDefaults, ajaxDefaults) {
             var data = {
                 'query': queryString,
-                'default-graph-uri': defaultGraphIris,
+                'default-graph-uri': defaultGraphIris
             };
 
             var result = {
@@ -7926,6 +7944,7 @@ module["exports"] = jassa;
     
     ns.BufferSet = Class.create(ns.Buffer, {
         initialize: function(maxItemCount) {
+            // FIXME: util.SetList not defined
             this.data = new util.SetList();
             this.maxItemCount = maxItemCount;
         },
@@ -7993,7 +8012,8 @@ module["exports"] = jassa;
                     exprsKey: exprsKey
                 });
             }
-            
+
+            // FIXME: expr not defined
             var elementFilter = new sparql.ElementFilter(expr);
             
 //            var filteredElement = new sparql.ElementGroup([
@@ -8036,10 +8056,11 @@ module["exports"] = jassa;
         
         $prefetch: function() {
             var maxBufferSize = 20;
-            var buffer = []
+            var buffer = [];
             
             
             // Fill the buffer
+            // FIXME: rsA not defined
             while(rsA.hasNext()) {
             
                 
@@ -8047,6 +8068,7 @@ module["exports"] = jassa;
             
             // If either the buffer is full or there are no more bindings in rsa,
             // Execute the join
+            // FIXME: rsa not defined
             if(buffer.isFull() || !rsa.hasNext()) {
                 
             }
@@ -8278,6 +8300,339 @@ module["exports"] = jassa;
 })();
 
 (function() {
+
+    var ns = jassa.service;
+    
+    ns.LookupService = Class.create({
+        getIdStr: function(id) {
+            console.log('Not overridden');
+            throw 'Not overridden';
+        },
+
+        /**
+         * This method must return a promise for a Map<Id, Data>
+         */
+        lookup: function(ids) {
+            console.log('Not overridden');
+            throw 'Not overridden';
+        }
+    });
+    
+    
+    /**
+     * This function must convert ids to unique strings
+     * Only the actual service (e.g. sparql or rest) needs to implement it
+     * Layers on top of it (e.g. caching, delaying) will then delegate to the
+     * inner-most getIdStr function.
+     *
+     */
+    ns.LookupServiceBase = Class.create(ns.LookupService, {
+        getIdStr: function(id) {
+            var result = '' + id;
+            return result;
+        }
+    });
+
+    ns.LookupServiceDelegateBase = Class.create(ns.LookupService, {
+        initialize: function(delegate) {
+            this.delegate = delegate;
+        },
+
+        getIdStr: function(id) {
+            var result = this.delegate.getIdStr(id);
+            return result;
+        }
+    });
+
+    /**
+     * Lookup service is simply a service that can asynchronously map ids to documents (data).
+     *
+     */
+    ns.LookupServiceCache = Class.create(ns.LookupServiceDelegateBase, {
+        initialize: function($super, delegate, requestCache) {
+            $super(delegate);
+            this.requestCache = requestCache || new service.RequestCache();
+        },
+        
+        /**
+         * This method must return a promise for the documents
+         */
+        lookup: function(ids) {
+            var self = this;
+
+            //console.log('cache status [BEFORE] ' + JSON.stringify(self.requestCache));
+
+            // Make ids unique
+            var uniq = _(ids).uniq(false, function(id) {
+                var idStr = self.getIdStr(id);                
+                return idStr;
+            });
+
+            var resultMap = new util.HashMap();
+
+            var resultCache = this.requestCache.getResultCache();
+            var executionCache = this.requestCache.getExecutionCache();
+            
+            // Check whether we need to wait for promises that are already executing
+            var open = [];
+            var waitForIds = [];
+            var waitForPromises = [];
+            
+            _(uniq).each(function(id) {
+                var idStr = self.getIdStr(id);
+
+                var data = resultCache.getItem(idStr);
+                if(!data) {
+                    
+                    var promise = executionCache[idStr];
+                    if(promise) {
+                        waitForIds.push(id);
+
+                        var found = _(waitForPromises).find(function(p) {
+                            var r = (p == promise);
+                            return r;
+                        });
+
+                        if(!found) {
+                            waitForPromises.push(promise);
+                        }
+                    }
+                    else {
+                        open.push(id);
+                        waitForIds.push(id);
+                    }
+                } else {
+                    resultMap.put(id, data);
+                }
+            });
+            
+            
+            if(open.length > 0) {
+                var p = this.fetchAndCache(open);
+                waitForPromises.push(p);
+            }
+            
+            var result = jQuery.when.apply(window, waitForPromises).pipe(function() {
+                var maps = arguments;
+                _(waitForIds).each(function(id) {
+                    
+                    var data = null;
+                    _(maps).find(function(map) {
+                        data = map.get(id);
+                        return !!data;
+                    });
+                    
+                    if(data) {
+                        resultMap.put(id, data);
+                    }
+                });
+                
+                return resultMap;
+            });
+            
+            return result;
+        },
+        
+        /**
+         * Function for actually retrieving data from the underlying service and updating caches as needed.
+         *
+         * Don't call this method directly; it may corrupt caches!
+         */
+        fetchAndCache: function(ids) {
+            var resultCache = this.requestCache.getResultCache();            
+            var executionCache = this.requestCache.getExecutionCache();
+
+            var self = this;
+            
+            var p = this.delegate.lookup(ids);
+            var result = p.pipe(function(map) {
+                
+                var r = new util.HashMap();
+
+                _(ids).each(function(id) {
+                    //var id = self.getIdFromDoc(doc);
+                    var idStr = self.getIdStr(id);
+                    var doc = map.get(id);
+                    resultCache.setItem(idStr, doc);
+                    r.put(id, doc);
+                });
+
+                _(ids).each(function(id) {
+                    var idStr = self.getIdStr(id);
+                    delete executionCache[idStr];
+                });
+                
+                return r;
+            });
+
+            _(ids).each(function(id) {
+                var idStr = self.getIdStr(id);
+                executionCache[idStr] = result;
+            });
+            
+            return result;
+        },
+        
+    });
+
+
+    /**
+     * Wrapper that collects ids for a certain amount of time before passing it on to the
+     * underlying lookup service.
+     */
+    ns.LookupServiceTimeout = Class.create(ns.LookupServiceDelegateBase, {
+        
+        initialize: function(delegate, delayInMs, maxRefreshCount) {
+            this.delegate = delegate;
+
+            this.delayInMs = delayInMs;
+            this.maxRefreshCount = maxRefreshCount || 0;
+            
+            this.idStrToId = {};
+            this.currentDeferred = null;
+            this.currentPromise = null;
+            this.currentTimer = null;            
+            this.currentRefreshCount = 0;
+        },
+        
+        getIdStr: function(id) {
+            var result = this.delegate.getIdStr(id);
+            return result;
+        },
+        
+        lookup: function(ids) {
+            if(!this.currentDeferred) {
+                this.currentDeferred = jQuery.Deferred();
+                this.currentPromise = this.currentDeferred.promise();
+            }
+
+            var self = this;
+            _(ids).each(function(id) {
+                var idStr = self.getIdStr(id);
+                var val = self.idStrToId[idStr];
+                if(!val) {
+                    self.idStrToId[idStr] = id;
+                }
+            });
+            
+            if(!this.currentTimer) {
+                this.startTimer();
+            }
+
+            // Filter the result by the ids which we requested
+            var result = this.currentPromise.pipe(function(map) {
+                var r = new util.HashMap();
+                _(ids).each(function(id) {
+                    var val = map.get(id);
+                    r.put(id, val);
+                });
+                return r;
+            });
+            
+            
+            return result;
+        },
+        
+        startTimer: function() {
+
+            var self = this;
+            var seenRefereshCount = this.currentRefreshCount;
+            var deferred = self.currentDeferred;
+            
+            this.currentTimer = setTimeout(function() {
+                
+                if(self.maxRefreshCount < 0 || seenRefereshCount < self.maxRefreshCount) {
+                    //clearTimeout(this.currentTimer);
+                    ++self.currentRefreshCount;
+                    self.startTimer();
+                    return;
+                }
+                
+                var ids = _(self.idStrToId).values();
+                
+                self.idStrToId = {};
+                self.currentRefreshCount = 0;
+                self.currentDeferred = null;
+                self.currentTimer = null;
+
+                var p = self.delegate.lookup(ids);
+                p.pipe(function(map) {
+                    deferred.resolve(map);
+                }).fail(function() {
+                    deferred.fail();
+                });
+                
+            }, this.delayInMs);
+        }
+
+        // TODO Rather than refresing for the whole time interval, we could
+        // refresh upon every change (up to a maximum delay time)
+        /*
+        var self = this;
+        var isModified = false;
+        _(ids).each(function(id) {
+            var idStr = self.delegate.getIdStr(id);
+            var val = self.idStrToId[idStr];
+            if(!val) {
+                idStrToId[idStr] = id;
+                isModified = true;
+            }
+        });
+
+        if(!isModified) {
+            return result;
+        }
+        */
+
+    });
+
+    
+    ns.LookupServiceSponate = Class.create(ns.LookupServiceBase, {
+        initialize: function(source) {
+            // Note: By source we mean e.g. store.labels
+            this.source = source;
+        },
+        
+        lookup: function(nodes) {
+            var result = this.source.find().nodes(nodes).asList(true).pipe(function(docs) {
+                var r = new util.HashMap();
+                _(docs).each(function(doc) {
+                    r.put(doc.id, doc);
+                });
+                return r;
+            });
+
+            return result;
+        }
+    });
+
+
+    // In-place transform the values for the looked up documents
+    ns.LookupServiceTransform = Class.create(ns.LookupServiceDelegateBase, {
+        initialize: function($super, delegate, fnTransform) {
+            $super(delegate);
+            this.fnTransform = fnTransform;
+        },
+                
+        lookup: function(ids) {
+            var fnTransform = this.fnTransform;
+
+            var result = this.delegate.lookup(ids).pipe(function(map) {
+                
+                _(ids).each(function(id) {
+                    var val = map.get(id);
+                    var t = fnTransform(val);
+                    map.put(id, t);
+                });
+                
+                return map;
+            });
+            
+            return result;
+        }
+    });
+    
+})();(function() {
 	
 	var ns = Jassa.sparql;
 	
@@ -8313,6 +8668,7 @@ module["exports"] = jassa;
 			}
 			else if(expr.isConstant()) {
 				var e = expr.getConstant();
+        // FIXME: this.evalConstant not defined
 				result = this.evalConstant(e, binding);
 			}
 			else {
@@ -8561,13 +8917,11 @@ module["exports"] = jassa;
 })();(function() {
 
     var rdf = Jassa.rdf;
-	var sparql = Jassa.sparql;
-	var util = Jassa.util;
+    var sparql = Jassa.sparql;
+    var util = Jassa.util;
 
-	var ns = Jassa.sponate;
-	
-	
-	
+    var ns = Jassa.sponate;
+
     ns.AccumulatorFactoryFn = Class.create({
         classLabel: 'AccumulatorFactoryFn',
         
@@ -8575,7 +8929,7 @@ module["exports"] = jassa;
             this.fn = fn;
             this.referencedVars = referencedVars;
         },
-        
+
         createAggregator: function() {
             var result = new ns.AccumulatorFn(this.fn, this.referencedVars);
             return result;
@@ -8847,14 +9201,14 @@ module["exports"] = jassa;
 			var result = [];
 			
 			var fn = function(pattern) {
-				var proceed = true
+				var proceed = true;
 				if(pattern instanceof ns.PatternRef) {
 					result.push(pattern);
 					proceed = false;
 				}
 				
 				return proceed;
-			}
+			};
 			
 			util.TreeUtils.visitDepthFirst(pattern, ns.PatternUtils.getChildren, fn);
 			
@@ -9165,6 +9519,7 @@ module["exports"] = jassa;
 			var result = [];
 			
 			var stub = this.stub;
+      // FIXME: joinColumn not defined
 			if(stub.joinColumn != null) {
 				// TODO HACK Use proper expression parsing here
 				var v = rdf.Node.v(stub.joinColumn.substr(1));
@@ -9206,13 +9561,14 @@ module["exports"] = jassa;
 		},
 		
 		getTargetColumns: function() {
-			return this.targetColumn;
+			return this.targetColumns;
 		},
 		
 		toString: function() {
 			var result
 				= '(' + this.sourceColumns.join(', ') + ') '
 				+ this.tableName
+        // FIXME: this.targetJoinColumns not defined
 				+ ' (' + this.targetJoinColumns.join() + ')';
 			
 			return result;
@@ -9293,7 +9649,7 @@ module["exports"] = jassa;
 		},
 		
 		toString: function() {
-			var result = this.patternRef + '/' + tableRef + '@' + attrPath;
+			var result = this.patternRef + '/' + this.tableRef + '@' + this.attrPath;
 			return result;
 		}
 	});
@@ -9321,11 +9677,11 @@ module["exports"] = jassa;
 		},
 		
 		isArray: function() {
-			this.isArray;
+			return this.isArray;
 		},
 		
 		getJoinTableRef: function() {
-			return this.joinTabelRef;
+			return this.joinTableRef;
 		},
 		
 		toString: function() {
@@ -9345,7 +9701,7 @@ module["exports"] = jassa;
 
 	    
 		getPattern: function() {
-			throw new 'override me';
+			throw 'override me';
 		},
 		
 		getJson: function(retainRdfNodes) {
@@ -9360,10 +9716,11 @@ module["exports"] = jassa;
 	    
 	    initialize: function(patternCustomAgg, customAgg) {
 	        this.customAgg = customAgg;
+          this.patternCustomAgg = patternCustomAgg;
 	    },
 	   
 	    getPattern: function() {
-	        return this.pattenCustomAgg;
+	        return this.patternCustomAgg;
 	    },
 	   
 	    process: function(binding, context) {
@@ -9444,8 +9801,8 @@ module["exports"] = jassa;
     				} else if(sparql.NodeValue.nvNothing.asNode().equals(node)) {
     				    result = null;
     				} else {
-    				    console.log('[ERROR] Unsupported node types: ', node)
-    					throw 'Unsupported node type';
+    				    console.log('[ERROR] Unsupported node types: ', node);
+              throw 'Unsupported node type';
     				}
 			    }
 			}
@@ -9464,7 +9821,7 @@ module["exports"] = jassa;
 		 * 
 		 */
 		initialize: function(patternObject, attrToAggr) {
-			this.pattersObject = this.patternObject;
+			this.patternObject = patternObject;
 			this.attrToAggr = attrToAggr;
 		},
 		
@@ -9549,8 +9906,6 @@ module["exports"] = jassa;
 		},
 		
 		getJsonArray: function(retainRdfNodes) {
-			var result = [];
-
 			var aggrs = this.keyToAggr.getItems();
 			var result = aggrs.map(function(aggr) {
 				var data = aggr.getJson(retainRdfNodes);
@@ -9567,9 +9922,11 @@ module["exports"] = jassa;
 			var keyToIndex = this.keyToAggr.getKeyToIndex();
 			
 			_(keyToIndex).each(function(index, aggr) {
-		    	var aggr = items[index];
-		    	var data = aggr.getJson(retainRdfNodes);
-		    	result[key] = data;
+          // FIXME: items not defined
+          var aggr = items[index];
+          var data = aggr.getJson(retainRdfNodes);
+          // FIXME: key not defined
+          result[key] = data;
 			});
 			
 			return result;			
@@ -9670,7 +10027,7 @@ module["exports"] = jassa;
 		    var fnName = "visit" + pattern.getClassName();
 		    var fn = this[fnName];
 		    if(!fn) {
-		        console.log('[ERROR] Function with name "' + fnName + '" not found.')
+		        console.log('[ERROR] Function with name "' + fnName + '" not found.');
 		        throw 'Bailing out';
 		    }
 			var result = fn.call(this, pattern);
@@ -9695,6 +10052,7 @@ module["exports"] = jassa;
 		},
 
 		visitPatternArray: function(pattern) {
+      // FIXME: AggregatorArray not defined
 			return ns.AggregatorArray(pattern);
 		},
 		
@@ -10309,7 +10667,7 @@ module["exports"] = jassa;
 			}
 
 			
-			var sortConditions = []
+			var sortConditions = [];
 			if(idExpr != null) {
 				//console.log('Expr' + JSON.stringify(idExpr));
 				
@@ -10472,6 +10830,7 @@ module["exports"] = jassa;
 		
 		executeData: function(spec, retainRdfNodes) {
 		    var outerElement = spec.outerElement;
+        // FIXME: spec.idExpr not defined
 		    var idExpr = spec.idExpr;
 		    var idVar = spec.idVar;
 		    var sortConditions = spec.sortConditions;
@@ -10777,7 +11136,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		},
 		
 		getSchema: function() {
-			return schema;
+			return this.schema;
 		},
 		
 		toString: function() {
@@ -10976,7 +11335,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 			context.getSchema().addTable(table);
 			
-			context.mapTableNameToElement(name, element);
+			context.mapTableNameToElementFactory(name, element);
 			
 		},
 		
@@ -11037,11 +11396,13 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 			var sourceColumns;
 			var targetColumns;
-			
+
+      // FIXME: joinColumn not defined
 			if(stub.joinColumn) {
 				sourceColumns = [stub.joinColumn];
 			}
-			
+
+      // FIXME: refJoinColumn not defined
 			if(stub.refJoinColumn) {
 				targetColumns = [stub.refJoinColumn];
 			}
@@ -11414,7 +11775,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			};
 			
 			var open = [a];
-			
+			// FIXME: open won't ever be empty here
 			while(open.isEmpty()) {
 				var sourceAlias = open.shift();
 				
@@ -11422,8 +11783,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 				var sourceMapping = sourceState.mapping;
 				
 				ns.ContextUtils.resolveMappingRefs(this.context, sourceMapping);
-				
-				var refs = mapping.getPatternRefs(); 
+				var refs = this.mapping.getPatternRefs();
 
 				// For each reference, if it is an immediate join, add it to the join graph
 				// TODO And what if it is a lazy join??? We want to be able to batch those.
@@ -11431,9 +11791,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 					var targetMapRef = ref.getTargetMapRef();
 					
 					var targetAlias = generator.next();
-					
+
 					aliasToState[targetAlias] = {
-						mapping: targetMapping	
+            // FIXME: targetMapping not defined
+						mapping: targetMapping
 					};
 				
 					var joins = aliasToJoins[sourceAlias];
@@ -11487,6 +11848,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		},
 		
 		getOutgoingEdges: function() {
+      // FIXME: getEdges not defined
 			var result = this.graph.getEdges(this.id);
 			return result;
 		}
@@ -11551,9 +11913,9 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 			var tmp = Array.prototype.slice.call(arguments, 0);
 			// TODO Maybe we should pass the nodes rather than the node ids
-			var xargs = [graph, nodeIdFrom, nodeIdTo].concat(tmp);
+			var xargs = [this.graph, nodeIdFrom, nodeIdTo].concat(tmp);
 
-			
+			// FIXME: this.fnEdgeNode not defined
 			var result = this.fnEdgeNode.apply(this, xargs);
 			
 			var edgeIdToEdge = this.nodeIdToEdgeIdToEdge[edges];
@@ -11574,7 +11936,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	ns.NodeJoinElement = Class.create(ns.Node, {
 		initialize: function($super, graph, nodeId, element, alias) {
 			$super(graph, nodeId); 
-			http://localhost/jassa/?file=jassa-facete
+			// http://localhost/jassa/?file=jassa-facete
 			this.element = element; // TODO ElementProvider?
 			this.alias = alias;
 		},
@@ -11591,6 +11953,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	ns.fnCreateMappingJoinNode = function(graph, nodeId) {
 		console.log('Node arguments:', arguments);
+    // FIXME: ns.MappingJoinNode not defined
 		return new ns.MappingJoinNode(graph, nodeId);
 	};
 
@@ -11875,6 +12238,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 		 */
 		
 		getSchema: function() {
+      // FIXME: schema not defined
 			return schema;
 		}
 	});
@@ -12182,7 +12546,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         toString: function() {
-            return '(' + attrPath + ' ' + this.opName + ' ' + this.value + ')'; 
+            return '(' + this.attrPath + ' ' + this.opName + ' ' + this.value + ')';
         }
     });
 
@@ -12409,7 +12773,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 				});
 
 				return itemMatch;				
-			})
+			});
 			
 			return result;
 		},
@@ -12572,9 +12936,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		visitEq: function(criteria, pattern, context, joinNode, result) {
 //            debugger;
-            var subPattern = pattern.findPattern(attrPath);
+            var subPattern = pattern.findPattern(this.attrPath);
 
             var expr = this.getExpr(subPattern);
+            // FIXME: ap not defined
             var e = new sparql.E_Equals(new sparql.E_Str(expr), sparql.NodeValue.makeString(ap.getValue()));
             result.push(e);
 		},
@@ -12620,7 +12985,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 //            debugger;
             var subPattern = pattern.findPattern(criteria.getAttrPath());
 
-            var regexStr = criteria.getRegex().toString()
+            var regexStr = criteria.getRegex().toString();
             var flagDelim = regexStr.lastIndexOf('/');
             
             var patternStr = regexStr.substring(1, flagDelim);
@@ -12650,7 +13015,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 		visitGt: function() {
 
-		},
+		}
 		
 		
 	});
@@ -12718,7 +13083,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         }
         
         return result;
-    }
+    };
     
     ns.AggregatorFactoryLabel = Class.create({
         initialize: function(labelPrios, prefLangs, labelExpr, subjectExpr, propertyExpr) {
@@ -12854,7 +13219,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     
     ns.LabelUtil = Class.create({
         initialize: function(aggFactory, element) {
-            this.aggFactory = aggFactory
+            this.aggFactory = aggFactory;
             this.element = element;
         },
         
@@ -12983,7 +13348,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         }
         
         return result;
-    }
+    };
     
     ns.AggregatorFactoryLabel = Class.create({
         initialize: function(labelPrios, prefLangs, labelExpr, subjectExpr, propertyExpr) {
@@ -13119,7 +13484,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     
     ns.LabelUtil = Class.create({
         initialize: function(aggFactory, element) {
-            this.aggFactory = aggFactory
+            this.aggFactory = aggFactory;
             this.element = element;
         },
         
@@ -13235,7 +13600,7 @@ or simply: Angular + Magic Sparql = Angular Marql
     			else {
     			    setTimeout(doRefresh, 25);
     			}
-			}
+			};
 			
 			doRefresh();
 			
@@ -13250,6 +13615,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 (function() {
 
     var ns = Jassa.sponate;
+    var sparql = Jassa.sparql;
+    var sponate = Jassa.sponate;
 
     ns.GeoMapFactory = Class.create({
         classLabel: 'GeoMapFactory',
@@ -13367,6 +13734,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 * @param json
 	 */
 	ns.Step.fromJson = function(json) {
+    // FIXME: checkNotNull cannot be resolved
 		var propertyName = checkNotNull(json.propertyName);
 		var isInverse = json.IsInverse();
 		
@@ -13382,7 +13750,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			result = new ns.Step(str, false);
 		}
 		return result;
-	},
+	};
 
 	
 	/**
@@ -13661,8 +14029,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 				e = baseElement;
 			}
 			
-			
-			var concept = new facets.ConceptInt(e, tmpConcept.getVariable());
+			// FIXME: ConceptInt class is not defined
+			var concept = new ns.ConceptInt(e, tmpConcept.getVariable());
 	
 			return concept;
 		},
@@ -13737,8 +14105,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 			var resultElements = result.getElements();
 			var conceptElements = concept.getElements();
-			resultElements.push.apply(resultElements, conceptElements)
- 
+			resultElements.push.apply(resultElements, conceptElements);
+
 			return result;			
 		}
 	};
@@ -13883,7 +14251,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 		createOptimizedConcept: function() {
 			var element = this.getElement();
 			var newElement = element.flatten();
-			
+
+      // FIXME: ConceptInt class is not defined
 			var result = new ns.ConceptInt(newElement, this.variable);
 
 			return result;
@@ -14130,6 +14499,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 
 
 	ns.QueryFactoryFacets.create = function(subQueryFactory, rootVarName, generator) {
+    // FIXME: facets.GenSym cannot be resolved
 		generator = generator ? generator : new facets.GenSym("fv");
 		var rootFacetNode = facets.FacetNode.createRoot(rootVarName, generator);
 		
@@ -14256,7 +14626,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	var vocab = Jassa.vocab;
 	var sparql = Jassa.sparql;
-	
+	var xsd = Jassa.xsd;
 	var ns = Jassa.facete;
 
     /**
@@ -14532,7 +14902,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	ns.ConstraintElementFactoryBBoxRange = Class.create(ns.ConstraintElementFactory, {
 		initialize: function() {
 			this.stepX = new ns.Step(vocab.wgs84.str.lon);
-			this.stepY = new ns.Step(vocab.wgs84.str.la);
+			this.stepY = new ns.Step(vocab.wgs84.str.lat);
 		},
 		
 		createElementsAndExprs: function(rootFacetNode, spec) {
@@ -14553,7 +14923,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var varX = fnX.getVar();
 			var varY = fnY.getVar();
 			
-			var expr = ns.createWgsFilter(vX, vY, this.bounds, xsd.xdouble);
+			var expr = ns.createWgsFilter(varX, varY, this.bounds, xsd.xdouble);
 			
 			var elements = [new sparql.ElementTriplesBlock(triples)];
 			var exprs = [expr];
@@ -16244,6 +16614,7 @@ ns.createDefaultConstraintElementFactories = function() {
 			//checkNotNull(node);
 			
 			var nodeValue = sparql.NodeValue.makeNode(node);
+      // FIXME: createEquals is not defined in ConstraintUtils
 			var result = ns.ConstraintUtils.createEquals(this.facetNode.getPath(), nodeValue);
 			
 			return result;
@@ -16264,6 +16635,7 @@ ns.createDefaultConstraintElementFactories = function() {
 		
 		removeConstraint: function(json) {
 			var constraint = this.createConstraint(json);
+      // FIXME: ConstraintManager class has no method moveConstraint (only removeConstraint)
 			this.constraintManager.moveConstraint(constraint);				
 		},
 		
@@ -16847,7 +17219,7 @@ ns.createDefaultConstraintElementFactories = function() {
 	ns.FacetGeneratorConfigProvider = Class.create({
 		getConfig: function() {
 			throw "Override me";			
-		},
+		}
 	});
 	
 	
@@ -17053,8 +17425,8 @@ ns.createDefaultConstraintElementFactories = function() {
 				
 				var types = [vocab.rdf.Property, vocab.owl.AnnotationProperty, vocab.owl.DatatypeProperty, vocab.owl.ObjectProperty];
 				
-                var v = rdf.NodeFactory.createVar('_x_');
-                var exprVar = new sparql.ExprVar(v);
+        var v = rdf.NodeFactory.createVar('_x_');
+        var exprVar = new sparql.ExprVar(v);
 				var typeExprs = _(types).map(function(node) {
 				   var nodeValue = sparql.NodeValue.makeNode(node);
 				   var expr = new sparql.E_Equals(exprVar, nodeValue);
@@ -17063,7 +17435,7 @@ ns.createDefaultConstraintElementFactories = function() {
 				
 				var filterExpr = sparql.orify(typeExprs); 
 				
-				var triple = new rdf.Triple(propertyVar, vocab.rdf.type, v);
+				triple = new rdf.Triple(propertyVar, vocab.rdf.type, v);
 
 				var element = new sparql.ElementGroup([
                     new sparql.ElementTriplesBlock([triple]),
@@ -18278,6 +18650,7 @@ ns.createDefaultConstraintElementFactories = function() {
                 var node = path.isEmpty() ? rdf.NodeFactory.createUri('http://root') : rdf.NodeFactory.createUri(path.getLastStep().getPropertyName());
                 var r = new ns.FacetItem(path, node, count, null, null);
 
+                // FIXME: item cannot be resolved
                 var tags = self.pathTaggerManager.createTags(item.getPath());
                 item.setTags(tags);
                 
@@ -18583,7 +18956,7 @@ ns.createDefaultConstraintElementFactories = function() {
                 d.resolve(r);
             }).fail(function() {
                 d.fail();
-            })
+            });
 
             return d.promise();
 
@@ -18701,7 +19074,7 @@ ns.createDefaultConstraintElementFactories = function() {
 				d.resolve(r);
 			}).fail(function() {
 				d.fail();
-			})
+			});
 
 			return d.promise();
 		}
@@ -18998,7 +19371,7 @@ ns.createDefaultConstraintElementFactories = function() {
             var store = new sponate.StoreFacade(this.sparqlService);
             var labelMap = sponate.SponateUtils.createDefaultLabelMap();
             store.addMap(labelMap, 'labels');
-            labelsStore = store.labels;
+            var labelsStore = store.labels;
             
             var criteria = {};
             if(filterText) {
@@ -19810,7 +20183,7 @@ ns.createDefaultConstraintElementFactories = function() {
         'count': new ns.ExprModFactoryAggCount,
         'min': new ns.ExprModFactoryAggMin,
         'max': new ns.ExprModFactoryAggMax
-    }
+    };
     
     
     ns.ElementFactoryFacetPaths = Class.create({
@@ -20134,6 +20507,7 @@ ns.createDefaultConstraintElementFactories = function() {
     ns.FaceteTable = Class.create({
         initialize: function() {
             //this.pathVarMap = pathVarMap;// Formerly called facetNode
+            // FIXME: varNode not defined!!!
             this.varNode = varNode;            
             this.paths = new util.ArrayList();
             this.tableMod = tableMod;
@@ -20155,9 +20529,11 @@ ns.createDefaultConstraintElementFactories = function() {
             var varName = target.getVarName();
             
             if(status) {
+                // FIXME: this.tableMode not defined
                 this.tableMode.addColumn(varName);
             }
             else {
+                // FIXME: this.tableMode not defined
                 this.tableMode.removeColumn(varName);
             }
         }
@@ -20267,7 +20643,7 @@ ns.createDefaultConstraintElementFactories = function() {
             if(columnId) {
                 this.removeColumn(columnId);
             } else {
-                var columnId = 'col_' + this.columnIds.length;
+                columnId = 'col_' + this.columnIds.length;
                 
                 this.putColumn(columnId, path);                
             }
@@ -20690,8 +21066,9 @@ ns.createDefaultConstraintElementFactories = function() {
 	
 	
     	addItems: function(idToPos) {
+          var id;
     	    for(id in idToPos) {
-    	        pos = idToPos[id];
+    	        var pos = idToPos[id];
 			
     	        this.addItem(id, pos);
     	    }
@@ -20836,9 +21213,10 @@ ns.createDefaultConstraintElementFactories = function() {
 	
 	
     	_findIndexPoint: function(point) {
+        // FIXME: bounds not defined
     		var center = this.getCenter(bounds);
-    		left = point.x < center.x;
-    		top = point.y > center.y;
+    		var left = point.x < center.x;
+    		var top = point.y > center.y;
     		
     		var index; 
     		if(left) {
@@ -20846,13 +21224,13 @@ ns.createDefaultConstraintElementFactories = function() {
     				index = Node.TOP_LEFT;
     			} else {
     				index = Node.BOTTOM_LEFT;
-    			};
+    			}
     		} else {
     			if(top) {
     				index = Node.TOP_RIGHT;
     			} else {
     				index = Node.BOTTOM_RIGHT;
-    			};
+    			}
     		}
     		
     		return index;	
@@ -20895,6 +21273,7 @@ ns.createDefaultConstraintElementFactories = function() {
     		var r = Math.max(w, h);
     		
     		// Stop recursion on encounter of a loaded node or leaf node or node that exceeded the depth limit
+        // FIXME: depth is not defined
     		if(this.isLoaded || !this.children || r >= depth) {
     			result.push(this);
     			return;
@@ -20902,7 +21281,7 @@ ns.createDefaultConstraintElementFactories = function() {
     		
     		for(i in this.children) {
     			var child = this.children[i];
-    			
+    			// FIXME: depth is not defined
     			child.queryRec(bounds, depth, result);
     		}	
     	},
@@ -20991,7 +21370,8 @@ ns.createDefaultConstraintElementFactories = function() {
     		if(!this.parent) {
     			return;
     		}
-    		
+
+        var i;
     		for(i in this.parent.children) {
     			var child = this.parent.children[i];
     			
@@ -21029,6 +21409,7 @@ ns.createDefaultConstraintElementFactories = function() {
             // Cast the variables if requested
             // TODO E_Cast should not be used - use E_Function(castNode.getUri(), lon) instead - i.e. the cast type equals the cast function name
             if(castNode) {
+                // FIXME: E_Cast not defined
                 lon = new sparql.E_Cast(lon, castNode);
                 lat = new sparql.E_Cast(lat, castNode);
             }
@@ -21093,6 +21474,7 @@ ns.createDefaultConstraintElementFactories = function() {
 (function($) {
     
     var ns = Jassa.geo;
+    var xsd = Jassa.xsd;
 
     var defaultDocWktExtractorFn = function(doc) {
         var wktStr = doc.wkt;
@@ -21104,14 +21486,15 @@ ns.createDefaultConstraintElementFactories = function() {
     };
 
     var number = '(\\d+(\\.\\d*)?)';
-    var nonNumber = '[^\\d]*'
+    var nonNumber = '[^\\d]*';
     ns.pointRegexPattern = new RegExp(nonNumber + '(' + number + '\\s+' + number + nonNumber + ')');
 
     ns.WktUtils = {
 
         extractPointsFromWkt: function(wktStr) {
             var result = [];
-            
+
+            var match;
             while (match = ns.pointRegexPattern.exec(wktStr)) {
                 var strX = match[2];
                 var strY = match[4];
@@ -21182,8 +21565,8 @@ ns.createDefaultConstraintElementFactories = function() {
         initialize: function(sparqlService, geoMapFactory, concept, fnGetBBox, options) {
             this.sparqlService = sparqlService;
             
-            var maxBounds = new geo.Bounds(-180.0, -90.0, 180.0, 90.0);
-            this.quadTree = new geo.QuadTree(maxBounds, 18, 0);
+            var maxBounds = new ns.Bounds(-180.0, -90.0, 180.0, 90.0);
+            this.quadTree = new ns.QuadTree(maxBounds, 18, 0);
         
             
             this.concept = concept;
@@ -21374,7 +21757,7 @@ ns.createDefaultConstraintElementFactories = function() {
             var countTasks = this.createCountTasks(uncountedNodes);
             
             $.when.apply(window, countTasks).done(function() {
-                nonLoadedNodes = _(nodes).filter(function(node) { return self.isLoadingNeeded(node); });
+                var nonLoadedNodes = _(nodes).filter(function(node) { return self.isLoadingNeeded(node); });
                 //console.log("# non loaded nodes", nonLoadedNodes.length, nonLoadedNodes);
                 
                 var loadTasks = self.createLoadTasks(nonLoadedNodes);
@@ -21639,9 +22022,12 @@ ns.createDefaultConstraintElementFactories = function() {
                 var databank = node.data.graph;
                 _.each(node.data.geomToFeatureCount, function(count, geom) {
                     var s = sparql.Node.uri(geom);
-                    var o = sparql.Node.typedLit(count, xsd.integer);
-                    
+                    var o = sparql.NodeFactory.createTypedLiteralFromString(count, xsd.xinteger.value);
+
+                    // FIXME: appvocab.featureCount not defined (I mean, it defined in MapView.js but I don't know if
+                    // MapView.js is loaded
                     var tripleStr = "" + s + " " + appvocab.featureCount + " " + o;
+                    // FIXME: there is Jassa.rdf.Triple(s, p, o)
                     var triple = $.rdf.triple(tripleStr);
                     
                     databank.add(triple);                   
@@ -21656,9 +22042,10 @@ ns.createDefaultConstraintElementFactories = function() {
                     
                     _.each(geomToLabel, function(label, uri) {
                         var s = sparql.Node.uri(uri);
-                        var o = sparql.Node.plainLit(label.value, label.language);
+                        var o = sparql.NodeFactory.createPlainLiteral(label.value, label.language);
                         
                         var tripleStr = "" + s + " " + rdfs.label + " " + o;
+                        // FIXME: there is Jassa.rdf.Triple(s, p, o)
                         var triple = $.rdf.triple(tripleStr);
                         
                         databank.add(triple);
@@ -21668,9 +22055,9 @@ ns.createDefaultConstraintElementFactories = function() {
                     
                     _.each(geomToPoint, function(point, uri) {
                         var s = sparql.Node.uri(uri);
-                        var oLon = sparql.Node.typedLit(point.x, xsd.xdouble.value);
-                        var oLat = sparql.Node.typedLit(point.y, xsd.xdouble.value);
-                        
+                        var oLon = sparql.NodeFactory.createTypedLiteralFromString(point.x, xsd.xdouble.value);
+                        var oLat = sparql.NodeFactory.createTypedLiteralFromString(point.y, xsd.xdouble.value);
+
                         var lonTriple = "" + s + " " + geo.lon + " " + oLon; 
                         var latTriple = "" + s + " " + geo.lat + " " + oLat;
                         
