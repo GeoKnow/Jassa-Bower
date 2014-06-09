@@ -8622,7 +8622,7 @@ module["exports"] = jassa;
                 
                 _(ids).each(function(id) {
                     var val = map.get(id);
-                    var t = fnTransform(val);
+                    var t = fnTransform(val, id);
                     map.put(id, t);
                 });
                 
