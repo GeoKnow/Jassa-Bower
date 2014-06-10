@@ -8354,7 +8354,7 @@ module["exports"] = jassa;
         fetchSchema: function() {
             var tableConfigFacet = this.tableConfigFacet;
             
-            var paths = tableConfigFacet.getPaths().getArary();
+            var paths = tableConfigFacet.getPaths().getArray();
                         
             // We need to fetch the column headings
             var promise = this.lookupServicePathLabels.lookup(paths);
