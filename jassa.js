@@ -8460,8 +8460,8 @@ module["exports"] = jassa;
             //var promise = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
 
             var self = this;
-            var result = promise.pipe(function(data) {
-                var r = ns.TableServiceUtils.transformToNodeLabels(data);
+            var result = promise.pipe(function(rows) {
+                var r = ns.TableServiceUtils.transformToNodeLabels(this.lookupServiceNodeLabels, rows);
                 return r;
             });
             
