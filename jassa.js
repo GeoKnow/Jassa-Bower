@@ -8342,9 +8342,11 @@ module["exports"] = jassa;
      * 
      */
     ns.TableServiceFacet = Class.create(ns.TableService, {
-        initialize: function(sparqlService, tableConfigFacet, timeoutInMillis, secondaryCountLimit) {
+        initialize: function(sparqlService, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels, timeoutInMillis, secondaryCountLimit) {
             this.sparqlService = sparqlService;
             this.tableConfigFacet = tableConfigFacet;
+            this.lookupServiceNodeLabels = lookupServiceNodeLabels;
+            this.lookupServicePathLabels = lookupServicePathLabels;
             this.timeoutInMillis = timeoutInMillis;
             this.secondaryCountLimit = secondaryCountLimit;
         },
@@ -8353,9 +8355,9 @@ module["exports"] = jassa;
             var tableConfigFacet = this.tableConfigFacet;
             
             var paths = tableConfigFacet.getPaths();
-            
+                        
             // We need to fetch the column headings
-            var promise = lookupServicePath.lookup(paths);
+            var promise = this.lookupServicePathLabels.lookup(paths);
             
             var result = promise.pipe(function(map) {
                 
@@ -8395,8 +8397,7 @@ module["exports"] = jassa;
             });
             
             // Get the node labels
-            var lookupServiceNodes = this.lookupServiceNodes;
-            var p = lookupServiceNodes.lookup(nodes);
+            var p = this.lookupServiceNodeLabels.lookup(nodes);
             
             // Transform every node
             var result = p.pipe(function(nodeToLabel) {
