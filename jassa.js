@@ -8213,19 +8213,19 @@ module["exports"] = jassa;
                deferred.resolve(0);
                result = deferred.promise();
            } else {           
-               var query = this.query.clone();
+               query = query.clone();
     
                query.setLimit(null);
                query.setOffset(null);
      
-               var result = ns.ServiceUtils.fetchCountQuery(sparqlService, tquery, timeoutInMillis, secondaryCountLimit);
+               var result = ns.ServiceUtils.fetchCountQuery(sparqlService, query, timeoutInMillis, secondaryCountLimit);
            }
 
            return result;
        },
        
        fetchData: function(sparqlService, query, limit, offset) {
-           if(!this.query) {
+           if(!query) {
                var deferred = jQuery.Deferred();
 
                var itBinding = new util.IteratorArray([]);
@@ -8237,13 +8237,13 @@ module["exports"] = jassa;
                return deferred.promise();
            }
 
-           
-           var query = this.query.clone();
+           // Clone the query as to not modify the original object
+           query = query.clone();
 
            query.setLimit(limit);
            query.setOffset(offset);
            
-           var qe = this.sparqlService.createQueryExecution(query);
+           var qe = sparqlService.createQueryExecution(query);
 
            var result = qe.execSelect().pipe(function(rs) {
                var data = [];
