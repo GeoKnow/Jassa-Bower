@@ -8436,8 +8436,8 @@ module["exports"] = jassa;
      * 
      */
     ns.TableServiceFacet = Class.create(ns.TableService, {
-        initialize: function(tableServiceSparqlQuery, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels) {
-            this.tableServiceSparqlQuery = this.tableServiceSparqlQuery;
+        initialize: function(tableServiceQuery, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels) {
+            this.tableServiceQuery = this.tableServiceQuery;
             this.tableConfigFacet = tableConfigFacet;
             this.lookupServiceNodeLabels = lookupServiceNodeLabels;
             this.lookupServicePathLabels = lookupServicePathLabels;
@@ -8450,13 +8450,13 @@ module["exports"] = jassa;
         },
                 
         fetchCount: function() {
-            var result = this.tableServiceSparqlQuery.fetchCount();
+            var result = this.tableServiceQuery.fetchCount();
             return result;            
         },
                 
         fetchData: function(limit, offset) {
             
-            var promise = this.tableServiceSparqlQuery.fetchData(limit, offset);
+            var promise = this.tableServiceQuery.fetchData(limit, offset);
             //var promise = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
 
             var self = this;
