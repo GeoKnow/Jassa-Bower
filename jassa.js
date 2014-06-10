@@ -8262,8 +8262,79 @@ module["exports"] = jassa;
            });
            
            return result;           
-       }
+       },
        
+       
+       createNgGridOptionsFromQuery: function(query) {
+       },
+
+
+       collectNodes: function(rows) {
+           // Collect nodes
+           var result = [];
+           _(rows).each(function(item, k) {
+               _(item).each(function(node) {
+                   result.push(node);
+               });
+           });
+
+           _(result).uniq(false, function(x) { return '' + x; });
+           
+           return result;
+       },
+
+       fetchSchemaTableConfigFacet: function(tableConfigFacet, lookupServicePathLabels) {
+           var paths = tableConfigFacet.getPaths().getArray();
+           
+           // We need to fetch the column headings
+           var promise = lookupServicePathLabels.lookup(paths);
+           
+           var result = promise.pipe(function(map) {
+               
+               var colDefs = _(paths).map(function(path) {
+                   var r = {
+                       field: tableConfigFacet.getColumnId(path),
+                       displayName: map.get(path),
+                       path: path
+                   };
+               });
+
+               var r = {
+                   colDefs: colDefs
+               };
+
+               return r;
+           });
+           
+           return result;           
+       },
+
+       // rows is expected to be a List<Map<String, Node>>
+       transformToNodeLabels: function(lookupServiceNodeLabels, rows) {
+           
+           var nodes = this.collectNodes(rows);
+           
+           // Get the node labels
+           var p = lookupServiceNodeLabels.lookup(nodes);
+           
+           // Transform every node
+           var result = p.pipe(function(nodeToLabel) {
+               var r = _(rows).map(function(row) {
+                   var r = {};
+                   _(row).each(function(node, key) {
+                       var label = nodeToLabel.get(node);
+                       r[key] = {
+                           node: node,
+                           displayLabel: label
+                       };
+                   });
+                   return r;
+               });
+               return r;                    
+           });
+           
+           return result;
+       }
     };
 
     ns.TableService = Class.create({
@@ -8342,99 +8413,37 @@ module["exports"] = jassa;
      * 
      */
     ns.TableServiceFacet = Class.create(ns.TableService, {
-        initialize: function(sparqlService, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels, timeoutInMillis, secondaryCountLimit) {
-            this.sparqlService = sparqlService;
+        initialize: function(tableServiceSparqlQuery, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels) {
+            this.tableServiceSparqlQuery = this.tableServiceSparqlQuery;
             this.tableConfigFacet = tableConfigFacet;
             this.lookupServiceNodeLabels = lookupServiceNodeLabels;
             this.lookupServicePathLabels = lookupServicePathLabels;
-            this.timeoutInMillis = timeoutInMillis;
-            this.secondaryCountLimit = secondaryCountLimit;
         },
         
         fetchSchema: function() {
-            var tableConfigFacet = this.tableConfigFacet;
-            
-            var paths = tableConfigFacet.getPaths().getArray();
-                        
-            // We need to fetch the column headings
-            var promise = this.lookupServicePathLabels.lookup(paths);
-            
-            var result = promise.pipe(function(map) {
-                
-                var colDefs = _(paths).map(function(path) {
-                    var r = {
-                        field: tableConfigFacet.getColumnId(path),
-                        displayName: map.get(path),
-                        path: path
-                    };
-                });
-
-                var r = {
-                    colDefs: colDefs
-                };
-
-                return r;
-            });
-            
+            // Ignores the schema of the underlying table Service
+            var result = ns.TableServiceUtils.fetchSchemaTableConfigFacet(this.tableConfigFacet, this.lookupServicePathLabels);
             return result;
         },
                 
         fetchCount: function() {
-            var result = ns.TableServiceUtils.fetchCount(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
+            var result = this.tableServiceSparqlQuery.fetchCount();
             return result;            
         },
-        
-        // TODO Rename function - its too generic
-        // It takes a Map<String, Node> and transforms it to Map<String, {node:, displayLabel: }>
-        // TODO An alternative would be to just put the map with the labels into the schema...
-        transformData: function(data) {
-            // Collect nodes
-            var nodes = [];
-            _(data).each(function(item, k) {
-                _(item).each(function(node) {
-                    nodes.push(node);                    
-                });
-            });
-            
-            // Get the node labels
-            var p = this.lookupServiceNodeLabels.lookup(nodes);
-            
-            // Transform every node
-            var result = p.pipe(function(nodeToLabel) {
-                var r = _(data).map(function(item) {
-                    var r = {};
-                    _(item).each(function(node, key) {
-                        var label = nodeToLabel.get(node);
-                        r[key] = {
-                            node: node,
-                            displayLabel: label
-                        };
-                    });
-                    return r;
-                });
-                return r;                    
-            });
-            
-            return result;
-        },
-        
+                
         fetchData: function(limit, offset) {
-            var promise = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
+            
+            var promise = this.tableServiceSparqlQuery.fetchData(limit, offset);
+            //var promise = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
 
             var self = this;
             var result = promise.pipe(function(data) {
-                var r = self.transformData(data);
+                var r = ns.TableServiceUtils.transformToNodeLabels(data);
                 return r;
             });
             
             return result;
-        },
-        
-        fetchCount: function() {
-            var result = ns.TableServiceUtils.fetchCount(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
-            return result;            
         }
-        
     });
     
     
@@ -8612,7 +8621,7 @@ module["exports"] = jassa;
             });
             
             return result;
-        },
+        }
         
     });
 
@@ -11620,7 +11629,7 @@ or simply: Angular + Magic Sparql = Angular Marql
                     var filtered = _(json).filter(function(item) {                                              
                         var isMatch = criteria.match(item);
                         return isMatch;
-                    })
+                    });
                     
                     var all = json.length;
                     var fil = filtered.length;
@@ -19240,7 +19249,7 @@ ns.createDefaultConstraintElementFactories = function() {
 			if(!this.tableExecutor) {
 				self.paginatorModel.set({pageCount: 1});
 				return;
-			};
+			}
 
 			var result = $.Deferred();
 
@@ -19284,7 +19293,7 @@ ns.createDefaultConstraintElementFactories = function() {
 				sampleTask.pipe(successAction);
 				
 				sampleTask.fail(function() {
-					console.log("[ERROR] Timout encountered during fallback sampling strategy - returning only 1 page")
+					console.log("[ERROR] Timout encountered during fallback sampling strategy - returning only 1 page");
 					
 					self.paginatorModel.set({
 						isLoadingPageCount: false
@@ -21421,7 +21430,7 @@ ns.createDefaultConstraintElementFactories = function() {
     			return;
     		}
     		
-    		for(i in this.children) {
+    		for(var i in this.children) {
     			var child = this.children[i];
     			// FIXME: depth is not defined
     			child.queryRec(bounds, depth, result);
@@ -21535,6 +21544,7 @@ ns.createDefaultConstraintElementFactories = function() {
 (function() {
 
     var ns = Jassa.geo;
+    var sparql = Jassa.sparql;
     
     
     ns.GeoExprUtils = {
@@ -21617,6 +21627,8 @@ ns.createDefaultConstraintElementFactories = function() {
     
     var ns = Jassa.geo;
     var xsd = Jassa.xsd;
+    var sparql = Jassa.sparql;
+    var sponate = Jassa.sponate;
 
     var defaultDocWktExtractorFn = function(doc) {
         var wktStr = doc.wkt;
@@ -21724,7 +21736,7 @@ ns.createDefaultConstraintElementFactories = function() {
             
 
             
-            this.fnGetBBox = fnGetBBox || ns.defaultDocWktExtractorFn;
+            this.fnGetBBox = fnGetBBox || defaultDocWktExtractorFn;
         },
 
         
@@ -22257,10 +22269,13 @@ ns.createDefaultConstraintElementFactories = function() {
     
         for(var i in parent.children) {
             var child = parent.children[i];
-            
+
+            // FIXME: mergeMapsInPlace not defined
             mergeMapsInPlace(parent.idToPos, child.idToPos);
-            
+
+            // FIXME: mergeMapsInPlace not defined
             mergeMapsInPlace(parent.data.idToLabels, child.data.idToLabels);
+            // FIXME: mergeMapsInPlace not defined
             mergeMapsInPlace(parent.data.idToTypes, child.data.idToTypes);
             
             //parent.data.ids.addAll(child.data.ids);
@@ -22497,6 +22512,7 @@ ns.createDefaultConstraintElementFactories = function() {
 (function() {
 
     var ns = Jassa.geo.openlayers;
+    var geo = Jassa.geo;
 
     /**
      * MapUtils for a OpenLayers map
@@ -22506,7 +22522,7 @@ ns.createDefaultConstraintElementFactories = function() {
         getExtent: function(map) {
             var olRawExtent = map.getExtent();
             var e = olRawExtent.transform(map.projection, map.displayProjection);
-            
+
             var result = new geo.Bounds(e.left, e.bottom, e.right, e.top);
             
             return result;
