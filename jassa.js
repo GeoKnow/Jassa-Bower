@@ -8366,11 +8366,25 @@ module["exports"] = jassa;
             console.log('Implement me');
             throw 'Implement me';            
         }
+        
+        /**
+         * For identical hash codes, the response of the fetchData method is assumed to
+         * be the same
+         */
+//        getDataConfigHash: function() {
+//            console.log('Implement me');
+//            throw 'Implement me';                        
+//        },
+//        
+//        getSchemaConfigHash: function() {
+//            console.log('Implement me');
+//            throw 'Implement me';
+//        }
     });
 
 
 
-    ns.TableServiceSparqlQuery = Class.create(ns.TableService, {
+    ns.TableServiceQuery = Class.create(ns.TableService, {
         /**
          * TODO Possibly add primaryCountLimit - i.e. a limit that is never counted beyond, even if the backend might be fast enough
          */
@@ -8381,11 +8395,20 @@ module["exports"] = jassa;
             this.secondaryCountLimit = secondaryCountLimit || 1000;
         },
         
+//        getDataConfigHash: function() {
+//            var query = this.queryFactory.createQuery();
+//            var result = '' + query;
+//            return result;
+//            //return '' + this.queryFactory.createQuery();
+//        },
+//        
+//        getSchemaConfigHash: function() {
+//            return '' + this.query;
+//        },
+        
         fetchSchema: function() {
-            var query = this.query;
-
             var schema = {
-                colDefs: ns.TableServiceUtils.createNgGridOptionsFromQuery(query)
+                colDefs: ns.TableServiceUtils.createNgGridOptionsFromQuery(this.query)
             };
 
             var deferred = $.Deferred();
