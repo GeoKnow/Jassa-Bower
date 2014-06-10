@@ -8173,41 +8173,133 @@ module["exports"] = jassa;
     var ns = Jassa.service;
 
 
-    // TODO Move to some other place
-    ns.createNgGridOptionsFromQuery = function(query) {
-        if(!query) {
-            return [];
-        }
-        
-        var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
-        var projectVarNameList = sparql.VarUtils.getVarNames(projectVarList);
+    ns.TableServiceUtils = {
+        bindingToJsMap: function(varList, binding) {
+            var result = {};
+            
+            _(varList).each(function(v) {
+                var varName = v.getName();
+                //result[varName] = '' + binding.get(v);
+                result[varName] = binding.get(v);
+            });
 
-        var result = _(projectVarNameList).map(function(varName) {
-            var col = {
-                field: varName,
-                displayName: varName
-            };
-                
-            return col;
-        });
-        
-        return result;
-    };
+            return result;
+       },
+       
+       createNgGridOptionsFromQuery: function(query) {
+           if(!query) {
+               return [];
+           }
+           
+           var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
+           var projectVarNameList = sparql.VarUtils.getVarNames(projectVarList);
+
+           var result = _(projectVarNameList).map(function(varName) {
+               var col = {
+                   field: varName,
+                   displayName: varName
+               };
+                   
+               return col;
+           });
+           
+           return result;
+       },
+
+       fetchCount: function(sparqlService, query, timeoutInMillis, secondaryCountLimit) {
+           var result;
+           if(!query) {
+               var deferred = jQuery.Deferred();
+               deferred.resolve(0);
+               result = deferred.promise();
+           } else {           
+               var query = this.query.clone();
     
-    ns.bindingToJson = function(varList, binding) {
-        var result = {};
-        
-        _(varList).each(function(v) {
-            var varName = v.getName();
-            //result[varName] = '' + binding.get(v);
-            result[varName] = binding.get(v);
-        });
+               query.setLimit(null);
+               query.setOffset(null);
+     
+               var result = ns.ServiceUtils.fetchCountQuery(sparqlService, tquery, timeoutInMillis, secondaryCountLimit);
+           }
 
-        return result;
+           return result;
+       },
+       
+       fetchData: function(sparqlService, query, limit, offset) {
+           if(!this.query) {
+               var deferred = jQuery.Deferred();
+
+               var itBinding = new util.IteratorArray([]);
+               var varNames = [];
+               var rs = new ns.ResultSetArrayIteratorBinding(itBinding, varNames);
+              
+               
+               deferred.resolve(rs);
+               return deferred.promise();
+           }
+
+           
+           var query = this.query.clone();
+
+           query.setLimit(limit);
+           query.setOffset(offset);
+           
+           var qe = this.sparqlService.createQueryExecution(query);
+
+           var result = qe.execSelect().pipe(function(rs) {
+               var data = [];
+               
+               var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
+               
+               while(rs.hasNext()) {
+                   var binding = rs.next();
+                   
+                   var o = ns.TableServiceUtils.bindingToJsMap(projectVarList, binding);
+                   
+                   data.push(o);
+               }
+               
+               return data;
+           });
+           
+           return result;           
+       }
+       
     };
 
+    ns.TableService = Class.create({
+        /**
+         * Expected to return an object:
+         * 
+         * {    
+         *    columns: [{id: 's', tags: your data}, {id: 'p'}]
+         *    tags: your data
+         * }
+         */
+        fetchSchema: function() {
+            console.log('Implement me');
+            throw 'Implement me';
+        },
+        
+        /**
+         * Expected to return a promise which yields an integral value for the total number of rows
+         */
+        fetchCount: function() {
+            console.log('Implement me');
+            throw 'Implement me';
+        },        
+        
+        /**
+         * Expected to return a promise which yields an array of objects (maps) from field name to field data
+         */
+        fetchData: function(limit, offset) {
+            console.log('Implement me');
+            throw 'Implement me';            
+        }
+    });
 
-    ns.SparqlTableService = Class.create({
+
+
+    ns.TableServiceSparqlQuery = Class.create(ns.TableService, {
         /**
          * TODO Possibly add primaryCountLimit - i.e. a limit that is never counted beyond, even if the backend might be fast enough
          */
@@ -8218,86 +8310,133 @@ module["exports"] = jassa;
             this.secondaryCountLimit = secondaryCountLimit || 1000;
         },
         
+        fetchSchema: function() {
+            var query = this.query;
+
+            var schema = {
+                colDefs: ns.TableServiceUtils.createNgGridOptionsFromQuery(query)
+            };
+
+            var deferred = $.Deferred();
+            deferred.resolve(schema);
+            
+            return deferred.promise();
+        },
+        
         fetchCount: function() {
-            if(!this.query) {
-                var deferred = jQuery.Deferred();
-                deferred.resolve(0);
-                return deferred.promise();
-            }
-            
-            var query = this.query.clone();
-
-            query.setLimit(null);
-            query.setOffset(null);
-  
-            var result = ns.ServiceUtils.fetchCountQuery(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
-          
-/*
-            var countVar = rdf.NodeFactory.createVar('_c_');
-            var countQuery = createQueryCountQuery(query, countVar);
-            var countQe = this.sparqlService.createQueryExecution(countQuery);
-            var promise = service.ServiceUtils.fetchInt(countQe, countVar);
-*/
-            
-            //console.log('Count Query: ' + countQuery);
-
-            //return promise;
+            var result = ns.TableServiceUtils.fetchCount(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
             return result;
         },
         
         fetchData: function(limit, offset) {
-            if(!this.query) {
-                var deferred = jQuery.Deferred();
+            var result = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
+            return result;
+        }        
+    });
 
-                var itBinding = new util.IteratorArray([]);
-                var varNames = [];
-                var rs = new ns.ResultSetArrayIteratorBinding(itBinding, varNames);
-               
-                
-                deferred.resolve(rs);
-                return deferred.promise();
-            }
-
+    
+    /**
+     * So the issue is: actually we need a lookup service to get the column headings
+     * The lookup service would need the sparqlService
+     * 
+     * 
+     */
+    ns.TableServiceFacet = Class.create(ns.TableService, {
+        initialize: function(sparqlService, tableConfigFacet, timeoutInMillis, secondaryCountLimit) {
+            this.sparqlService = sparqlService;
+            this.tableConfigFacet = tableConfigFacet;
+            this.timeoutInMillis = timeoutInMillis;
+            this.secondaryCountLimit = secondaryCountLimit;
+        },
+        
+        fetchSchema: function() {
+            var tableConfigFacet = this.tableConfigFacet;
             
-            var query = this.query.clone();
-
-            query.setLimit(limit);
-            query.setOffset(offset);
+            var paths = tableConfigFacet.getPaths();
             
-            var qe = this.sparqlService.createQueryExecution(query);
+            // We need to fetch the column headings
+            var promise = lookupServicePath.lookup(paths);
+            
+            var result = promise.pipe(function(map) {
+                
+                var colDefs = _(paths).map(function(path) {
+                    var r = {
+                        field: tableConfigFacet.getColumnId(path),
+                        displayName: map.get(path),
+                        path: path
+                    };
+                });
 
-            var result = qe.execSelect().pipe(function(rs) {
-                var data = [];
+                var r = {
+                    colDefs: colDefs
+                };
+
+                return r;
+            });
+            
+            return result;
+        },
                 
-                var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
-                
-                while(rs.hasNext()) {
-                    var binding = rs.next();
-                    
-                    var o = ns.bindingToJson(projectVarList, binding);
-                    
-                    data.push(o);
-                }
-                
-                return data;
+        fetchCount: function() {
+            var result = ns.TableServiceUtils.fetchCount(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
+            return result;            
+        },
+        
+        // TODO Rename function - its too generic
+        // It takes a Map<String, Node> and transforms it to Map<String, {node:, displayLabel: }>
+        // TODO An alternative would be to just put the map with the labels into the schema...
+        transformData: function(data) {
+            // Collect nodes
+            var nodes = [];
+            _(data).each(function(item, k) {
+                _(item).each(function(node) {
+                    nodes.push(node);                    
+                });
+            });
+            
+            // Get the node labels
+            var lookupServiceNodes = this.lookupServiceNodes;
+            var p = lookupServiceNodes.lookup(nodes);
+            
+            // Transform every node
+            var result = p.pipe(function(nodeToLabel) {
+                var r = _(data).map(function(item) {
+                    var r = {};
+                    _(item).each(function(node, key) {
+                        var label = nodeToLabel.get(node);
+                        r[key] = {
+                            node: node,
+                            displayLabel: label
+                        };
+                    });
+                    return r;
+                });
+                return r;                    
             });
             
             return result;
         },
         
-        getSchema: function() {
-            var query = this.query;
+        fetchData: function(limit, offset) {
+            var promise = ns.TableServiceUtils.fetchData(this.sparqlService, this.query, limit, offset);
 
-            //var projectVarList = query.getProjectVars(); //query.getProjectVars().getVarList();
-            //var projectVarNameList = sparql.VarUtils.getVarNames(projectVarList);
-
-            var colDefs = ns.createNgGridOptionsFromQuery(query);
+            var self = this;
+            var result = promise.pipe(function(data) {
+                var r = self.transformData(data);
+                return r;
+            });
             
-            
-            return colDefs;
+            return result;
+        },
+        
+        fetchCount: function() {
+            var result = ns.TableServiceUtils.fetchCount(this.sparqlService, this.query, this.timeoutInMillis, this.secondaryCountLimit);
+            return result;            
         }
+        
     });
-
+    
+    
 })();
 
 (function() {
@@ -19972,7 +20111,8 @@ ns.createDefaultConstraintElementFactories = function() {
     
     
     /**
-     * Object that holds modifications to a table
+     * Object that holds configuration for modifications to a table.
+     * Needs to be interpreted by another object.
      * 
      * { myCol1: {sortDir: 1, aggName: sum, path: foo}, ... }
      * - sum(?varForFoo) As myCol1
@@ -20236,7 +20376,7 @@ ns.createDefaultConstraintElementFactories = function() {
 
     
     // TODO: Maybe this class should be TableModFacet and inherit from TableMod?
-    ns.FacetTableConfig = Class.create({
+    ns.TableConfigFacet = Class.create({
         initialize: function(facetConfig, tableMod, paths) {
             this.facetConfig = facetConfig;
             this.tableMod = tableMod || new ns.TableMod();
@@ -20318,16 +20458,16 @@ ns.createDefaultConstraintElementFactories = function() {
     });
 
     ns.QueryFactoryFacetTable = Class.create(ns.QueryFactory, {
-        initialize: function(facetTableConfig) {
-            this.facetTableConfig = facetTableConfig;
+        initialize: function(tableConfigFacet) {
+            this.tableConfigFacet = tableConfigFacet;
         },
         
         createQuery: function() {
-            var facetConfig = this.facetTableConfig.getFacetConfig();
+            var facetConfig = this.tableConfigFacet.getFacetConfig();
             
             // TODO Possible source of confusion: the config uses a collection for paths, but here we switch to a native array 
-            var paths = this.facetTableConfig.getPaths().getArray();
-            var tableMod = this.facetTableConfig.getTableMod();
+            var paths = this.tableConfigFacet.getPaths().getArray();
+            var tableMod = this.tableConfigFacet.getTableMod();
 
             
             var elementFactory = new ns.ElementFactoryFacetPaths(facetConfig, paths);
