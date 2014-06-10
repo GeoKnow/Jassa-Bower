@@ -8437,7 +8437,7 @@ module["exports"] = jassa;
      */
     ns.TableServiceFacet = Class.create(ns.TableService, {
         initialize: function(tableServiceQuery, tableConfigFacet, lookupServiceNodeLabels, lookupServicePathLabels) {
-            this.tableServiceQuery = this.tableServiceQuery;
+            this.tableServiceQuery = tableServiceQuery;
             this.tableConfigFacet = tableConfigFacet;
             this.lookupServiceNodeLabels = lookupServiceNodeLabels;
             this.lookupServicePathLabels = lookupServicePathLabels;
