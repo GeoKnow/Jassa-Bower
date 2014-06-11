@@ -8297,6 +8297,7 @@ module["exports"] = jassa;
                        displayName: map.get(path),
                        path: path
                    };
+                   return r;
                });
 
                var r = {
