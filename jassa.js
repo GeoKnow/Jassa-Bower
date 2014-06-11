@@ -3309,7 +3309,17 @@ module["exports"] = jassa;
 	ns.ExprFunctionBase = Class.create(ns.ExprFunction, {
 	    initialize: function(name) {
 	        this.name = name;
-	    }
+	    },
+
+	    getVarsMentioned: function() {
+            var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
+            return result;
+        },       
+
+        toString: function() {
+            var result = this.name + '(' + this.getArgs().join(', ') + ')';
+            return result;
+        }
 	});
 	
 	ns.ExprFunction0 = Class.create(ns.ExprFunctionBase, {
@@ -3328,16 +3338,11 @@ module["exports"] = jassa;
 			
 			var result = this.$copy(args);
 			return result;
-		},
-
-		toString: function() {
-            var result = this.name + '(' + this.getArgs().join(', ') + ')';
-            return result;
-        }		
+		}
 	});
 
 
-	ns.ExprFunction1 = Class.create(ns.ExprFunction, {
+	ns.ExprFunction1 = Class.create(ns.ExprFunctionBase, {
 		initialize: function($super, name, subExpr) {
 		    $super(name);
 			this.subExpr = subExpr;
@@ -3388,12 +3393,7 @@ module["exports"] = jassa;
 		
 		getRight: function() {
 			return this.right;
-		},
-		
-	    getVarsMentioned: function() {
-	        var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
-	        return result;
-	    }	    
+		}		
 	});
 	
 
