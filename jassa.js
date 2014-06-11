@@ -20438,8 +20438,8 @@ ns.createDefaultConstraintElementFactories = function() {
         },
         
         getColumnId: function(path) {
-            var index = _(this.paths.toArray()).indexOf(path);
-            result = this.tableMod.getColumnIds()[index];
+            var index = this.paths.indexOf(path);
+            var result = this.tableMod.getColumnIds()[index];
             return result;
         },
         
