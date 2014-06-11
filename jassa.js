@@ -8461,7 +8461,7 @@ module["exports"] = jassa;
 
             var self = this;
             var result = promise.pipe(function(rows) {
-                var r = ns.TableServiceUtils.transformToNodeLabels(this.lookupServiceNodeLabels, rows);
+                var r = ns.TableServiceUtils.transformToNodeLabels(self.lookupServiceNodeLabels, rows);
                 return r;
             });
             
