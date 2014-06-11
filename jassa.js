@@ -3292,6 +3292,11 @@ module["exports"] = jassa;
 	});
 
 	ns.ExprFunction = Class.create(ns.Expr, {
+	    getName: function() {
+	        console.log('Implement me');
+	        throw 'Implement me';
+	    },
+	    
 		isFunction: function() {
 			return true;
 		},
@@ -3301,7 +3306,17 @@ module["exports"] = jassa;
 		}
 	});
 
-	ns.ExprFunction0 = Class.create(ns.ExprFunction, {
+	ns.ExprFunctionBase = Class.create(ns.ExprFunction, {
+	    initialize: function(name) {
+	        this.name = name;
+	    }
+	});
+	
+	ns.ExprFunction0 = Class.create(ns.ExprFunctionBase, {
+	    initialize: function($super, name) {
+	        $super(name);
+	    },
+
 		getArgs: function() {
 			return [];
 		},
@@ -3313,11 +3328,18 @@ module["exports"] = jassa;
 			
 			var result = this.$copy(args);
 			return result;
-		}
+		},
+
+		toString: function() {
+            var result = this.name + '(' + this.getArgs().join(', ') + ')';
+            return result;
+        }		
 	});
 
+
 	ns.ExprFunction1 = Class.create(ns.ExprFunction, {
-		initialize: function(subExpr) {
+		initialize: function($super, name, subExpr) {
+		    $super(name);
 			this.subExpr = subExpr;
 		},
 		
@@ -3340,9 +3362,10 @@ module["exports"] = jassa;
 	});
 
 
-	ns.ExprFunction2 = Class.create(ns.ExprFunction, {
-		initialize: function(left, right) {
-			this.left = left;
+	ns.ExprFunction2 = Class.create(ns.ExprFunctionBase, {
+		initialize: function($super, name, left, right) {
+			$super(name);
+		    this.left = left;
 			this.right = right;
 		},
 		
@@ -3370,7 +3393,7 @@ module["exports"] = jassa;
 	    getVarsMentioned: function() {
 	        var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
 	        return result;
-	    }
+	    }	    
 	});
 	
 
@@ -3410,9 +3433,9 @@ module["exports"] = jassa;
 	//ns.E_In = ns.E_OneOf
 	
 	ns.E_Str = Class.create(ns.ExprFunction1, {
-//		initialize: function($super) {
-//			
-//		}, 
+		initialize: function($super) {
+			$super('str');
+		}, 
 		
 		copySubstitute: function(fnNodeMap) {
 			return new ns.E_Str(this.subExpr.copySubstitute(fnNodeMap));
@@ -3553,7 +3576,7 @@ module["exports"] = jassa;
 	
 	ns.E_Equals = Class.create(ns.ExprFunction2, {
 	    initialize: function($super, left, right) {
-	        $super(left, right);
+	        $super('=', left, right);
 	    },
 	    
 		copySubstitute: function(fnNodeMap) {
@@ -3661,7 +3684,7 @@ module["exports"] = jassa;
 	
 	ns.E_GreaterThan = Class.create(ns.ExprFunction2, {
 	    initialize: function($super, left, right) {
-	        $super(left, right);
+	        $super('>', left, right);
 	    },
 
 	    copySubstitute: function(fnNodeMap) {
@@ -3683,7 +3706,7 @@ module["exports"] = jassa;
 
 	ns.E_LessThan = Class.create(ns.ExprFunction2, {
         initialize: function($super, left, right) {
-            $super(left, right);
+            $super('<', left, right);
         },
 
         copySubstitute: function(fnNodeMap) {
@@ -3705,7 +3728,7 @@ module["exports"] = jassa;
 	
 	ns.E_LogicalAnd = Class.create(ns.ExprFunction2, {
         initialize: function($super, left, right) {
-            $super(left, right);
+            $super('&&', left, right);
         },
 
 	    copySubstitute: function(fnNodeMap) {
@@ -3728,7 +3751,7 @@ module["exports"] = jassa;
 	
 	ns.E_LogicalOr = Class.create(ns.ExprFunction2, {
         initialize: function($super, left, right) {
-            $super(left, right);
+            $super('||', left, right);
         },
 
 	    copySubstitute: function(fnNodeMap) {
