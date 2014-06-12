@@ -3230,6 +3230,11 @@ module["exports"] = jassa;
 		copySubstitute: function(fnNodeMap) {
             console.log('Override me');
 			throw 'Override me';
+		},
+		
+		copy: function(newArgs) {
+            console.log('Override me');
+            throw 'Override me';		    
 		}
 	});
 	
@@ -3316,7 +3321,8 @@ module["exports"] = jassa;
 	    },
 
         copySubstitute: function(fnNodeMap) {
-            var newArgs = _(this.getArgs()).map(function(arg) {
+            var args = this.getArgs();
+            var newArgs = _(args).map(function(arg) {
                 var r = arg.copySubstitute(fnNodeMap);
                 return r;
             });
