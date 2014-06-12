@@ -6087,7 +6087,7 @@ module["exports"] = jassa;
 			_(tmps).each(function(item) {
 				if(item instanceof ns.ElementTriplesBlock) {
 					triples.push.apply(triples, item.getTriples());
-                } else if(item instanceof ns.ElementFilter){
+                } else if(item instanceof ns.ElementFilter) {
                     filters.push(item);
 				} else {
 					rest.push(item);
@@ -14313,12 +14313,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return concept;
 		},
 		
-		createSubjectConcept: function(subjectVar) {
+		createSubjectConcept: function(s, p, o) {
 			
 			//var s = sparql.Node.v("s");
-			var s = subjectVar;
-			var p = sparql.Node.v("_p_");
-			var o = sparql.Node.v("_o_");
+			s = s || rdf.NodeFactory.createVar('s');
+			p = p || rdf.NodeFactory.createVar('_p_');
+			o = o || rdf.NodeFactory.createVar('_o_');
 			
 			var conceptElement = new sparql.ElementTriplesBlock([new rdf.Triple(s, p, o)]);
 
