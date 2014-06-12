@@ -3213,18 +3213,22 @@ module["exports"] = jassa;
 		},
 		
 		getFunction: function() {
+		    console.log('Override me');
 			throw 'Override me';
 		},
 		
 		getExprVar: function() {
+            console.log('Override me');
 			throw 'Override me';
 		},
 		
 		getConstant: function() {
+            console.log('Override me');
 			throw 'Override me';
 		},
 		
 		copySubstitute: function(fnNodeMap) {
+            console.log('Override me');
 			throw 'Override me';
 		}
 	});
@@ -3263,7 +3267,7 @@ module["exports"] = jassa;
 		
 		copy: function(args) {
 			if(args && args.length > 0) {
-				throw "Invalid argument";
+				throw 'Invalid argument';
 			}
 
 			var result = new ns.ExprVar(this.v);
@@ -3287,7 +3291,7 @@ module["exports"] = jassa;
 		},
 		
 		toString: function() {
-			return "" + this.v;
+			return '' + this.v;
 		}
 	});
 
@@ -3333,7 +3337,7 @@ module["exports"] = jassa;
 
 		copy: function(args) {
 			if(args && args.length > 0) {
-				throw "Invalid argument";
+				throw 'Invalid argument';
 			}
 			
 			var result = this.$copy(args);
@@ -3354,7 +3358,7 @@ module["exports"] = jassa;
 
 		copy: function(args) {
 			if(args.length != 1) {
-				throw "Invalid argument";
+				throw 'Invalid argument';
 			}
 			
 			var result = this.$copy(args);
@@ -3380,7 +3384,7 @@ module["exports"] = jassa;
 
 		copy: function(args) {
 			if(args.length != 2) {
-				throw "Invalid argument";
+				throw 'Invalid argument';
 			}
 			
 			var result = this.$copy(args[0], args[1]);
@@ -3423,9 +3427,9 @@ module["exports"] = jassa;
 		
 			if(!this.nodes || this.nodes.length === 0) {
 				// 
-				return "FALSE";
+				return 'FALSE';
 			} else {		
-				return "(" + this.lhsExpr + " In (" + this.nodes.join(", ") + "))";
+				return '(' + this.lhsExpr + ' In (' + this.nodes.join(', ') + '))';
 			}
 		}
 	});
@@ -3451,7 +3455,7 @@ module["exports"] = jassa;
 		},
 	
 		toString: function() {
-			return "str(" + this.subExpr + ")";
+			return 'str(' + this.subExpr + ')';
 		}
 	});
 	
@@ -3477,7 +3481,7 @@ module["exports"] = jassa;
 	
 			copy: function(args) {
 				if(args.length != 1) {
-					throw "Invalid argument";
+					throw 'Invalid argument';
 				}
 		
 				var newExpr = args[0];
