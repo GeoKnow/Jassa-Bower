@@ -3315,6 +3315,16 @@ module["exports"] = jassa;
 	        this.name = name;
 	    },
 
+        copySubstitute: function(fnNodeMap) {
+            var newArgs = _(this.getArgs()).map(function(arg) {
+                var r = arg.copySubstitute(fnNodeMap);
+                return r;
+            });
+            
+            var result = this.copy(newArgs);
+            return result;
+        },
+	    
 	    getVarsMentioned: function() {
             var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
             return result;
@@ -3399,9 +3409,93 @@ module["exports"] = jassa;
 			return this.right;
 		}		
 	});
+
+   ns.ExprFunctionN = Class.create(ns.ExprFunctionBase, {
+        initialize: function($super, name, args) {
+            $super(name);
+            this.args = args;
+        },
+        
+        getArgs: function() {
+            return this.args;
+        }
+
+//        copy: function(args) {
+////            if(args.length != 1) {
+////                throw 'Invalid argument';
+////            }
+//            
+//            var result = this.$copy(args);
+//            return result;
+//        }
+    });
+
+	ns.E_Function = Class.create(ns.ExprFunctionN, {
+	    initialize: function($super, name, args) {
+	        $super(name, args);
+	    },
+	    
+	    copy: function(newArgs) {
+	        var result = new ns.E_Function(this.name, newArgs);
+	        return result;
+	    }
+/*	    
+        copySubstitute: function(fnNodeMap) {
+            var newArgs = _(this.args).map(function(arg) {
+                var r = arg.copySubstitute(fnNodeMap);
+                return r;
+            });
+            
+            return new ns.E_Function(this.functionIri, newArgs);
+        },
+*/	    
+	});
+
+    /*
+    ns.E_Function = Class.create(ns.Expr, {
+        initialize: function(functionIri, args) {
+            this.functionIri = functionIri;
+            this.args = args;
+        },
+    
+        copySubstitute: function(fnNodeMap) {
+            var newArgs = _(this.args).map(function(arg) {
+                var r = arg.copySubstitute(fnNodeMap);
+                return r;
+            });
+            
+            return new ns.E_Function(this.functionIri, newArgs);
+        },
+    
+        getArgs: function() {
+            return this.args;
+        },
+    
+        copy: function(newArgs) {
+            return new ns.E_Function(this.functionIri, newArgs);
+        },
+    
+        toString: function() {
+            var argStr = this.args.join(", ");
+            
+            // TODO HACK for virtuoso and other cases
+            // If the functionIri contains a ':', we assume its a compact iri
+            var iri = '' + this.functionIri;
+            var fnName = (iri.indexOf(':') < 0) ? '<' + iri + '>' : iri;  
+            
+            var result = fnName + '(' + argStr + ')';
+            return result;
+        },
+        
+        getVarsMentioned: function() {
+            var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
+            return result;
+        }
+    });
+    */
+
 	
-
-
+	
 // TODO Change to ExprFunction1
 	ns.E_OneOf = Class.create(ns.Expr, {
 	    // TODO Jena uses an ExprList as the second argument
@@ -3535,48 +3629,6 @@ module["exports"] = jassa;
 	};
 	
 
-
-	ns.E_Function = Class.create(ns.Expr, {
-	    initialize: function(functionIri, args) {
-    		this.functionIri = functionIri;
-    		this.args = args;
-    	},
-	
-    	copySubstitute: function(fnNodeMap) {
-    		var newArgs = _(this.args).map(function(arg) {
-    		    var r = arg.copySubstitute(fnNodeMap);
-    		    return r;
-    		});
-    		
-    		return new ns.E_Function(this.functionIri, newArgs);
-    	},
-	
-    	getArgs: function() {
-    	    return this.args;
-    	},
-	
-    	copy: function(newArgs) {
-    	    return new ns.E_Function(this.functionIri, newArgs);
-    	},
-	
-    	toString: function() {
-    		var argStr = this.args.join(", ");
-    		
-    		// TODO HACK for virtuoso and other cases
-    		// If the functionIri contains a ':', we assume its a compact iri
-    		var iri = '' + this.functionIri;
-    		var fnName = (iri.indexOf(':') < 0) ? '<' + iri + '>' : iri;  
-    		
-    		var result = fnName + '(' + argStr + ')';
-    		return result;
-    	},
-    	
-    	getVarsMentioned: function() {
-            var result = ns.PatternUtils.getVarsMentioned(this.getArgs());
-            return result;
-    	}
-	});
-	
 	
 	ns.E_Equals = Class.create(ns.ExprFunction2, {
 	    initialize: function($super, left, right) {
