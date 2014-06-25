@@ -986,6 +986,15 @@ module["exports"] = jassa;
 			this.hashToBucket = {};
 		},
 		
+		putAll: function(map) {
+		    var self = this;
+		    _(map.entries()).each(function(v, k) {
+		        self.put(k, v);
+		    });
+		    
+		    return this;
+		},
+		
 		put: function(key, val) {
 //			if(key == null) {
 //				debugger;
@@ -8579,7 +8588,11 @@ module["exports"] = jassa;
 
 (function() {
 
+    var util = jassa.util;
+    
     var ns = jassa.service;
+    
+    // TODO Rename 'id(s)' to 'key(s)'
     
     ns.LookupService = Class.create({
         getIdStr: function(id) {
@@ -8642,7 +8655,7 @@ module["exports"] = jassa;
 
             // Make ids unique
             var uniq = _(ids).uniq(false, function(id) {
-                var idStr = self.getIdStr(id);                
+                var idStr = self.getIdStr(id);
                 return idStr;
             });
 
@@ -8754,14 +8767,51 @@ module["exports"] = jassa;
     });
 
 
+    ns.LookupServiceChunker = Class.create(ns.LookupServiceDelegateBase, {
+        initialize: function($super, delegate, maxChunkSize) {
+            //this.delegate = delegate;
+            $super(delegate);
+            this.maxChunkSize = maxChunkSize;
+        },
+        
+        lookup: function(keys) {
+            var self = this;
+
+            // Make ids unique
+            var ks = _(keys).uniq(false, function(key) {
+                var keyStr = self.getIdStr(key);
+                return keyStr;
+            });
+            
+            var chunks = util.ArrayUtils.chunk(ks, this.maxChunkSize);
+
+            var promises = _(chunks).map(function(chunk) {
+                var r = self.delegate.lookup(chunk);
+                return r;
+            });
+            
+            var result = jQuery.when.apply(window, promises).pipe(function() {
+                var r = new util.HashMap();
+                _(arguments).each(function(map) {
+                    r.putAll(map);
+                });
+                
+                return r;
+            });
+            
+            return result;
+        }
+    });
+    
     /**
      * Wrapper that collects ids for a certain amount of time before passing it on to the
      * underlying lookup service.
      */
     ns.LookupServiceTimeout = Class.create(ns.LookupServiceDelegateBase, {
         
-        initialize: function(delegate, delayInMs, maxRefreshCount) {
-            this.delegate = delegate;
+        initialize: function($super, delegate, delayInMs, maxRefreshCount) {
+            //this.delegate = delegate;
+            $super(delegate);
 
             this.delayInMs = delayInMs;
             this.maxRefreshCount = maxRefreshCount || 0;
@@ -8863,6 +8913,8 @@ module["exports"] = jassa;
         */
 
     });
+
+    
 
     
     ns.LookupServiceSponate = Class.create(ns.LookupServiceBase, {
@@ -9034,7 +9086,7 @@ module["exports"] = jassa;
 
             // TODO How can we turn the ajax spec into a (base) URL?
 
-			var result = new service.SparqlServiceHttp(this.apiUrl, [], null, data);
+			var result = new service.SparqlServiceHttp(this.apiUrl, this.defaultGraphIris, null, data);
 			return result;
         },
 
@@ -20548,13 +20600,24 @@ ns.createDefaultConstraintElementFactories = function() {
             return result;
         },
         
+        removeColumn: function(colId) {
+            var path = this.getPath(colId);
+            this.paths.remove(path);
+        },
+
+        getColIdForPath: function(path) {
+            var rootFacetNode = this.facetConfig.getRootFacetNode();
+            var facetNode = rootFacetNode.forPath(path);
+            var result = facetNode.getVar().getName();
+            
+            return result;
+        },
+        
         togglePath: function(path) {
             // Updates the table model accordingly
             var status = util.CollectionUtils.toggleItem(this.paths, path);
-            
-            var rootFacetNode = this.facetConfig.getRootFacetNode();
-            var facetNode = rootFacetNode.forPath(path);
-            var varName = facetNode.getVar().getName();
+
+            var varName = this.getColIdForPath(path);
             
             if(status) {
                 this.tableMod.addColumn(varName);
