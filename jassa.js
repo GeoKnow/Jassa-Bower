@@ -722,7 +722,7 @@ module["exports"] = jassa;
 	        },
 	        
 	        removeIndexes: function(arr, indexes) {
-	            var tmp = this.copyWithoutIndexes(arr, indexes);	            
+	            var tmp = this.copyWithoutIndexes(arr, indexes);
 	            this.replace(arr, tmp);
 	            return arr;
 	        }
@@ -1646,7 +1646,8 @@ module["exports"] = jassa;
                 
                 // TODO Not sure how stable this proto stuff is across browsers
                 var isPrimitiveObject = function(obj) {
-                    var result = _(obj).isUndefined() || _(obj).isNull() || _(obj).isBoolean() || _(obj).isNumber() || _(obj).isDate() || _(obj).isString() || _(obj).isRegExp(); 
+                    var result = _(obj).isUndefined() || _(obj).isNull() || _(obj).isBoolean() || _(obj).isNumber() ||
+                        _(obj).isDate() || _(obj).isString() || _(obj).isRegExp();
                     return result;
                 };
                 
@@ -3265,7 +3266,7 @@ module["exports"] = jassa;
 			} else if(node.isVariable()) {
 			    result = new ns.ExprVar(node); 
 			} else {
-			    result = sparql.NodeValue.makeNode(node);
+			    result = ns.NodeValue.makeNode(node);
 			}
 			
 			//var result = (n == null) ? this : //node;//rdf.NodeValue.makeNode(node); 
@@ -4245,7 +4246,7 @@ module["exports"] = jassa;
 	};
 	
 	ns.datatypeFragment = function(node) {
-		return node.dataType ? '^^<' + node.datatype + '>' : "";
+		return node.dataType ? '^^<' + node.dataType + '>' : "";
 	};
 	
 
@@ -4787,8 +4788,7 @@ module["exports"] = jassa;
 			}
 			
 			// FIXME: Should we clone the attributes too?
-      // FIXME: query not defined
-			var result = new ns.ElementSubQuery(query);
+			var result = new ns.ElementSubQuery(this.query);
 			return result;
 		},
 	
@@ -4831,7 +4831,7 @@ module["exports"] = jassa;
 			}
 		
 		// 	FIXME: Should we clone the attributes too?
-			var result = new ns.ElemenFilter(this.expr);
+			var result = new ns.ElementFilter(this.expr);
 			return result;
 		},
 	
@@ -5386,7 +5386,7 @@ module["exports"] = jassa;
 		},
 		
 		setResultStar: function(enable) {
-	        this.resultStar = (enable === true) ? true : false;
+	        this.resultStar = (enable === true);
 		},
 		
 		getQueryPattern: function() {
@@ -5572,7 +5572,7 @@ module["exports"] = jassa;
 		
 		
 		setDistinct: function(enable) {
-			this.distinct = (enable === true) ? true : false;
+			this.distinct = (enable === true);
 		},
 		
 		isReduced: function() {
@@ -5580,7 +5580,7 @@ module["exports"] = jassa;
 		},
 		
 		setReduced: function(enable) {
-            this.reduced = (enable === true) ? true : false;		    
+            this.reduced = (enable === true);
 		},
 
 		toString: function() {
@@ -5620,13 +5620,17 @@ module["exports"] = jassa;
 			var distinctStr = this.distinct ? "Distinct " : "";
 			
 			//console.log("Elements: ", this.elements);
-			var result = "Select " + distinctStr + this.toStringProjection() + " {" + ns.joinElements(" . ", this.elements) + "} " + this.toStringGroupBy() + this.toStringOrderBy() + this.toStringLimitOffset();
+			var result = "Select " + distinctStr + this.toStringProjection() + " {" +
+					ns.joinElements(" . ", this.elements) +
+				"} " + this.toStringGroupBy() + this.toStringOrderBy() + this.toStringLimitOffset();
 			
 			return result;		
 		},
 
 		toStringConstruct: function() {
-			var result = "Construct " + this.constructTemplate + " {" + ns.joinElements(" . ", this.elements) + "}" + this.toStringOrderBy() + this.toStringLimitOffset();
+			var result = "Construct " + this.constructTemplate + " {" +
+					ns.joinElements(" . ", this.elements) +
+				"}" + this.toStringOrderBy() + this.toStringLimitOffset();
 			
 			return result;
 		}
@@ -5759,7 +5763,7 @@ module["exports"] = jassa;
 	        
 	        var excludeVarNames = this.getVarNames(excludeVars);
 	        var generator = ns.GenSym.create(prefix);
-	        var genVarName = new sparql.GeneratorBlacklist(generator, excludeVarNames);
+	        var genVarName = new ns.GeneratorBlacklist(generator, excludeVarNames);
 
 	        var result = new ns.VarGenerator(genVarName);
 	        
@@ -5919,7 +5923,7 @@ module["exports"] = jassa;
                 return x != null;
             }).value();
             
-            var result = new sparql.ElementGroup(elements);
+            var result = new ns.ElementGroup(elements);
             
             // Simplify the element
             if(this.simplify) {
@@ -6031,7 +6035,7 @@ module["exports"] = jassa;
 
             var joinBuilder = joinNode.getJoinBuilder();
             var elements = joinBuilder.getElements();
-            var result = new sparql.ElementGroup(elements);
+            var result = new ns.ElementGroup(elements);
             
             return result;
         }
@@ -6041,7 +6045,7 @@ module["exports"] = jassa;
 	ns.ElementUtils = {
         createFilterElements: function(exprs) {
             var result = _(exprs).map(function(expr) {
-                var r = new sparql.ElementFilter(expr);
+                var r = new ns.ElementFilter(expr);
                 return r;
             });
             
@@ -6052,7 +6056,7 @@ module["exports"] = jassa;
             var result = [];
             
             if(triples.length > 0) {
-                var element = new sparql.ElementTriplesBlock(triples);
+                var element = new ns.ElementTriplesBlock(triples);
                 result.push(element);
             }
             
@@ -6306,14 +6310,14 @@ module["exports"] = jassa;
             }
 
             var result = _(vars).each(function(v) {
-                var exprVar = new sparql.ExprVar(v);
+                var exprVar = new ns.ExprVar(v);
                 var node = binding.get(v);
                 
                 // TODO What if node is NULL?
                 
-                var nodeValue = sparql.NodeValue.makeNode(node);
+                var nodeValue = ns.NodeValue.makeNode(node);
                 
-                var expr = new sparql.E_Equals(exprVar, nodeValue);
+                var expr = new ns.E_Equals(exprVar, nodeValue);
                 
                 return expr;
             });
@@ -6619,13 +6623,14 @@ module["exports"] = jassa;
         
         createTargetState: function(targetAlias, sourceVarMap, sourceJoinVars, targetElement, oldTargetVars, targetJoinVars) {
             var sjv = sourceJoinVars.map(function(v) {
-                var rv = sourceVarMap.get(v);               
+                var rv = sourceVarMap.get(v);
                 return rv;
             });
             
             //var sourceVars = this.ge; // Based on renaming!
             //var oldTargetVars = targetElement.getVarsMentioned();
-            var targetVarMap = ns.ElementUtils.createJoinVarMap(this.usedVars, oldTargetVars, sjv, targetJoinVars, this.varGenerator);
+            var targetVarMap = ns.ElementUtils.createJoinVarMap(this.usedVars, oldTargetVars, sjv, targetJoinVars, this.varNameGenerator);
+
             
             var newTargetElement = null;
             if(targetElement != null) {
@@ -7798,7 +7803,7 @@ module["exports"] = jassa;
 	        
 	    constrainQueryVar: function(query, v, nodes) {
             var exprVar = new sparql.ExprVar(v);
-            var result = constrainQueryExprVar(query, exprVar, nodes);
+            var result = this.constrainQueryExprVar(query, exprVar, nodes);
             return result;
 	    },
 
@@ -8376,8 +8381,7 @@ module["exports"] = jassa;
            
            return result;           
        },
-       
-       
+
        collectNodes: function(rows) {
            // Collect nodes
            var result = [];
@@ -8474,7 +8478,7 @@ module["exports"] = jassa;
          */
         fetchData: function(limit, offset) {
             console.log('Implement me');
-            throw 'Implement me';            
+            throw 'Implement me';
         }
         
         /**
@@ -8483,7 +8487,7 @@ module["exports"] = jassa;
          */
 //        getDataConfigHash: function() {
 //            console.log('Implement me');
-//            throw 'Implement me';                        
+//            throw 'Implement me';
 //        },
 //        
 //        getSchemaConfigHash: function() {
@@ -11142,7 +11146,7 @@ module["exports"] = jassa;
 	            if(concept && (isLeftJoin || !concept.isSubjectConcept())) {
 	                var conceptElement = concept.getElement();
                     var conceptVar = concept.getVar();
-	                 
+
 	                var elementA = conceptElement;
 	                var elementB = innerElement;
 
@@ -11276,7 +11280,6 @@ module["exports"] = jassa;
 		
 		executeData: function(spec, retainRdfNodes) {
 		    var outerElement = spec.outerElement;
-        // FIXME: spec.idExpr not defined
 		    var idExpr = spec.idExpr;
 		    var idVar = spec.idVar;
 		    var sortConditions = spec.sortConditions;
@@ -11836,7 +11839,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 			var targetTable = schema.getTable(targetTableName);
 			
 			// Cardinality 1 means no array
-			var isArray = stub.card == 1 ? false : true;
+			// FIXME: card is not defined
+			var isArray = stub.card != 1;
 	
 			// TODO attr path
 	
@@ -11855,7 +11859,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 			
 	//		ns.validateColumnRefs(sourceTable, sourceColumns);
 	//		ns.validateColumnRefs(targetTable, targetColumns);
-			
+
+			// FIXME: stub.joinTable not defined
 			var joinTable = stub.joinTable;
 			if(joinTable != null) {
 				console.log('[ERROR] Implement me');
@@ -11922,7 +11927,8 @@ or simply: Angular + Magic Sparql = Angular Marql
                 var filtered = json;
 
                 if(doClientFiltering && !retainRdfNodes) {
-                    var filtered = _(json).filter(function(item) {                                              
+                    filtered = _(json).filter(function(item) {
+                        // FIXME: criteria not defined
                         var isMatch = criteria.match(item);
                         return isMatch;
                     });
@@ -12329,7 +12335,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	ns.Graph = Class.create({
 		initialize: function(fnCreateNode, fnCreateEdge) {
 			this.fnCreateNode = fnCreateNode;
-			this.fnCretaeEdge = fnCreateEdge;
+			this.fnCreateEdge = fnCreateEdge;
 			
 			this.idToNode = {};
 			
@@ -12399,7 +12405,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	
 	ns.fnCreateMappingJoinNode = function(graph, nodeId) {
 		console.log('Node arguments:', arguments);
-    // FIXME: ns.MappingJoinNode not defined
+		// FIXME: ns.MappingJoinNode not defined
 		return new ns.MappingJoinNode(graph, nodeId);
 	};
 
@@ -17020,13 +17026,13 @@ ns.createDefaultConstraintElementFactories = function() {
 		forProperty: function(propertyName, isInverse) {
 			var fn = this.facetNode.forProperty(propertyName, isInverse);
 			var result = this.wrap(fn);
-			return result;								
+			return result;
 		},
 		
 		forStep: function(step) {
 			var fn = this.facetNode.forStep(step);
 			var result = this.wrap(fn);
-			return result;				
+			return result;
 		},
 		
 		wrap: function(facetNode) {
@@ -17233,7 +17239,7 @@ ns.createDefaultConstraintElementFactories = function() {
 			var valueVar = sparql.Node.v("__o");
 			var elements = ns.createElementsFacet(concept, isInverse, facetVar, valueVar);
 			
-			var result = ns.createQueryCount(element, sampleSize, valueVar, countFacetVar, [facetVar], true);
+			var result = ns.createQueryCount(elements, sampleSize, valueVar, countFacetVar, [facetVar], true);
 	
 			return result;
 		},
@@ -19192,7 +19198,7 @@ ns.createDefaultConstraintElementFactories = function() {
                             
                             var step = new ns.Step(propertyName, isInverse);
                             var childPath = path.copyAppendStep(step);
-                            var item = new ns.FacetItem(childPath, property, distinctValueCount);                            
+                            item = new ns.FacetItem(childPath, property, distinctValueCount);
                         }
                         
                         return item;
