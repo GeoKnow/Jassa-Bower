@@ -8378,10 +8378,6 @@ module["exports"] = jassa;
        },
        
        
-       createNgGridOptionsFromQuery: function(query) {
-       },
-
-
        collectNodes: function(rows) {
            // Collect nodes
            var result = [];
