@@ -9044,7 +9044,7 @@ module["exports"] = jassa;
                         var property = rdf.NodeFactory.createUri(step.getPropertyName());
                         var label = map.get(property);
                         
-                        result = result === '' ? result : result + ' ';
+                        result = result === '' ? result : result + '&raquo;';
                         result += label;
                         result = !step.isInverse() ? result : result + '&sup1';
 
