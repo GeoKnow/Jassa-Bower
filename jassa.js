@@ -584,7 +584,7 @@ module["exports"] = jassa;
                 obj[key] = values;
             }
             
-            values.push(value);
+            values.push(val);
 	    },
 	    
 	    clear: function(obj) {
@@ -656,6 +656,10 @@ module["exports"] = jassa;
 	
 	
 	ns.ArrayUtils = {
+	        addAll: function(arr, items) {
+	            return arr.push.apply(arr, items);
+	        },
+	        
 	        chunk: function(arr, chunkSize) {    
                 var result = [];
                 for (var i = 0; i < arr.length; i += chunkSize) {
@@ -703,6 +707,20 @@ module["exports"] = jassa;
 	            return result;
 	        },
 	        
+	        // Like jQueries's grep
+	        grep: function(arr, fnPredicate) {
+                var result = [];
+
+                _(arr).each(function(item, index) {
+                    var isTrue = fnPredicate(item, index);
+                    if(isTrue) {
+                        result.push(index);
+                    }
+                });
+                
+                return result;	            
+	        },
+	        
 	        copyWithoutIndexes: function(arr, indexes) {
 	            var map = {};
 	            _(indexes).each(function(index) {
@@ -725,6 +743,11 @@ module["exports"] = jassa;
 	            var tmp = this.copyWithoutIndexes(arr, indexes);
 	            this.replace(arr, tmp);
 	            return arr;
+	        },
+	        
+	        removeByGrep: function(arr, fnPredicate) {
+	            var indexes = this.grep(arr, fnPredicate);
+	            this.removeIndexes(arr, indexes);
 	        }
 	};
 	
@@ -1951,850 +1974,765 @@ module["exports"] = jassa;
 
 })();
 (function() {
-	
-	var ns = Jassa.rdf;
-	
+  "use strict";
 
-	/**
-	 * The node base class similar to that of Apache Jena.
-	 * 
-	 * 
-	 * TODO Rename getUri to getURI
-	 * TODO Make this class a pure interface - move all impled methods to an abstract base class
-	 * TODO Clarify who is responsible for .equals() (just do it like in Jena - Is it the base class or its derivations?)
-	 */
-	ns.Node = Class.create({
-        classLabel: 'Node',
-	    
-		getUri: function() {
-			throw "not a URI node";
-		},
-	
-		getName: function() {
-			throw " is not a variable node";
-		},
-		
-		getBlankNodeId: function() {
-			throw " is not a blank node";
-		},
-		
-		getBlankNodeLabel: function() {
-			//throw " is not a blank node";
-		    // Convenience override
-			return this.getBlankNodeId().getLabelString();
-		},
-		
-		getLiteral: function() {
-			throw " is not a literal node";
-		},
-		
-		getLiteralValue: function() {
-			throw " is not a literal node";
-		},
-		
-		getLiteralLexicalForm: function() {
-			throw " is not a literal node";			
-		},
-		
-		getLiteralDatatype: function() {
-			throw " is not a literal node";			
-		},
-		
-		getLiteralDatatypeUri: function() {
-			throw " is not a literal node";			
-		},
-		
-		isBlank: function() {
-			return false;
-		},
-		
-		isUri: function() {
-			return false;
-		},
-		
-		isLiteral: function() {
-			return false;
-		},
-		
-		isVariable: function() {
-			return false;
-		},
-		
-		equals: function(that) {
+  var ns = Jassa.rdf;
 
-			// By default we assume non-equality
-			var result = false;
-			
-			if(that == null) {
-				result = false;
-			}
-			else if(this.isLiteral()) {
-				if(that.isLiteral()) {
-					
-					var isSameLex = this.getLiteralLexicalForm() === that.getLiteralLexicalForm();
-					var isSameType = this.getLiteralDatatypeUri() === that.getLiteralDatatypeUri();
-					var isSameLang = this.getLiteralLanguage() === that.getLiteralLanguage();
-					
-					result = isSameLex && isSameType && isSameLang;
-				}
-			}
-			else if(this.isUri()) {
-				if(that.isUri()) {
-					result = this.getUri() === that.getUri();
-				}
-			}
-			else if(this.isVariable()) {
-				if(that.isVariable()) {
-					result = this.getName() === that.getName();
-				}
-			}
-			else if(this.isBlank()) {
-				if(that.isBlank()) {
-					result = this.getBlankNodeLabel() === that.getBlankNodeLabel(); 
-				}
-			}
-			//else if(this.)
-			else {
-				throw 'not implemented yet';
-			}
-			
-			return result;
-		}
-	});
-	
+  /**
+   * The node base class similar to that of Apache Jena.
+   *
+   * TODO Rename getUri to getURI
+   * TODO Make this class a pure interface - move all impled methods to an abstract base class
+   * TODO Clarify who is responsible for .equals() (just do it like in Jena - Is it the base class or its derivations?)
+   */
+  ns.Node = Class.create({
+    classLabel: 'Node',
 
-	ns.Node_Concrete = Class.create(ns.Node, {
-        classLabel: 'Node_Concrete',
+    getUri: function() {
+      throw 'not a URI node';
+    },
 
-		isConcrete: function() {
-			return true;
-		}
-	});
+    getName: function() {
+      throw ' is not a variable node';
+    },
+
+    getBlankNodeId: function() {
+      throw ' is not a blank node';
+    },
+
+    getBlankNodeLabel: function() {
+      // Convenience override
+      return this.getBlankNodeId().getLabelString();
+    },
+
+    getLiteral: function() {
+      throw ' is not a literal node';
+    },
+
+    getLiteralValue: function() {
+      throw ' is not a literal node';
+    },
+
+    getLiteralLexicalForm: function() {
+      throw ' is not a literal node';
+    },
+
+    getLiteralDatatype: function() {
+      throw ' is not a literal node';
+    },
+
+    getLiteralDatatypeUri: function() {
+      throw " is not a literal node";
+    },
+
+    isBlank: function() {
+      return false;
+    },
+
+    isUri: function() {
+      return false;
+    },
+
+    isLiteral: function() {
+      return false;
+    },
+
+    isVariable: function() {
+      return false;
+    },
+
+    equals: function(that) {
+      // By default we assume non-equality
+      var result = false;
+
+      if(that === null) {
+        result = false;
+
+      } else if(this.isLiteral()) {
+        if(that.isLiteral()) {
+          var isSameLex = this.getLiteralLexicalForm() === that.getLiteralLexicalForm();
+          var isSameType = this.getLiteralDatatypeUri() === that.getLiteralDatatypeUri();
+          var isSameLang = this.getLiteralLanguage() === that.getLiteralLanguage();
+
+          result = isSameLex && isSameType && isSameLang;
+        }
+
+      } else if(this.isUri()) {
+        if(that.isUri()) {
+          result = this.getUri() === that.getUri();
+        }
+
+      } else if(this.isVariable()) {
+        if(that.isVariable()) {
+          result = this.getName() === that.getName();
+        }
+
+      } else if(this.isBlank()) {
+        if(that.isBlank()) {
+          result = this.getBlankNodeLabel() === that.getBlankNodeLabel();
+        }
+
+      } else {
+        throw 'not implemented yet';
+      }
+
+      return result;
+    }
+  });
+
+  ns.Node_Concrete = Class.create(ns.Node, {
+    classLabel: 'Node_Concrete',
+
+    isConcrete: function() {
+      return true;
+    }
+  });
 
 
-	ns.Node_Uri = Class.create(ns.Node_Concrete, {
-	    classLabel: 'Node_Uri',
-	    
-		initialize: function(uri) {
-			this.uri = uri;
-		},
+  ns.Node_Uri = Class.create(ns.Node_Concrete, {
+    classLabel: 'Node_Uri',
 
-		isUri: function() {
-			return true;
-		},
-		
-		getUri: function() {
-			return this.uri;
-		},
-		
-		toString: function() {
-			return '<' + this.uri + '>';
-		}
-	});
-	
-	ns.Node_Blank = Class.create(ns.Node_Concrete, {
-        classLabel: 'Node_Blank',
+    initialize: function(uri) {
+      this.uri = uri;
+    },
 
-		// Note: id is expected to be an instance of AnonId
-		initialize: function(anonId) {
-			this.anonId = anonId;
-		},
-		
-		isBlank: function() {
-			return true;
-		},
-		
-		getBlankNodeId: function() {
-			return this.anonId;
-		},
-		
-		toString: function() {
-			return "_:" + this.anonId;
-		}
-	});
-	
-	ns.Node_Fluid = Class.create(ns.Node, {
-		isConcrete: function() {
-			return false;
-		}		
-	});
+    isUri: function() {
+      return true;
+    },
 
-    // I don't understand the purpose of this class right now
-	// i.e. how it is supposed to differ from ns.Var
-	ns.Node_Variable = Class.create(ns.Node_Fluid, {
-        classLabel: 'Node_Variable',
+    getUri: function() {
+      return this.uri;
+    },
 
-		isVariable: function() {
-			return true;
-		}
-	});
+    toString: function() {
+      return '<' + this.uri + '>';
+    }
+  });
 
-	ns.Var = Class.create(ns.Node_Variable, {
-        classLabel: 'Var',
+  ns.Node_Blank = Class.create(ns.Node_Concrete, {
+    classLabel: 'Node_Blank',
 
-		initialize: function(name) {
-			this.name = name;
-		},
-		
-		getName: function() {
-			return this.name;
-		},
-		
-		toString: function() {
-			return '?' + this.name;
-		}
-	});
+    // Note: id is expected to be an instance of AnonId
+    initialize: function(anonId) {
+      this.anonId = anonId;
+    },
 
-	
-	ns.Node_Literal = Class.create(ns.Node_Concrete, {
-        classLabel: 'Node_Literal',
-	    
-		initialize: function(literalLabel) {
-			this.literalLabel = literalLabel;
-		},
-		
-		isLiteral: function() {
-			return true;
-		},
-		
-		getLiteral: function() {
-			return this.literalLabel;
-		},
+    isBlank: function() {
+      return true;
+    },
 
-		getLiteralValue: function() {
-			return this.literalLabel.getValue();
-		},
+    getBlankNodeId: function() {
+      return this.anonId;
+    },
 
-		getLiteralLexicalForm: function() {
-			return this.literalLabel.getLexicalForm();
-		},
-		
-		getLiteralDatatype: function() {
-			return this.literalLabel.getDatatype();
-		},
-		
-		getLiteralDatatypeUri: function() {
-			var dtype = this.getLiteralDatatype();
-			var result = dtype ? dtype.getUri() : null; 
-			return result;
-		},
-		
-		getLiteralLanguage: function() {
-			return this.literalLabel.getLanguage();
-		},
-		
-		toString: function() {
-			return this.literalLabel.toString();
-		}
-	});
+    toString: function() {
+      return '_:' + this.anonId;
+    }
+  });
 
-	
-	ns.escapeLiteralString = function(str) {
-		return str;
-	};
-	
-	/**
-	 * An simple object representing a literal -
-	 * independent from the Node inheritance hierarchy.
-	 * 
-	 * Differences to Jena:
-	 *   - No getDatatypeUri method, as there is dtype.getUri() 
-	 */
-	ns.LiteralLabel = Class.create({
-        classLabel: 'LiteralLabel',
-	    
-		/**
-		 * Note: The following should hold:
-		 * dtype.parse(lex) == val
-		 * dtype.unpars(val) == lex
-		 * 
-		 * However, this class doesn't care about it.
-		 * 
-		 */
-		initialize: function(val, lex, lang, dtype) {
-			this.val = val;
-			this.lex = lex;
-			this.lang = lang;
-			this.dtype = dtype;
-		},
-		
-		/**
-		 * Get the literal's value as a JavaScript object
-		 */
-		getValue: function() {
-			return this.val;
-		},
-		
-		getLexicalForm: function() {
-			return this.lex
-		},
-		
-		getLanguage: function() {
-			return this.lang;
-		},
-		
-		/**
-		 * Return the dataype object associated with this literal.
-		 */
-		getDatatype: function() {
-			return this.dtype;
-		},
-		
-		toString: function() {
-			var dtypeUri = this.dtype ? this.dtype.getUri() : null;
-			var litStr = ns.escapeLiteralString(this.lex);
-			
-			var result;
-			if(dtypeUri) {
-				result = '"' + litStr + '"^^<' + dtypeUri + '>';
-			} else {
-				result = '"' + litStr + '"' + (this.lang ? '@' + this.lang : '');
-			}
-			
-			return result;
-		}
-	});
+  ns.Node_Fluid = Class.create(ns.Node, {
+    isConcrete: function() {
+      return false;
+    }
+  });
 
-	
-	ns.AnonId = Class.create({
-		getLabelString: function() {
-			throw "not implemented";
-		}
-	});
-	
-	ns.AnonIdStr = Class.create(ns.AnonId, {
-        classLabel: 'AnonIdStr',
+  /* I don't understand the purpose of this class right now i.e. how it is
+   * supposed to differ from ns.Var
+   */
+  ns.Node_Variable = Class.create(ns.Node_Fluid, {
+    classLabel: 'Node_Variable',
 
-		initialize: function(label) {
-			this.label = label;
-		},
+    isVariable: function() {
+      return true;
+    }
+  });
 
-		getLabelString: function() {
-			return this.label;
-		},
-		
-		toString: function() {
-			return this.label;
-		}
-	});
-	
-	
-	ns.DatatypeLabel = Class.create({
-		parse: function(val) {
-			throw 'Not implemented';
-		},
-		
-		unparse: function(val) {
-			throw 'Not implemented';
-		}
-	});
-	
-	
-	ns.DatatypeLabelInteger = Class.create(ns.DatatypeLabel, {
-        classLabel: 'DatatypeLabelInteger',
-	    
-		parse: function(str) {
-			var result = parseInt(str, 10);
-			return result;
-		},
-		
-		unparse: function(val) {
-			return '' + val;
-		}
-	});
+  ns.Var = Class.create(ns.Node_Variable, {
+    classLabel: 'Var',
 
-	ns.DatatypeLabelFloat = Class.create(ns.DatatypeLabel, {
-        classLabel: 'DatatypeLabelFloat',
+    initialize: function(name) {
+      this.name = name;
+    },
 
-        parse: function(str) {
-			var result = parseFloat(str);
-			return result;
-		},
-		
-		unparse: function(val) {
-			return '' + val;
-		}
-	});
-	
-	ns.DatatypeLabelString = Class.create(ns.DatatypeLabel, {
-        classLabel: 'DatatypeLabelString',
+    getName: function() {
+      return this.name;
+    },
 
-		parse: function(str) {
-			return str
-		},
-		
-		unparse: function(val) {
-			return val;
-		}
-	});
+    toString: function() {
+      return '?' + this.name;
+    }
+  });
 
-	
-	ns.RdfDatatype = Class.create({
-        classLabel: 'RdfDatatype',
+  ns.Node_Literal = Class.create(ns.Node_Concrete, {
+    classLabel: 'Node_Literal',
 
-		getUri: function() {
-			throw "Not implemented";
-		},
-		
-		unparse: function(value) {
-			throw "Not implemented";
-		},
-		
-	    /**
-	     * Convert a value of this datatype out
-	     * to lexical form.
-	     */
-		parse: function(str) {
-			throw "Not implemented";
-		}
-	});
+    initialize: function(literalLabel) {
+      this.literalLabel = literalLabel;
+    },
 
+    isLiteral: function() {
+      return true;
+    },
 
-	ns.RdfDatatypeBase = Class.create(ns.RdfDatatype, {
-        classLabel: 'RdfDatatypeBase',
+    getLiteral: function() {
+      return this.literalLabel;
+    },
 
-		initialize: function(uri) {
-			this.uri = uri;
-		},
-		
-		getUri: function() {
-			return this.uri;
-		}
-	});
-	
-	ns.RdfDatatype_Label = Class.create(ns.RdfDatatypeBase, {
-        classLabel: 'RdfDatatype_Label',
+    getLiteralValue: function() {
+      return this.literalLabel.getValue();
+    },
 
-		initialize: function($super, uri, datatypeLabel) {
-			$super(uri);
-			
-			this.datatypeLabel = datatypeLabel;
-		},
+    getLiteralLexicalForm: function() {
+      return this.literalLabel.getLexicalForm();
+    },
 
-		parse: function(str) {
-			var result = this.datatypeLabel.parse(str);
-			return result;
-		},
-		
-		unparse: function(val) {
-			var result = this.datatypeLabel.unparse(val);
-			return result;			
-		}
-	});
-	
+    getLiteralDatatype: function() {
+      return this.literalLabel.getDatatype();
+    },
 
-	// TODO Move to util package
-	// http://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes
-    ns.strRegex = /"([^"\\]*(\\.[^"\\]*)*)"/;
+    getLiteralDatatypeUri: function() {
+      var dtype = this.getLiteralDatatype();
+      var result = dtype ? dtype.getUri() : null;
+      return result;
+    },
+
+    getLiteralLanguage: function() {
+      return this.literalLabel.getLanguage();
+    },
+
+    toString: function() {
+      return this.literalLabel.toString();
+    }
+  });
+
+  ns.escapeLiteralString = function(str) {
+    return str;
+  };
+
+  /**
+   * An simple object representing a literal -
+   * independent from the Node inheritance hierarchy.
+   *
+   * Differences to Jena:
+   *   - No getDatatypeUri method, as there is dtype.getUri()
+   */
+  ns.LiteralLabel = Class.create({
+    classLabel: 'LiteralLabel',
 
     /**
-     * 
+     * Note: The following should hold:
+     * dtype.parse(lex) == val
+     * dtype.unpars(val) == lex
+     *
+     * However, this class doesn't care about it.
      */
-	ns.parseUri = function(str, prefixes) {
-	    var result;
-	    if(str.charAt(0) == '<') {
-	        result = str.slice(1, -1);
-	    } else {
-	        console.log('[ERROR] Cannot deal with ' + str);
-	        throw 'Not implemented';
-	    }  
-	    
-	    return result;
-	};
-	
-	
-	
-	
-	ns.JenaParameters = {
-	    enableSilentAcceptanceOfUnknownDatatypes: true
-	};
-	
-	
-    ns.TypedValue = Class.create({
-        initialize: function(lexicalValue, datatypeUri) {
-            this.lexicalValue = lexicalValue;
-            this.datatypeUri = datatypeUri;
-        },
-        
-        getLexicalValue: function() {
-            return this.lexicalValue;
-        },
-        
-        getDatatypeUri: function() {
-            return this.datatypeUri;
+    initialize: function(val, lex, lang, dtype) {
+      this.val = val;
+      this.lex = lex;
+      this.lang = lang;
+      this.dtype = dtype;
+    },
+
+    /** Get the literal's value as a JavaScript object */
+    getValue: function() {
+      return this.val;
+    },
+
+    getLexicalForm: function() {
+      return this.lex;
+    },
+
+    getLanguage: function() {
+      return this.lang;
+    },
+
+    /**
+     * Return the dataype object associated with this literal.
+     */
+    getDatatype: function() {
+      return this.dtype;
+    },
+
+    toString: function() {
+      var dtypeUri = this.dtype ? this.dtype.getUri() : null;
+      var litStr = ns.escapeLiteralString(this.lex);
+      var result;
+
+      if(dtypeUri) {
+        result = '"' + litStr + '"^^<' + dtypeUri + '>';
+      } else {
+        result = '"' + litStr + '"' + (this.lang ? '@' + this.lang : '');
+      }
+
+      return result;
+    }
+  });
+
+  ns.AnonId = Class.create({
+    getLabelString: function() {
+      throw 'not implemented';
+    }
+  });
+
+  ns.AnonIdStr = Class.create(ns.AnonId, {
+    classLabel: 'AnonIdStr',
+
+    initialize: function(label) {
+      this.label = label;
+    },
+
+    getLabelString: function() {
+      return this.label;
+    },
+
+    toString: function() {
+      return this.label;
+    }
+  });
+
+  ns.DatatypeLabel = Class.create({
+    parse: function(val) {
+      throw 'Not implemented';
+    },
+
+    unparse: function(val) {
+      throw 'Not implemented';
+    }
+  });
+
+  ns.DatatypeLabelInteger = Class.create(ns.DatatypeLabel, {
+    classLabel: 'DatatypeLabelInteger',
+
+    parse: function(str) {
+      return parseInt(str, 10);
+    },
+
+    unparse: function(val) {
+      return '' + val;
+    }
+  });
+
+  ns.DatatypeLabelFloat = Class.create(ns.DatatypeLabel, {
+    classLabel: 'DatatypeLabelFloat',
+
+    parse: function(str) {
+      return parseFloat(str);
+    },
+
+    unparse: function(val) {
+      return '' + val;
+    }
+  });
+
+  ns.DatatypeLabelString = Class.create(ns.DatatypeLabel, {
+    classLabel: 'DatatypeLabelString',
+
+    parse: function(str) {
+      return str;
+    },
+
+    unparse: function(val) {
+      return val;
+    }
+  });
+
+  ns.RdfDatatype = Class.create({
+    classLabel: 'RdfDatatype',
+
+    getUri: function() {
+      throw 'Not implemented';
+    },
+
+    unparse: function(value) {
+      throw 'Not implemented';
+    },
+
+    /** Convert a value of this datatype to lexical form. */
+    parse: function(str) {
+      throw 'Not implemented';
+    }
+  });
+
+  ns.RdfDatatypeBase = Class.create(ns.RdfDatatype, {
+    classLabel: 'RdfDatatypeBase',
+
+    initialize: function(uri) {
+      this.uri = uri;
+    },
+
+    getUri: function() {
+      return this.uri;
+    }
+  });
+
+  ns.RdfDatatype_Label = Class.create(ns.RdfDatatypeBase, {
+    classLabel: 'RdfDatatype_Label',
+
+    initialize: function($super, uri, datatypeLabel) {
+      $super(uri);
+
+      this.datatypeLabel = datatypeLabel;
+    },
+
+    parse: function(str) {
+      return this.datatypeLabel.parse(str);
+    },
+
+    unparse: function(val) {
+      return this.datatypeLabel.unparse(val);
+    }
+  });
+
+  // TODO Move to util package
+  // http://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes
+  ns.strRegex = /"([^"\\]*(\\.[^"\\]*)*)"/;
+
+  ns.parseUri = function(str, prefixes) {
+    var result;
+
+    if(str.charAt(0) === '<') {
+      result = str.slice(1, -1);
+
+    } else {
+      console.log('[ERROR] Cannot deal with ' + str);
+      throw 'Not implemented';
+    }
+    return result;
+  };
+
+  ns.JenaParameters = {
+    enableSilentAcceptanceOfUnknownDatatypes: true
+  };
+
+  ns.TypedValue = Class.create({
+    initialize: function(lexicalValue, datatypeUri) {
+      this.lexicalValue = lexicalValue;
+      this.datatypeUri = datatypeUri;
+    },
+
+    getLexicalValue: function() {
+      return this.lexicalValue;
+    },
+
+    getDatatypeUri: function() {
+      return this.datatypeUri;
+    }
+  });
+
+  ns.BaseDatatype = Class.create(ns.RdfDatatype, {
+    initialize: function(datatypeUri)  {
+      this.datatypeUri = datatypeUri;
+    },
+
+    getUri: function() {
+      return this.datatypeUri;
+    },
+
+    unparse: function(value) {
+      var result;
+
+      if (value instanceof ns.TypedValue) {
+        result = value.getLexicalValue();
+
+      } else {
+        result = '' + value;
+      }
+      return result;
+    },
+
+    /** Convert a value of this datatype to lexical form. */
+    parse: function(str) {
+      return new ns.TypedValue(str, this.datatypeUri);
+    },
+
+    toString: function() {
+      return 'Datatype [' + this.datatypeUri + ']';
+    }
+  });
+
+  /** TypeMapper similar to that of Jena */
+  ns.TypeMapper = Class.create({
+    initialize: function(uriToDt) {
+      this.uriToDt = uriToDt;
+    },
+
+    getSafeTypeByName: function(uri) {
+      var uriToDt = this.uriToDt;
+      var dtype = uriToDt[uri];
+
+      if (dtype === null) {
+        if (uri === null) {
+          // Plain literal
+          return null;
+
+        } else {
+          // Uknown datatype
+          if (ns.JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
+            dtype = new ns.BaseDatatype(uri);
+            this.registerDatatype(dtype);
+
+          } else {
+            console.log('Attempted to created typed literal using an unknown datatype - ' + uri);
+            throw 'Bailing out';
+          }
         }
-    });
+      }
+      return dtype;
+    },
 
-	
-	ns.BaseDatatype = Class.create(ns.RdfDatatype, {
-	   initialize: function(datatypeUri)  {
-	       this.datatypeUri = datatypeUri;
-	   },
+    registerDatatype: function(datatype) {
+      var typeUri = datatype.getUri();
+      this.uriToDt[typeUri] = datatype;
+    }
+  });
 
-       getUri: function() {
-           return this.datatypeUri;
-       },
-       
-       unparse: function(value) {
-           var result;
+  ns.TypeMapper.staticInstance = null;
 
-           if (value instanceof ns.TypedValue) {
-               result = value.getLexicalValue();
-           } else {
-               result = '' + value;
-           }
-           return result;
-       },
-       
-       /**
-        * Convert a value of this datatype out
-        * to lexical form.
-        */
-       parse: function(str) {
-           var result = new ns.TypedValue(str, this.datatypeUri);
-           return result;
-       },
-       
-       toString: function() {
-           return 'Datatype [' + this.datatypeUri + ']';
-       }
+  ns.TypeMapper.getInstance = function() {
+    var self = ns.TypeMapper;
 
-	});
-	
-	/**
-	 * TypeMapper similar to that of Jena
-	 * 
-	 */
-	ns.TypeMapper = Class.create({
-	    initialize: function(uriToDt) {
-	        this.uriToDt = uriToDt;
-	    },
+    if(self.staticInstance === null) {
+      self.staticInstance = new ns.TypeMapper(ns.RdfDatatypes);
+    }
 
-	    getSafeTypeByName: function(uri) {
-	        var uriToDt = this.uriToDt;
+    return self.staticInstance;
+  };
 
-	        var dtype = uriToDt[uri];
-	        if (dtype == null) {
-	            if (uri == null) {
-	                // Plain literal
-	                return null;
-	            } else {
-	                // Uknown datatype
-	                if (ns.JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
-	                    dtype = new ns.BaseDatatype(uri);
-	                    this.registerDatatype(dtype);
-	                } else {
-	                    console.log('Attempted to created typed literal using an unknown datatype - ' + uri);
-	                    throw 'Bailing out';
-	                }
-	            }
-	        }
-	        return dtype;
-	    },
-	    
-	    registerDatatype: function(datatype) {
-	        var typeUri = datatype.getUri();
-            this.uriToDt[typeUri] = datatype;
-	    }
-	});
-	
+  ns.NodeFactory = {
+    createAnon: function(anonId) {
+      return new ns.Node_Blank(anonId);
+    },
 
-	ns.TypeMapper.staticInstance = null;
+  createUri: function(uri) {
+    return new ns.Node_Uri(uri);
+  },
 
-	ns.TypeMapper.getInstance = function() {
-	    var self = ns.TypeMapper;
-	    
-        if(self.staticInstance == null) {
-            self.staticInstance = new ns.TypeMapper(ns.RdfDatatypes);
-        }
-        
-        return self.staticInstance;
-    };
+  createVar: function(name) {
+    return new ns.Var(name);
+  },
 
-	
-	
-	
-	ns.NodeFactory = {
-		createAnon: function(anonId) {
-			return new ns.Node_Blank(anonId);
-		},
-			
-		createUri: function(uri) {
-			return new ns.Node_Uri(uri);
-		},
-			
-		createVar: function(name) {
-			return new ns.Var(name);
-		},
-		
-		createPlainLiteral: function(value, lang) {
-		    if(lang == null) {
-		        lang = '';
-		    }
-		    
-			var label = new ns.LiteralLabel(value, value, lang);
-			var result = new ns.Node_Literal(label);
-			
-			return result;
-		},
-		
-		/**
-		 * The value needs to be unparsed first (i.e. converted to string)
-		 * 
-		 */
-		createTypedLiteralFromValue: function(val, typeUri) {
-			var dtype = ns.RdfDatatypes[typeUri];
-			if(!dtype) {
-			    
-			    var typeMapper = ns.TypeMapper.getInstance();
-			    dtype = typeMapper.getSafeTypeByName(typeUri);
-			    
-				//console.log('[ERROR] No dtype for ' + typeUri);
-				//throw 'Bailing out';
-			}
+    createPlainLiteral: function(value, lang) {
+       if(lang === null) {
+        lang = '';
+      }
 
-			var lex = dtype.unparse(val);
-			var lang = null;
-			
-			var literalLabel = new ns.LiteralLabel(val, lex, lang, dtype);
-			
-			var result = new ns.Node_Literal(literalLabel);
-			
-			return result;
-		},
+      var label = new ns.LiteralLabel(value, value, lang);
 
-		
-		/**
-		 * The string needs to be parsed first (i.e. converted to the value)
-		 * 
-		 */
-		createTypedLiteralFromString: function(str, typeUri) {
-			var dtype = ns.RdfDatatypes[typeUri];
-			if(!dtype) {
-	             var typeMapper = ns.TypeMapper.getInstance();
-	             dtype = typeMapper.getSafeTypeByName(typeUri);
+      return new ns.Node_Literal(label);
+    },
 
-//				console.log('[ERROR] No dtype for ' + typeUri);
-//				throw 'Bailing out';
-			}
-			
-			var val = dtype.parse(str);
+    /** The value needs to be unparsed first (i.e. converted to string) */
+    createTypedLiteralFromValue: function(val, typeUri) {
+      var dtype = ns.RdfDatatypes[typeUri];
 
-			var lex = str;
-			//var lex = dtype.unparse(val);
-			//var lex = s; //dtype.parse(str);
-			var lang = ''; // TODO Use null instead of empty string???
-			
-			var literalLabel = new ns.LiteralLabel(val, lex, lang, dtype);
-			
-			var result = new ns.Node_Literal(literalLabel);
-			
-			return result;
-		},
-		
-		createFromTalisRdfJson: function(talisJson) {
-			if(!talisJson || typeof(talisJson.type) === 'undefined') {
-				throw "Invalid node: " + JSON.stringify(talisJson);
-			}
-			
-			var result;
-			switch(talisJson.type) {
-				case 'bnode':
-					var anonId = new ns.AnonIdStr(talisJson.value);
-					result = new ns.NodeFactory.createAnon(anonId);
-					break;
-				case 'uri': 
-					result = ns.NodeFactory.createUri(talisJson.value);	
-					break;
-				case 'literal':
-					// Virtuoso at some version had a bug with langs - note: || is coalesce
-					var lang = talisJson.lang || talisJson['xml:lang'];
-					result = ns.NodeFactory.createPlainLiteral(talisJson.value, lang);
-					break;
-				case 'typed-literal':
-					result = ns.NodeFactory.createTypedLiteralFromString(talisJson.value, talisJson.datatype);
-					break;
-				default:
-					console.log("Unknown type: '" + talisJson.type + "'");
-					throw 'Bailing out';
-			}
-			
-			return result;
-		},
-		
-		
-//		_parseUri: function(str, prefixes) {
-//		    if(str.charAt(0) == '<'))
-//		    
-//		    if(str.indexOf(''))
-//		},
-		
-		/**
-		 * Parses an RDF term and returns an rdf.Node object
-		 * 
-		 * blankNode: _:
-		 * uri: <http://foo>
-		 * plainLiteral ""@foo
-		 * typedLiteral""^^<>
-		 */
-		parseRdfTerm: function(str, prefixes) {
-		    if(!str) {
-		        console.log('[ERROR] Null Pointer Exception');
-		        throw 'Bailing out';
-		    }
-		    		    
-	        str = str.trim();
+      if(!dtype) {
+        var typeMapper = ns.TypeMapper.getInstance();
+        dtype = typeMapper.getSafeTypeByName(typeUri);
+      }
 
-		    if(str.length == 0) {
-                console.log('[ERROR] Empty string');
-                throw 'Bailing out';		        
-		    }
-		    		    
-		    var c = str.charAt(0);
+      var lex = dtype.unparse(val);
+      var lang = null;
+      var literalLabel = new ns.LiteralLabel(val, lex, lang, dtype);
 
-		    var result;
-		    switch(c) {
-		    case '<': 
-		        var uriStr = str.slice(1, -1);
-		        result = ns.NodeFactory.createUri(uriStr);
-		        break;
-		    case '_':
-		        var anonId = new ns.AnonIdStr(c);
-		        result = ns.NodeFactory.createAnon(anonId);
-		        break;
-		    case '"':
-		        var matches = ns.strRegex.exec(str);
-		        var match = matches[0];
-		        var val = match.slice(1, -1);
-		    
-		        
-		        //console.log('match: ' + match);
-		        
-		        var l = match.length;
-		        var d = str.charAt(l);
-		        
-		        if(!d) {
-                    result = ns.NodeFactory.createTypedLiteralFromString(val, 'http://www.w3.org/2001/XMLSchema#string');
-		        }
-		        //console.log('d is ' + d);
-		        switch(d) {
-		        case '':
-		        case '@':
-		            var langTag = str.substr(l + 1);
-		            result = ns.NodeFactory.createPlainLiteral(val, langTag);
-		            break;
-		        case '^':
-		            var type = str.substr(l + 2);
-		            var typeStr = ns.parseUri(type);
-		            result = ns.NodeFactory.createTypedLiteralFromString(val, typeStr);
-		            break;
-		        default: 
-	                console.log('[ERROR] Excepted @ or ^^');
-                    throw 'Bailing out';
-		        }
-		        break;
-		    default:
-		        console.log('Could not parse ' + str);
-		        // Assume an uri in prefix notation
-		        throw "Not implemented";
-		    }
-		    
-		    return result;
-//		    if(c == '<') { //uri
-//		        
-//		    }
-//            else if(c == '"') {
-//                
-//            }
-//		    else if(c == '_') { // blank node
-//		        
-//		    }
-		    
+      return new ns.Node_Literal(literalLabel);
+    },
 
-		}
-	};
+    /** The string needs to be parsed first (i.e. converted to the value) */
+    createTypedLiteralFromString: function(str, typeUri) {
+      var dtype = ns.RdfDatatypes[typeUri];
 
-	// Convenience methods
-	_.extend(ns.Node, {
-		uri: ns.NodeFactory.createUri,
-		v: ns.NodeFactory.createVar
-	});
+      if(!dtype) {
+        var typeMapper = ns.TypeMapper.getInstance();
+        dtype = typeMapper.getSafeTypeByName(typeUri);
+      }
 
-	
-	
-	ns.getSubstitute = function(node, fnNodeMap) {
-		var result = fnNodeMap(node);
-		if(!result) {
-			result = node;
-		}
-		
-		return result;
-	};
-	
-	ns.Triple = Class.create({
-	    
-        classLabel: 'jassa.rdf.Triple',
+      var val = dtype.parse(str);
+      var lex = str;
+      var lang = ''; // TODO Use null instead of empty string???
+      var literalLabel = new ns.LiteralLabel(val, lex, lang, dtype);
 
-		initialize: function(s, p, o) {
-			this.s = s;
-			this.p = p;
-			this.o = o;
-		},
-	
-		toString: function() {
-			return this.s + " " + this.p + " " + this.o;
-		},
-		
-		copySubstitute: function(fnNodeMap) {
-			var result = new ns.Triple(
-				ns.getSubstitute(this.s, fnNodeMap),
-				ns.getSubstitute(this.p, fnNodeMap),
-				ns.getSubstitute(this.o, fnNodeMap)
-			);
-			
-			return result;
-			//	this.s.copySubstitute(fnNodeMap), this.p.copySubstitute(fnNodeMap), this.o.copySubstitute(fnNodeMap));
-		},
-	
-		getSubject: function() {
-			return this.s;
-		},
+      return new ns.Node_Literal(literalLabel);
+    },
 
-		getProperty: function() {
-			return this.p;
-		},
-	
-		getObject: function() {
-			return this.o;
-		},
-	
-		getVarsMentioned: function() {
-			var result = [];
-			ns.Triple.pushVar(result, this.s);
-			ns.Triple.pushVar(result, this.p);
-			ns.Triple.pushVar(result, this.o);
-			return result;
-		}
-	});
-	
-	
-	ns.Triple.pushVar = function(array, node) {
-		
-		if(node.isVariable()) {
-		    var c = _(array).some(function(item) {
-		        return node.equals(item);
-		    });
-		    
-		    if(!c) {
-		        array.push(node);
-		    }
-			//_(array).union(node);
-		}
-		
-		return array;
-	};
-	
-	
+    createFromTalisRdfJson: function(talisJson) {
+      if(!talisJson || typeof(talisJson.type) === 'undefined') {
+        throw 'Invalid node: ' + JSON.stringify(talisJson);
+      }
+      var result;
+
+      switch(talisJson.type) {
+        case 'bnode':
+          var anonId = new ns.AnonIdStr(talisJson.value);
+          result = new ns.NodeFactory.createAnon(anonId);
+          break;
+
+        case 'uri':
+          result = ns.NodeFactory.createUri(talisJson.value);
+          break;
+
+        case 'literal':
+          // Virtuoso at some version had a bug with langs - note: || is coalesce
+          var lang = talisJson.lang || talisJson['xml:lang'];
+          result = ns.NodeFactory.createPlainLiteral(talisJson.value, lang);
+          break;
+
+        case 'typed-literal':
+          result = ns.NodeFactory.createTypedLiteralFromString(talisJson.value, talisJson.datatype);
+          break;
+
+        default:
+          console.log("Unknown type: '" + talisJson.type + "'");
+          throw 'Bailing out';
+      }
+
+      return result;
+    },
+
+    /**
+     * Parses an RDF term and returns an rdf.Node object
+     *
+     * blankNode: _:
+     * uri: <http://foo>
+     * plainLiteral ""@foo
+     * typedLiteral""^^<>
+     */
+    parseRdfTerm: function(str, prefixes) {
+      if(!str) {
+        console.log('[ERROR] Null Pointer Exception');
+        throw 'Bailing out';
+      }
+
+      str = str.trim();
+
+      if(str.length === 0) {
+        console.log('[ERROR] Empty string');
+        throw 'Bailing out';
+      }
+
+      var c = str.charAt(0);
+      var result;
+
+      switch(c) {
+        case '<':
+          var uriStr = str.slice(1, -1);
+          result = ns.NodeFactory.createUri(uriStr);
+          break;
+
+        case '_':
+          var anonId = new ns.AnonIdStr(c);
+          result = ns.NodeFactory.createAnon(anonId);
+          break;
+
+        case '"':
+          var matches = ns.strRegex.exec(str);
+          var match = matches[0];
+          var val = match.slice(1, -1);
+          var l = match.length;
+          var d = str.charAt(l);
+
+          if(!d) {
+            result = ns.NodeFactory.createTypedLiteralFromString(val, 'http://www.w3.org/2001/XMLSchema#string');
+          }
+
+          switch(d) {
+            case '':
+            case '@':
+              var langTag = str.substr(l + 1);
+              result = ns.NodeFactory.createPlainLiteral(val, langTag);
+              break;
+
+            case '^':
+              var type = str.substr(l + 2);
+              var typeStr = ns.parseUri(type);
+              result = ns.NodeFactory.createTypedLiteralFromString(val, typeStr);
+              break;
+
+            default:
+              console.log('[ERROR] Excepted @ or ^^');
+              throw 'Bailing out';
+          }
+          break;
+
+        default:
+          console.log('Could not parse ' + str);
+          // Assume an uri in prefix notation
+          throw 'Not implemented';
+      }
+
+      return result;
+    }
+  };
+
+  // Convenience methods
+  _.extend(ns.Node, {
+    uri: ns.NodeFactory.createUri,
+    v: ns.NodeFactory.createVar
+  });
+
+  ns.getSubstitute = function(node, fnNodeMap) {
+    var result = fnNodeMap(node);
+    if(!result) {
+      result = node;
+    }
+    return result;
+  };
+
+  ns.Triple = Class.create({
+    classLabel: 'jassa.rdf.Triple',
+
+    initialize: function(s, p, o) {
+      this.s = s;
+      this.p = p;
+      this.o = o;
+    },
+
+    toString: function() {
+      return this.s + ' ' + this.p + ' ' + this.o;
+    },
+
+    copySubstitute: function(fnNodeMap) {
+      var result = new ns.Triple(
+        ns.getSubstitute(this.s, fnNodeMap),
+        ns.getSubstitute(this.p, fnNodeMap),
+        ns.getSubstitute(this.o, fnNodeMap)
+      );
+      return result;
+    },
+
+    getSubject: function() {
+      return this.s;
+    },
+
+    getProperty: function() {
+      return this.p;
+    },
+
+    getObject: function() {
+      return this.o;
+    },
+
+    getVarsMentioned: function() {
+      var result = [];
+      ns.Triple.pushVar(result, this.s);
+      ns.Triple.pushVar(result, this.p);
+      ns.Triple.pushVar(result, this.o);
+      return result;
+    }
+  });
+
+  ns.Triple.pushVar = function(array, node) {
+
+    if(node.isVariable()) {
+      var c = _(array).some(function(item) {
+        return node.equals(item);
+      });
+
+      if(!c) {
+        array.push(node);
+      }
+    }
+    return array;
+  };
 })();
 
 (function() {
@@ -5012,6 +4950,10 @@ module["exports"] = jassa;
 		    this.elements = elements ? elements : [];
 	    },
 
+	    addElement: function(element) {
+	        this.elements.push(element);
+	    },
+	    
 	    getArgs: function() {
 			return this.elements;
 		},
@@ -6043,6 +5985,31 @@ module["exports"] = jassa;
 	
 	
 	ns.ElementUtils = {
+	    /*
+	    copyElements: function(targetElementGroup, sourceElement) {
+	        if(sourceElement instanceof sparql.ElementGroup) {
+	            var members = sourceElement.getArgs();
+	            _(members).each(function(member) {
+	                targetElementGroup.addElement(member);
+	            });
+	        }
+	        else { 
+	            targetElementGroup.addElement(sourceElement);
+	        }
+	        
+	        return targetElementGroup;
+	    },
+	
+	    mergeElements: function(elementA, elementB) {
+	        var result = new sparql.ElementGroup();
+	            
+	        this.copyElements(result, elementA);
+	        this.copyElements(result, elementB);
+	            
+	        return result;
+	    },
+	    */
+	        
         createFilterElements: function(exprs) {
             var result = _(exprs).map(function(expr) {
                 var r = new ns.ElementFilter(expr);
@@ -7752,13 +7719,28 @@ module["exports"] = jassa;
             return 'virtfix:' + this.sparqlService.hashCode();
         },
 
+        hasAggregate: function(query) {
+            var entries = query.getProject().entries();
+            
+            var result = _(entries).some(function(entry) {
+                var expr = entry.expr;
+                if(expr instanceof sparql.E_Count) {
+                    return true;
+                }
+            });
+            
+            return result;
+        },
+        
         createQueryExecution: function(query) {
             
             var orderBy = query.getOrderBy();
             var limit = query.getLimit();
             var offset = query.getOffset();
             
-            var isTransformNeeded = orderBy.length > 0 && (limit || offset);
+            var hasAggregate = this.hasAggregate(query);
+            
+            var isTransformNeeded = orderBy.length > 0 && (limit || offset) || hasAggregate;
             
             var q;
             if(isTransformNeeded) {
@@ -7933,6 +7915,39 @@ module["exports"] = jassa;
 			return result;
 		},
 		
+		fetchCountConcept: function(sparqlService, concept, threshold) {
+
+		    var outputVar = facete.ConceptUtils.createNewVar(concept);
+		    
+		    var scanLimit = threshold == null ? null : threshold + 1;
+		    
+            var countQuery = facete.ConceptUtils.createQueryCount(concept, outputVar, scanLimit);
+            //var result = ns.ServiceUtils.fetchCountQuery(sparqlService, query, outputVar);
+
+            var qe = sparqlService.createQueryExecution(countQuery);
+//            qe.setTimeout(firstTimeoutInMs);
+            
+            var deferred = jQuery.Deferred();
+            var p1 = ns.ServiceUtils.fetchInt(qe, outputVar); 
+            p1.done(function(count) {
+                
+                var hasMoreItems = count > threshold;
+                
+                var r = {
+                    count: hasMoreItems ? threshold : count,
+                    limit: threshold,
+                    hasMoreItems: hasMoreItems
+                };
+                
+                deferred.resolve(r);
+
+            }).fail(function() {
+                deferred.fail();
+            });
+            
+            return deferred.promise();
+		},
+		
 		
 		/**
 		 * Count the results of a query, whith fallback on timeouts
@@ -7973,7 +7988,7 @@ module["exports"] = jassa;
 		    }).fail(function() {
 
 		        // Try counting with the fallback size
-	            var countQuery = facete.QueryUtils.createQueryCount(elements, limit, null, outputVar, null, null, null);		        
+	            var countQuery = facete.QueryUtils.createQueryCount(elements, limit + 1, null, outputVar, null, null, null);		        
 	            var qe = sparqlService.createQueryExecution(countQuery);
 	            var p2 = ns.ServiceUtils.fetchInt(qe, outputVar); 
 	            p2.done(function(count) {
@@ -7981,7 +7996,7 @@ module["exports"] = jassa;
 	                deferred.resolve({
 	                    count: count,
 	                    limit: limit,
-	                    hasMoreItems: count >= limit // using greater for robustness, although it should never happen
+	                    hasMoreItems: count > limit
 	                });	            
 	            }).fail(function() {
 	               deferred.fail(); 
@@ -9088,6 +9103,25 @@ module["exports"] = jassa;
         }
     });
     
+    ns.LookupServiceConst = Class.create(ns.LookupServiceBase, {
+        initialize: function(data) {
+            this.data = data;
+        },
+        
+        lookup: function(keys) {
+            var map = new util.HashMap();
+            var self = this;
+            _(keys).each(function(key) {
+                map.put(key, self.data);
+            });
+            
+            var deferred = jQuery.Deferred();
+            deferred.resolve(map);
+            return deferred.promise();
+        }
+    });
+    
+    
     ns.LookupServiceConstraintLabels = Class.create(ns.LookupServiceBase, {
         initialize: function(lookupServiceNodeLabels, lookupServicePathLabels) {
             this.lookupServiceNodeLabels = lookupServiceNodeLabels;
@@ -9132,7 +9166,852 @@ module["exports"] = jassa;
         }
     });
     
+    
 })();(function() {
+
+    var util = jassa.util;
+    var facete = jassa.facete;
+    var geo = jassa.geo;
+    var sponate = jassa.sponate;
+    var facete = jassa.facete;
+    
+    var ns = jassa.service;
+
+    /**
+     * A data service only provides a single method for retrieving data based on some 'key' (thing)
+     * The key can be an arbitrary object that identifies a collection (e.g. a tag), a sparql concept, etc...
+     */
+    ns.DataService = Class.create({
+        fetchData: function(thing) {
+            console.log('Not implemented');
+            throw 'Not implemented';
+        }       
+    });
+
+    /**
+     * A list service supports fetching ranges of items and supports thresholded counting.
+     */
+    ns.ListService = Class.create({
+        fetchItems: function(thing, limit, offset) {
+            console.log('Not implemented');
+            throw 'Not implemented';
+        },
+        
+        fetchCount: function(thing, threshold) {
+            console.log('Not implemented');
+            throw 'Not implemented';            
+        }
+    });
+    
+    
+    ns.ListServiceBbox = Class.create(ns.ListService, {
+        initialize: function(sparqlService, geoMapFactory, concept) {
+            this.sparqlService = sparqlService;
+            this.geoMapFactory = geoMapFactory;
+            this.concept = concept;
+            
+            // this.fnGetBBox = fnGetBBox || defaultDocWktExtractorFn;
+            // TODO How to augment the data provided by the geoMapFactory?
+        },
+
+        createFlow: function(bounds) {
+            var store = new sponate.StoreFacade(this.sparqlService); // ,
+                                                                        // prefixes);
+            var geoMap = this.geoMapFactory.createMap(bounds);
+            store.addMap(geoMap, 'geoMap');
+            return store.geoMap;            
+        },    
+
+        fetchItems: function(bounds, limit, offset) {
+            var loadFlow = this.createFlow(bounds).find().concept(this.concept).limit(limit).offset(offset);
+            var result = loadFlow.asList(true);
+            return result;
+
+//            var promises = _(boundsArray).each(function(bounds) {
+//                var loadFlow = self.createFlow(bounds).find().concept(self.concept).limit(limit).offset(offset);
+//                var r = loadFlow.asList(true);
+//                return r;
+//            });
+//          var result = this.zip(boundsArray, promises);            
+//          return result;
+        
+        },
+        
+        fetchCount: function(bounds, threshold) {
+            var countFlow = this.createFlow(bounds).find().concept(this.concept).limit(threshold);
+            var result = countFlow.count();
+            return result;
+
+//            var self = this;
+//            var promises = _(boundsArray).each(function(bounds) {
+//                var countFlow = self.createFlow(bounds).find().concept(self.concept).limit(countThreshold);
+//                var r = countFlow.count();
+//                return r;
+//            });
+//            
+//            var result = this.zip(boundsArray, promises);            
+//            return result;
+        }
+    });
+
+/*
+    ns.ListServiceBBoxStrategy = Class.create(ns.ListService, {
+        initialize: function(strategy) {
+            this.strategy = strategy;
+        },
+        
+        fetchItems: function() {
+            
+        },
+        
+        fetchCount: function() {
+            strategy.runWorkflow()
+        }
+    });
+*/
+
+    
+    /*
+    ns.ClusterService = Class.create({
+        fetchClusters: function(bounds, limit, offset) {
+        }
+    });
+*/
+    
+    /**
+     * Adds a quad tree cache to the lookup service
+     */
+    ns.DataServiceBboxCache = Class.create({
+        initialize: function(listServiceBbox, maxGlobalItemCount, maxItemsPerTileCount, aquireDepth) {
+            this.listServiceBbox = listServiceBbox;
+            
+            var maxBounds = new geo.Bounds(-180.0, -90.0, 180.0, 90.0);
+            this.quadTree = new geo.QuadTree(maxBounds, 18, 0);
+
+            this.maxItemsPerTileCount = maxItemsPerTileCount || 25;
+            this.maxGlobalItemCount = maxGlobalItemCount || 50;
+            this.aquireDepth = aquireDepth || 2;
+        },
+
+        // TODO: limit and offset currently ignored
+        fetchData: function(bounds) {
+            var result = this.runWorkflow(bounds).pipe(function(nodes) {
+                var arrayOfDocs = _(nodes).map(function(node) {
+                    return node.data.docs; 
+                });
+                
+                // Remove null items
+                var docs = _(arrayOfDocs).compact();
+                docs = _(docs).flatten(true);
+                
+                
+                // Add clusters as regular items to the list??? 
+                _(nodes).each(function(node) {                    
+                    if(node.isLoaded) {
+                        return;
+                    }
+                    
+                    var wkt = geo.GeoExprUtils.boundsToWkt(node.getBounds());
+                    
+                    var cluster = {
+                        id: wkt,
+                        //type: 'cluster',
+                        //isZoomCluster: true,
+                        zoomClusterBounds: node.getBounds(),
+                        wkt: rdf.NodeFactory.createPlainLiteral(wkt)
+                    };
+                    
+                    docs.push(cluster);
+                });
+                    
+                    
+                return docs;
+            });
+            
+            return result;
+        },
+        /*
+        fetchCount: function(bounds, threshold) {
+            var result = this.listServiceBbox.fetchCount(bounds, threshold);
+            return result;
+        },
+        */
+        runCheckGlobal: function() {
+            var result;
+            
+            var rootNode = this.quadTree.getRootNode();
+
+            var self = this;
+            if(!rootNode.checkedGlobal) {
+            
+                var countTask = this.listServiceBbox.fetchCount(null, this.maxGlobalItemCount);
+                
+                // var countFlow =
+                // this.createFlowForGlobal().find().concept(this.concept).limit(self.maxGlobalItemCount);
+                // var countTask = countFlow.count();
+                var globalCheckTask = countTask.pipe(function(countInfo) {
+                    var canUseGlobal = !countInfo.hasMoreItems;
+                    console.log("Global check counts", countInfo);
+                    rootNode.canUseGlobal = canUseGlobal; 
+                    rootNode.checkedGlobal = true;
+                    
+                    return canUseGlobal;
+                });
+                
+                result = globalCheckTask;
+
+            } else {
+                var deferred = $.Deferred();
+                deferred.resolve(rootNode.canUseGlobal);
+                result = deferred.promise();
+            }
+            
+            return result;
+        },
+        
+        runWorkflow: function(bounds) {
+            
+            var deferred = $.Deferred();
+            
+            var rootNode = this.quadTree.getRootNode();
+            
+            var self = this;
+            this.runCheckGlobal().pipe(function(canUseGlobal) {
+                console.log('Can use global? ', canUseGlobal);
+                var task;
+                if(canUseGlobal) {
+                    task = self.runGlobalWorkflow(rootNode);
+                } else {
+                    task = self.runTiledWorkflow(bounds);
+                }                
+
+                task.done(function(nodes) {
+                    deferred.resolve(nodes);
+                }).fail(function() {
+                    deferred.fail();
+                });
+            }).fail(function() {
+                deferred.fail(); 
+            });
+            
+            var result = deferred.promise();
+            
+            return result;
+        },
+    
+        runGlobalWorkflow: function(node) {
+        
+            var self = this;
+
+            var result = this.listServiceBbox.fetchItems(null).pipe(function(docs) { 
+                // console.log("Global fetching: ", geomToFeatureCount);
+                self.loadTaskAction(node, docs);
+                
+                return [node];
+            });
+    
+            /*
+             * loadTask.done(function() {
+             * $.when(self.postProcess([node])).done(function() {
+             * //console.log("Global workflow completed.");
+             * //console.debug("Workflow completed. Resolving deferred.");
+             * result.resolve([node]); }).fail(function() { result.fail(); });
+             * }).fail(function() { result.fail(); });
+             */
+    
+            return result;
+        },
+        
+        
+        /**
+         * This method implements the primary workflow for tile-based fetching
+         * data.
+         * 
+         * globalGeomCount = number of geoms - facets enabled, bounds disabled.
+         * if(globalGeomCount > threshold) {
+         * 
+         * 
+         * nodes = aquire nodes. foreach(node in nodes) { fetchGeomCount in the
+         * node - facets TODO enabled or disabled?
+         * 
+         * nonFullNodes = nodes where geomCount < threshold foreach(node in
+         * nonFullNodes) { fetch geomToFeatureCount - facets enabled
+         * 
+         * fetch all positions of geometries in that area -- Optionally:
+         * fetchGeomToFeatureCount - facets disabled - this can be cached per
+         * type of interest!! } } }
+         * 
+         */
+        runTiledWorkflow: function(bounds) {
+            var self = this;
+
+            //console.log("Aquiring nodes for " + bounds);
+            var nodes = this.quadTree.aquireNodes(bounds, this.aquireDepth);
+
+            // console.log('Done aquiring');
+            
+            // Init the data attribute if needed
+            _(nodes).each(function(node) {
+                if(!node.data) {
+                    node.data = {};
+                }
+            });
+            
+    
+            // Mark empty nodes as loaded
+            _(nodes).each(function(node) {
+                if(node.isCountComplete() && node.infMinItemCount === 0) {
+                    node.isLoaded = true;
+                }
+            });
+    
+            
+            var uncountedNodes = _(nodes).filter(function(node) { return self.isCountingNeeded(node); });
+            // console.log("# uncounted nodes", uncountedNodes.length);
+    
+            // The deferred is only resolved once the whole workflow completed
+            var result = $.Deferred();
+    
+            
+            var countTasks = this.createCountTasks(uncountedNodes);
+            
+            $.when.apply(window, countTasks).done(function() {
+                var nonLoadedNodes = _(nodes).filter(function(node) { return self.isLoadingNeeded(node); });
+                // console.log("# non loaded nodes", nonLoadedNodes.length,
+                // nonLoadedNodes);
+                
+                var loadTasks = self.createLoadTasks(nonLoadedNodes);
+                $.when.apply(window, loadTasks).done(function() {
+                    // ns.QuadTreeCache.finalizeLoading(nodes);
+                    
+                    result.resolve(nodes);
+                    /*
+                    $.when(self.postProcess(nodes)).then(function() {
+                        // self.isLocked = false;
+                        // console.debug("Workflow completed. Resolving
+                        // deferred.");
+                        result.resolve(nodes);
+                    });
+                    */
+                });
+            }).fail(function() {
+                result.fail();
+            });
+            
+            return result;
+        },
+
+        
+        
+        
+        createCountTask: function(node) {
+
+            var self = this;
+            var threshold = self.maxItemsPerTileCount; // ? self.maxItemsPerTileCount + 1 : null;
+
+            
+            var countPromise = this.listServiceBbox.fetchCount(node.getBounds(), threshold);
+            var result = countPromise.pipe(function(itemCountInfo) {
+                var itemCount = itemCountInfo.count;
+                node.setMinItemCount(itemCountInfo.count); 
+                
+                // If the value is 0, also mark the node as loaded
+                if(itemCount === 0) {
+                    // self.initNode(node);
+                    node.isLoaded = true;
+                }
+            });
+            
+            
+            // var countFlow =
+            // this.createFlowForBounds(node.getBounds()).find().concept(this.concept).limit(limit);
+            // var result = countFlow.count().pipe(function(itemCountInfo) {
+         
+            return result;
+        },
+    
+        /**
+         * If either the minimum number of items in the node is above the
+         * threshold or all children have been counted, then there is NO need
+         * for counting
+         * 
+         */
+        isCountingNeeded: function(node) {
+            // console.log("Node To Count:", node, node.isCountComplete());
+            return !(this.isTooManyGeoms(node) || node.isCountComplete());
+        },
+    
+    
+
+        /**
+         * Loading is needed if NONE of the following criteria applies: . node
+         * was already loaded . there are no items in the node . there are to
+         * many items in the node
+         * 
+         */
+        isLoadingNeeded: function(node) {
+    
+            // (node.data && node.data.isLoaded)
+            var noLoadingNeeded = node.isLoaded || (node.isCountComplete() && node.infMinItemCount === 0) || this.isTooManyGeoms(node);
+            
+            return !noLoadingNeeded;
+        },
+    
+    
+        isTooManyGeoms: function(node) {    
+            // console.log("FFS", node.infMinItemCount, node.getMinItemCount());
+            return node.infMinItemCount >= this.maxItemsPerTileCount;
+        },
+        
+    
+    
+        createCountTasks: function(nodes) {
+            var self = this;
+            var result = _(nodes).chain()
+                .map(function(node) {
+                    return self.createCountTask(node);
+                })
+                .compact() // Remove null entries
+                .value();
+            
+            /*
+             * var result = []; $.each(nodes, function(i, node) { var task =
+             * self.createCountTask(node); if(task) { result.push(task); } });
+             */
+    
+            return result;
+        },    
+    
+        /**
+         * Sets the node's state to loaded, attaches the geomToFeatureCount to
+         * it.
+         * 
+         * @param node
+         * @param geomToFeatureCount
+         */
+        loadTaskAction: function(node, docs) {
+            // console.log('Data for ' + node.getBounds() + ': ', docs);
+            node.data.docs = docs;
+            node.isLoaded = true;            
+        },
+        
+        createLoadTasks: function(nodes) {
+            var self = this;
+            var result = [];
+                        
+            //promises = this.lookupServiceBBox.fetchDataBounds()
+            
+            
+            // $.each(nodes, function(index, node) {
+            var result = _(nodes).map(function(node) {
+                // console.debug("Inferred minimum item count: ",
+                // node.infMinItemCount);
+    
+                // if(node.data.absoluteGeomToFeatureCount)
+
+                // var loadFlow =
+                // self.createFlowForBounds(node.getBounds()).find().concept(self.concept);
+                //var loadTask = loadFlow.asList(true).pipe(function(docs) {
+                var loadTask = self.listServiceBbox.fetchItems(node.getBounds()).pipe(function(docs) {
+                    self.loadTaskAction(node, docs);
+                });
+    
+                return loadTask;
+            });
+            
+            return result;
+        },
+        
+            
+        /**
+         * TODO Finishing this method at some point to merge nodes together
+         * could be useful
+         * 
+         */
+        finalizeLoading: function(nodes) {
+            // Restructure all nodes that have been completely loaded,
+            var parents = [];
+            
+            $.each(nodes, function(index, node) {
+                if(node.parent) {
+                    parents.push(node.parent);
+                }
+            });
+    
+            parents = _.uniq(parents);
+            
+            var change = false;         
+            do {
+                change = false;
+                for(var i in parents) {
+                    var p = parents[i];
+    
+                    var children = p.children;
+    
+                    var didMerge = ns.tryMergeNode(p);
+                    if(!didMerge) {
+                        continue;
+                    }
+                    
+                    change = true;
+    
+                    $.each(children, function(i, child) {
+                        var indexOf = _.indexOf(nodes, child);
+                        if(indexOf >= 0) {
+                            nodes[indexOf] = undefined;
+                        }
+                    });
+                    
+                    nodes.push(p);
+                    
+                    if(p.parent) {
+                        parents.push(p.parent);
+                    }
+                    
+                    break;
+                }
+            } while(change == true);
+            
+            _.compact(nodes);
+            
+            /*
+             * $.each(nodes, function(i, node) { node.isLoaded = true; });
+             */
+            
+            // console.log("All done");
+            // self._setNodes(nodes, bounds);
+            // callback.success(nodes, bounds);
+        }
+    });
+
+    
+    
+    
+    /**
+     * 
+     * 
+     */
+    ns.ListServiceConceptKeyLookup = Class.create(ns.ListService, {
+        // initialize: function(conceptLookupService, keyLookupService) {
+        initialize: function(sparqlService, keyLookupService) {
+            this.sparqlService = sparqlService;
+            this.keyLookupService = keyLookupService;
+        },
+        
+        fetchItems: function(concept, limit, offset) {
+            var query = facete.ConceptUtils.createQueryList(concept, limit, offset);
+            
+            var deferred = jQuery.Deferred();
+            
+            var self = this;
+            ns.ServiceUtils.fetchList(query, concept.getVar()).pipe(function(items) {
+                
+                self.keyLookupService.lookup(items).pipe(function(map) {
+                    deferred.resolve(map);
+                }).fail(function() {
+                    deferred.fail();
+                });
+            }).fail(function() {
+                deferred.fail();
+            });
+            
+            return deferred.promise();
+        },
+        
+        fetchCount: function(concept, threshold) {
+            var result = ns.ServiceUtils.fetchCountConcept(concept, threshold);
+            return result;
+        }
+    });
+
+    
+    /**
+     * If bounds is null, no restriction on the bbox is assumed
+     */
+    ns.BBoxLookupService = Class.create({
+        lookupBBox: function(bounds) {
+            console.log('Not implemented');
+            throw 'Not implemented';            
+        }
+    });
+    
+    ns.BBoxLookupService = Class.create(ns.BBoxLookupService, {
+        
+    });
+    
+    
+    
+    
+    
+    
+    ns.LookupServiceUtils = {
+        /**
+         * Yields a promise resolving to an empty array if lookupService or keys are null
+         * 
+         */
+        lookup: function(lookupService, keys) {
+            var result;
+            
+            if(!lookupService || !keys) {
+                var deferred = jQuery.Deferred();
+                deferred.resolve([]);
+                result = deferred.promise();
+            } else {
+                result = lookupService.lookup(keys);
+            }
+            
+            return result;
+        },
+            
+        /**
+         * Create a new promise from a list of keys and corresponding
+         * valuePromises
+         */
+        zip: function(keys, valuePromises) {
+            var result = jQuery.when.apply(window, valuePromises).pipe(function() {
+                var r = new util.HashMap();
+                
+                for(var i = 0; i < keys.length; ++i) {
+                    var bounds = keys[i];
+                    var docs = arguments[i];
+                    
+                    r.put(bounds, docs);
+                }
+                
+                return r;
+            });
+            
+            return result;
+        },
+        
+        unmapKeys: function(keys, fn, map) {
+            var result = new util.HashMap();
+            
+            _(keys).each(function(key) {
+                var k = fn(key);
+                
+                var v = map.get(k);
+                r.put(key, v);
+            });
+
+            return result;            
+        },
+        
+        /**
+         * Performs a lookup by mapping the keys first
+         */
+        fetchItemsMapped: function(lookupService, keys, fn) {
+            var ks = _(keys).map(fn);
+
+            var result = lookupService.fetchItems(ks).pipe(function(map) {
+                var r = ns.LookupServiceUtils.unmapKeys(keys, fn, map);
+                return r;
+            });
+            
+            return result;
+        },
+        
+        fetchCountsMapped: function(lookupService, keys, fn) {
+            var ks = _(keys).map(fn);
+
+            var result = lookupService.fetchCounts(ks).pipe(function(map) {
+                var r = ns.LookupServiceUtils.unmapKeys(keys, fn, map);
+                return r;
+            });
+            
+            return result;            
+        }        
+    };
+    
+    
+    ns.ListServiceAugmenter = Class.create(ns.ListService, {
+        initialize: function(listService, augmenter) {
+            this.listService = listService;
+            this.augmenter = augmenter;
+        },
+        
+        fetchItems: function(thing, limit, offset) {
+            var deferred = jQuery.Deferred();
+
+            var promise = this.listService.fetchItems(thing);
+            var self = this;
+            promise.pipe(function(items) {
+                //var items = boundsToItems.values();
+                
+                var p = self.augmenter.augment(items);
+                p.done(function() {
+                    deferred.resolve(items);
+                }).fail(function() {
+                    deferred.fail();
+                });
+            }).fail(function() {
+                deferred.fail();
+            });
+            
+            return deferred.promise();
+        },
+        
+        fetchCount: function(thing, threshold) {
+            var result = this.listService.fetchCount(thing, threshold);
+            return result;
+        }
+    });
+    
+    
+
+    
+    /**
+     * Fetches initial data based on a bbox, and uses this to request additional
+     * data from a key lookup service
+     * 
+     */
+    ns.BBoxLookupServiceKeys = Class.create(ns.BBoxLookupService, {
+        initialize: function() {
+            
+        }
+    });
+    
+    
+    
+    
+
+    
+    /**
+     * 
+     */
+    ns.BBoxLookupServiceSupplierDynamic = Class.create({
+        initialize: function(sparqlServiceSupplier, geoMapSupplier, conceptSupplier, quadTreeConfig) {
+            this.sparqlServiceSupplier = sparqlServiceSupplier;
+            this.geoMapSupplier = geoMapSupplier;
+            this.conceptSupplier = conceptSupplier;
+            this.quadTreeConfig = quadTreeConfig;
+            
+            // this.conceptToService = {};
+            this.hashToCache = {};
+        },
+        
+        fetchItems: function(bounds) {
+// var sparqlService = this.sparqlService;
+// var geoMapFactory = this.geoMapFactory;
+// var conceptFactory = this.conceptFactory;
+            quadTreeConfig = quadTreeConfig || {};
+            
+            _(quadTreeConfig).defaults(ns.ViewStateFetcher.defaultQuadTreeConfig);
+
+            // quadTreeConfig =
+            
+            // var concept = conceptFactory.createConcept();
+            
+            // TODO Make this configurable
+
+            var geoMap = geoMapFactory.createMapForGlobal();
+            // TODO This should be a concept, I assume
+            // var geoConcept = geoMap.createConcept();
+            
+            var hash = ns.ViewStateUtils.createStateHash(sparqlService, geoMap, concept);
+            
+
+            // TODO Combine the concept with the geoConcept...
+            
+            // var serviceHash = sparqlService.getStateHash();
+            // var geoConceptHash =
+            // geoMap.getElementFactory().createElement().toString();
+
+            
+            // console.log("[DEBUG] Query hash (including facets): " + hash);
+            
+            var cacheEntry = this.hashToCache[hash];
+            if(!cacheEntry) {
+                cacheEntry = new ns.QuadTreeCache(sparqlService, geoMapFactory, concept, null, quadTreeConfig);
+                this.hashToCache[hash] = cacheEntry;
+            }
+            
+            var nodePromise = cacheEntry.fetchData(bounds);
+            
+            // Create a new view state object
+            var result = nodePromise.pipe(function(nodes) {
+                var r = new ns.ViewState(sparqlService, geoMap, concept, bounds, nodes);
+                return r;
+            });
+            
+            return result;
+        }
+    });
+    
+    /*
+    ns.ViewStateFetcher.defaultQuadTreeConfig = {
+        maxItemsPerTileCount: 1000,
+        maxGlobalItemCount: 5000
+    };
+    */
+    
+    /**
+     * 
+     */
+    /*
+    ns.LookupServicePremapKeys = Class.create({
+        initialize: function(lookupService, itemToKeyFn) {
+            this.lookupService = lookupService;
+            this.itemToKeyFn = itemToKeyFn;
+        },
+        
+        lookup: function(keys) {
+            var promise = ns.LookupServiceUtils.fetchDataMapped(this.lookupService, keys, this.itemToKeyFn);
+            var result = promise.pipe(function(map) {
+                var r = ns.LookupServiceUtils.unmapKeys(keys, fn, map);
+                return r;
+            });
+            
+            return result;
+        }
+    });
+    */
+        
+    ns.AugmenterLookup = Class.create({
+        initialize: function(lookupService, itemToKeyFn, mergeFn) {
+            this.lookupService = lookupService;
+
+            this.itemToKeyFn = itemToKeyFn || function(item) {
+                return item.id;
+            };
+
+            this.mergeFn = mergeFn || function(base, aug) {
+                //var r = _(base).defaults(aug);
+                var r = _(base).extend(aug);
+                return r;
+            };
+        },
+        
+        augment: function(items) {
+            var deferred = jQuery.Deferred();
+            
+            var keys = _(items).map(this.itemToKeyFn);
+            
+            var self = this;
+            this.lookupService.lookup(keys).pipe(function(map) {
+                
+                for(var i = 0; i < keys.length; ++i) {
+                    var key = keys[i];
+                    var item = items[i];
+                    
+                    var val = map.get(key);
+                    
+                    items[i] = self.mergeFn(item, val);
+                    //items[i] = mergeFn(item, val);
+                }
+                
+                deferred.resolve(items);
+            }).fail(function() {
+                deferred.fail();
+            });
+            
+            return deferred.promise();
+        }
+    });
+    
+    
+})();
+(function() {
 	
 	var ns = Jassa.sparql;
 	
@@ -11022,7 +11901,13 @@ module["exports"] = jassa;
 			this.config.setLimit(limit);
 			
 			return this;
-		},		
+		},
+		
+		offset: function(offset) {
+		    this.config.setOffset(offset);
+		    
+		    return this;
+		},
 		
 		asList: function(retainRdfNodes) {
 			var promise = this.execute(retainRdfNodes);
@@ -11114,7 +11999,7 @@ module["exports"] = jassa;
 			var criteria = config.getCriteria();
 			var limit = config.getLimit();
 			var offset = config.getOffset();
-			var concept = config.getConcept();
+			var filterConcept = config.getConcept();
 			var isLeftJoin = config.isLeftJoin();
 			var nodes = config.getNodes();
 			
@@ -11185,86 +12070,94 @@ module["exports"] = jassa;
             idVar = idExpr.asVar();
 
 						
-			var requireSubQuery = limit != null || offset != null || (concept != null && !concept.isSubjectConcept()) || elementCriteria.length > 0;
+			var requireSubQuery = limit != null || offset != null || elementCriteria.length > 0; // || (filterConcept != null && !filterConcept.isSubjectConcept()) ||;
 
             var innerElement = outerElement;
 
-//            debugger;
-            if(requireSubQuery) {
 
+            
+            
+/////            
+            // Combine innerElement, concept and the criteria
+            var attrConcept = new facete.Concept(innerElement, idVar);
 
-	            if(concept && (isLeftJoin || !concept.isSubjectConcept())) {
-	                var conceptElement = concept.getElement();
-                    var conceptVar = concept.getVar();
+            // If there is no filterConcept, the result is the mappingConcept
+            // If there is a filterConcept and NO leftJoin, the result is the combination of the mappingConcept and the filterConcept
+            //    if there is a leftJoin
+            //       if there is a leftJoin AND there are NO filter criteria, the result is just the filterConcept
+            //    if there are filter criteria, the result is the l
+            //    if there are filter critera, append them
+            
+            // createCombineConcept(attrConcept, filterConcept, renameVars, attrsOptional, filterAsSubquery)
+            var coreConcept;
+            
+            var attrsInCore;
+            if(!filterConcept) {
+                coreConcept = attrConcept;
+            }
+            else {
+                if(!isLeftJoin) {
+                   coreConcept = facete.ConceptUtils.createCombinedConcept(attrConcept, filterConcept, true);
+                } else {
+                    
+                    if(elementCriteria.length > 0) {
+                        // Make the attributes optional
+                        //var optionalAttrConcept = new facete.Concept(new sparql.ElementOptional(attrConcept.getElement()), attrConcept.getVar());
+                        
+                        // TODO The filter concept should go first
+                        //coreConcept = facete.ConceptUtils.createCombinedConcept(optionalAttrConcept, filterConcept, true, true);
+                        coreConcept = facete.ConceptUtils.createCombinedConcept(attrConcept, filterConcept, true, true);
+                    } else {
+                        //coreConcept = attrConcept;
+                        // TODO Rename the vars
+                        //coreConcept = filterConcept;
+                        coreConcept = facete.ConceptUtils.createRenamedConcept(attrConcept, filterConcept);
+                    }                    
+                }
+            }
+            
+            // Append the filter criterias to the core concept
+            if(elementCriteria.length > 0) {
+                var criteriaFilter = (elementCriteria.length > 0) ? new sparql.ElementFilter(elementCriteria) : null;  
+                
+                var es = [coreConcept.getElement(), criteriaFilter];
+                var eg = new sparql.ElementGroup(es); //facete.ElementUtils.createElementGroupFlattenShallow(es);
+                
+                coreConcept = new facete.Concept(eg, coreConcept.getVar());
+            }
 
-	                var elementA = conceptElement;
-	                var elementB = innerElement;
+            console.log('[INFO] SponateCoreConcept ' + coreConcept);            
+        
+            var coreElement = coreConcept.getElement();
 
-	                //console.log('elementA: ' + elementA);
-	                //console.log('elementB: ' + elementB);
-
-	                
-	                var varsA = elementA.getVarsMentioned();
-	                var varsB = elementB.getVarsMentioned();
-	                 
-	                var joinVarsA = [conceptVar];
-	                var joinVarsB = [idVar];
-	                 
-	                var varMap = sparql.ElementUtils.createJoinVarMap(varsB, varsA, joinVarsB, joinVarsA); //, varNameGenerator);
-	                var elementA = sparql.ElementUtils.createRenamedElement(elementA, varMap);
-	                 
-                    //console.log('elementA renamed: ' + elementA);
-	                 
-	                 //var conceptElement = concept.getElement();
-	                concept = new facete.Concept(elementA, idVar);
-	                 
-                    var q = facete.ConceptUtils.createQueryList(concept);
-	                elementA = new sparql.ElementSubQuery(q);
-	                 
-	               
-	                if(isLeftJoin) {
-	                   elementB = new sparql.ElementOptional(elementB);
-	                }
-	               
-	                innerElement = new sparql.ElementGroup([elementA, elementB]);
-	               
-	               /*
-	                 var efa = new sparql.ElementFactoryConst(conceptElement);
-	                 var efb = new sparql.ElementFactoryConst(innerElement);
-	                 
-
-	                 var joinType = isLeftJoin ? sparql.JoinType.LEFT_JOIN : sparql.JoinType.INNER_JOIN;
-	                 
-	                 var efj = new sparql.ElementFactoryJoin(efa, efb, [concept.getVar()], [idVar], joinType);
-	                 innerElement = efj.createElement();
-	                 */
-	             }
-
-			    
+			if(requireSubQuery) {
 				var subQuery = new sparql.Query();
-				
+				/*
 				var subQueryElements = subQuery.getElements();
 				subQueryElements.push(innerElement);
+				*/
+				subQuery.setQueryPattern(coreElement);
 				
+				/*
 				if(elementCriteria.length > 0) {
 				    subQueryElements.push(new sparql.ElementFilter(elementCriteria));
 				}
+				*/
 			
-				
-				var subElement = new sparql.ElementSubQuery(subQuery);
-				var oe = outerElement;
-				
-				if(isLeftJoin) {
-				    //subElement = new sparql.ElementOptional(subElement);
-				    oe = new sparql.ElementOptional(outerElement);
-				}
 				
 				subQuery.setLimit(limit);
 				subQuery.setOffset(offset);
 				subQuery.setDistinct(true);
 				subQuery.getProject().add(idVar);
+
+                var oe = outerElement;
+                if(isLeftJoin) {
+                    //subElement = new sparql.ElementOptional(subElement);
+                    oe = new sparql.ElementOptional(outerElement);
+                }
+				
 				outerElement = new sparql.ElementGroup([
-				                                   subElement,
+				                                   new sparql.ElementSubQuery(subQuery),
 				                                   oe]);
 
 				// TODO Do we need a sort condition on the inner query?
@@ -11273,12 +12166,14 @@ module["exports"] = jassa;
 				//orderBys.push.apply(orderBys, sortConditions);
 
 				
-				innerElement = subElement;
+				innerElement = coreElement;
+			} else {
+			    outerElement = coreElement;
 			}
-
             
             var result = {
                 requireSubQuery: requireSubQuery,
+                coreConcept: coreConcept,
                 innerElement: innerElement,
                 outerElement: outerElement,
                 idVar: idVar,
@@ -11316,14 +12211,19 @@ module["exports"] = jassa;
             }
                 
 
-            var element = spec.innerElement;
-            var idVar = spec.idVar;
+            //var element = spec.innerElement;
+            //var idVar = spec.idVar;           
+            //var concept = new facete.Concept(element, idVar);
+            var concept = spec.coreConcept;
             
-            var concept = new facete.Concept(element, idVar);
+            var threshold = config.getLimit();
+            var result = service.ServiceUtils.fetchCountConcept(this.sparqlService, concept, threshold);
+            /*
             var outputVar = rdf.NodeFactory.createVar('_c_');
             var query = facete.ConceptUtils.createQueryCount(concept, outputVar);
             var qe = this.sparqlService.createQueryExecution(query);
             var result = service.ServiceUtils.fetchInt(qe, outputVar);
+            */
             
             return result;
 		},
@@ -14130,11 +15030,18 @@ or simply: Angular + Magic Sparql = Angular Marql
             this.bboxExprFactory = bboxExprFactory;
         },
 
+        createMap: function(bounds) {
+            var result = this.createMapForBounds(bounds);
+            return result;
+        },
+        
+        // DEPRECATED - use createMap(null)
         createMapForGlobal: function() {
             var result = this.createMapForBounds(null);
             return result;
         },
         
+        // DEPRECATED - use createMap(bounds)
         createMapForBounds: function(bounds) {
             var baseSponateView = this.baseSponateView;
             var bboxExprFactory = this.bboxExprFactory;
@@ -14155,6 +15062,64 @@ or simply: Angular + Magic Sparql = Angular Marql
             return result;
         }
     });
+    
+})();
+(function() {
+
+    //var util = Jassa.util;
+    var rdf = Jassa.rdf;
+    var sparql = Jassa.sparql;
+    var service = Jassa.service;
+    
+    var ns = Jassa.sponate;
+    
+    ns.LookupServiceUtils = {
+        createLookupServiceNodeLabels: function(sparqlService, prefLangs, prefLabelPropertyUris) {
+            var store = new ns.StoreFacade(sparqlService);
+            
+            var labelMap = ns.SponateUtils.createDefaultLabelMap(prefLangs, prefLabelPropertyUris);
+            store.addMap(labelMap, 'labels');
+            var labelsStore = store.labels;    
+
+            var lookupServiceNodeLabels = new service.LookupServiceSponate(labelsStore);                
+            lookupServiceNodeLabels = new service.LookupServiceChunker(lookupServiceNodeLabels, 20);
+            lookupServiceNodeLabels = new service.LookupServiceIdFilter(lookupServiceNodeLabels, function(node) {
+                // TODO Using a proper URI validator would increase quality
+                var r = node && node.isUri();
+                if(r) {
+                    var uri = node.getUri();
+                    r = r && !_(uri).include(' ');
+                    r = r && !_(uri).include('<');
+                    r = r && !_(uri).include('>');
+                }
+                return r;
+            });             
+            lookupServiceNodeLabels = new service.LookupServiceTimeout(lookupServiceNodeLabels, 20);
+            lookupServiceNodeLabels = new service.LookupServiceTransform(lookupServiceNodeLabels, function(doc, id) {
+                var result = doc ? doc.displayLabel : null;
+                
+                if(!result) {
+                    if(!id) {
+                        result = null; //'(null id)';
+                    }
+                    else if(id.isUri()) {
+                        result = ns.extractLabelFromUri(id.getUri());
+                    }
+                    else if(id.isLiteral()) {
+                        result = '' + id.getLiteralValue();
+                    }
+                    else {
+                        result = '' + id;
+                    }
+                }                
+                
+                return result; 
+            });
+            
+            var lookupServiceNodeLabels = new service.LookupServiceCache(lookupServiceNodeLabels);
+            return lookupServiceNodeLabels;
+        }        
+    };
     
 })();
 (function() {
@@ -14499,40 +15464,118 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 * 
 	 */
 	ns.ConceptUtils = {
-		createCombinedConcept: function(baseConcept, tmpConcept) {
+
+	    /*
+	    createRenamedConcept: function(concept, newVar) {
+
+            // TODO Rename variables if the newVar clashes with existing names
+
+	        var oldVar = concept.getVar();
+	        var vs = element.getVarsMentioned();
+
+	        // Rename any variables that would clash 
+	        var varMap = ns.ElementUtils.createDistinctVarMap(vs, [oldVar]);
+            var tmpElement = ns.ElementUtils.createRenamedElement(element, varMap);
+
+            var newVarMap = new util.HashBidiMap();
+            newVarMap.put(oldVar, newVar);
+            var newElement = ns.ElementUtils.createRenamedElement(tmpElement, newVarMap);
+	        
+	        var result = new facete.Concept(newElement, newVar);
+	        return result;
+	    },*/
+	        
+	    createVarMap: function(attrConcept, filterConcept) {
+            var attrElement = attrConcept.getElement();
+            var filterElement = filterConcept.getElement();
+            
+            var attrVar = attrConcept.getVar();
+            
+            var attrVars = attrElement.getVarsMentioned();
+            var filterVars = filterElement.getVarsMentioned();
+             
+            var attrJoinVars = [attrConcept.getVar()];
+            var filterJoinVars = [filterConcept.getVar()];
+             
+            var result = sparql.ElementUtils.createJoinVarMap(attrVars, filterVars, attrJoinVars, filterJoinVars); //, varNameGenerator);
+
+            return result;
+	    },
+	    
+	    createRenamedConcept: function(attrConcept, filterConcept) {
+	        
+            var varMap = this.createVarMap(attrConcept, filterConcept);
+            
+            var attrVar = attrConcept.getVar();
+            var filterElement = filterConcept.getElement();
+            var newFilterElement = sparql.ElementUtils.createRenamedElement(filterElement, varMap);
+            
+            var result = new facete.Concept(newFilterElement, attrVar);
+	        
+            return result;
+	    },
+	    
+	    /**
+	     * Combines two concepts into a new one. Thereby, one concept plays the role of the attribute concepts whose variable names are left untouched,
+	     * The other concept plays the role of the 'filter' which limits the former concept to certain items.
+	     * 
+	     * 
+	     */
+		createCombinedConcept: function(attrConcept, filterConcept, renameVars, attrsOptional, filterAsSubquery) {
 			// TODO The variables of baseConcept and tmpConcept must match!!!
 			// Right now we just assume that.
 			
+		    
+            var tmpConcept;
+		    if(renameVars) {
+	            tmpConcept = this.createRenamedConcept(attrConcept, filterConcept);
+		    } else {
+		        tmpConcept = filterConcept;
+		    }
+		    
+
+            var tmpElements = tmpConcept.getElements();
 			
-			// Check if the concept of the facetFacadeNode is empty
-			var tmpElements = tmpConcept.getElements();
-			var baseElement = baseConcept.getElement();
 			
 			// Small workaround (hack) with constraints on empty paths:
 			// In this case, the tmpConcept only provides filters but
 			// no triples, so we have to include the base concept
-			var hasTriplesTmp = tmpConcept.hasTriples();
+			//var hasTriplesTmp = tmpConcept.hasTriples();
+            //hasTriplesTmp && 
+            var attrVar = attrConcept.getVar();
+            var attrElement = attrConcept.getElement();
 			
 			var e;
 			if(tmpElements.length > 0) {
 	
-				if(hasTriplesTmp && baseConcept.isSubjectConcept()) {
-					e = tmpConcept.getElement();
-				} else {
-					var baseElements = baseConcept.getElements();
-	
-					var newElements = [];
-					newElements.push.apply(newElements, baseElements);
-					newElements.push.apply(newElements, tmpElements);
+				if(tmpConcept.isSubjectConcept()) {
+					e = attrConcept.getElement(); //tmpConcept.getElement();
+				} else {	
+                    
+				    var newElements = [];
+
+                    if(attrsOptional) {
+                        attrElement = new sparql.ElementOptional(attrConcept.getElement());
+                    }                    
+                    newElements.push(attrElement);
+
+                    if(filterAsSubquery) {
+                        tmpElements = [new sparql.ElementSubQuery(tmpConcept.asQuery())];
+                    }
+
+				    
+					//newElements.push.apply(newElements, attrElement);
+                    newElements.push.apply(newElements, tmpElements);
+                    
 					
 					e = new sparql.ElementGroup(newElements);
+					e = e.flatten();
 				}
 			} else {
-				e = baseElement;
+				e = attrElement;
 			}
 			
-			// FIXME: ConceptInt class is not defined
-			var concept = new ns.ConceptInt(e, tmpConcept.getVariable());
+			var concept = new ns.Concept(e, attrVar);
 	
 			return concept;
 		},
@@ -14553,14 +15596,31 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return result;
 		},
 		
+		/**
+		 * 
+		 * @param typeUri A jassa.rdf.Node or string denoting the URI of a type
+		 * @param subjectVar Optional; variable of the concept, specified either as string or subclass of jassa.rdf.Node
+		 */
+        createTypeConcept: function(typeUri, subjectVar) {            
+            var type = typeUri instanceof rdf.Node ? typeUri : rdf.NodeFactory.createUri(typeUri);            
+            var vs = !subjectVar ? rdf.NodeFactory.createVar('s') :
+                (subjectVar instanceof rdf.Node ? subjectVar : rdf.NodeFactory.createVar(subjectVar));            
+
+            var result = new facete.Concept(new sparql.ElementTriplesBlock([new rdf.Triple(vs, vocab.rdf.type, type)]), vs);      
+            return result;
+        },
+
 		
 		/**
 		 * Creates a query based on the concept
 		 * TODO: Maybe this should be part of a static util class?
 		 */
-		createQueryList: function(concept) {
+		createQueryList: function(concept, limit, offset) {
 			var result = new sparql.Query();
 			result.setDistinct(true);
+			
+			result.setLimit(limit);
+			result.setOffset(offset);
 			
 			result.getProject().add(concept.getVar());
 			var resultElements = result.getElements();
@@ -14571,6 +15631,16 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return result;
 		},
 
+		createNewVar: function(concept, baseVarName) {
+            baseVarName = baseVarName || 'c';
+
+            var varsMentioned = concept.getVarsMentioned();
+
+            var varGen = sparql.VarUtils.createVarGen(baseVarName, varsMentioned);
+            var result = varGen.next();
+		    
+            return result;
+		},
 		
 		createQueryCount: function(concept, outputVar, scanLimit) {
 		    var result = ns.QueryUtils.createQueryCount(concept.getElements(), scanLimit, concept.getVar(), outputVar, null, true);
@@ -14657,7 +15727,7 @@ or simply: Angular + Magic Sparql = Angular Marql
 	 */
 	ns.Concept = Class.create({
 		
-		classLabel: 'Concept',
+		classLabel: 'jassa.sparql.Concept',
 		
 		initialize: function(element, variable) {
 			this.element = element;
@@ -14675,6 +15745,12 @@ or simply: Angular + Magic Sparql = Angular Marql
 		
 		getElement: function() {
 			return this.element;
+		},
+		
+		getVarsMentioned: function() {
+		    // TODO The variable is assumed to be part of the element already
+		    var result = this.getElement().getVarsMentioned();
+		    return result;
 		},
 		
 		hasTriples: function() {
@@ -14760,6 +15836,10 @@ or simply: Angular + Magic Sparql = Angular Marql
 			return result;
 		},
 		
+		asQuery: function(limit, offset) {
+		    var result = ns.ConceptUtils.createQueryList(this, limit, offset);
+		    return result;
+		},
 
 		
 		/**
@@ -17343,62 +18423,54 @@ ns.createDefaultConstraintElementFactories = function() {
          * Creates a query with
          * Select (Count(*) As outputVar) {{ Select Distinct ?variable { element } }} 
          * 
+         * With group vars it may become Select ?g1 ... ?gn Count(Distinct?s))
+         * 
+         * ISSUE The limit so far acts as a scan limit - it limits the result rows of the element
+         *       But it does not affect the number of resources considered
+         * If no variable is given, the query 
          */		
         createQueryCount: function(elements, limit, variable, outputVar, groupVars, useDistinct, options) {
 
             var exprVar = variable ? new sparql.ExprVar(variable) : null;
 
-            var varQuery = new sparql.Query();
-            if(limit) {
+            
+            var queryPattern;
+
+            var needsSubQuery = limit || useDistinct || (groupVars && groupVars.length > 0); 
+            if(needsSubQuery) {
+
                 var subQuery = new sparql.Query();
-                
                 var subQueryElements = subQuery.getElements();
                 subQueryElements.push.apply(subQueryElements, elements); //element.copySubstitute(function(x) { return x; }));
-    
+                
                 if(groupVars) {
                     for(var i = 0; i < groupVars.length; ++i) {                 
                         var groupVar = groupVars[i];                    
-                        subQuery.projectVars.add(groupVar);
+                        subQuery.getProject().add(groupVar);
                         //subQuery.groupBy.push(groupVar);
                     }
                 }
                 
                 if(variable) {
-                    subQuery.projectVars.add(variable);
+                    subQuery.getProject().add(variable);
                 }
                 
-                if(subQuery.projectVars.vars.length === 0) {
+                if(subQuery.getProjectVars().length === 0) {
                     subQuery.setResultStar(true);
                 }
+
+                subQuery.setDistinct(useDistinct);
+                subQuery.setLimit(limit);
                 
-                subQuery.limit = limit;
-                
-                varQuery.getElements().push(new sparql.ElementSubQuery(subQuery));            
+                queryPattern = new sparql.ElementSubQuery(subQuery);
             } else {
-                var varQueryElements = varQuery.getElements();
-                varQueryElements.push.apply(varQueryElements, elements);
+                queryPattern = new sparql.ElementGroup(elements);
             }
-            
-            //result.groupBy.push(outputVar);
-
-            if(groupVars) {
-                _(groupVars).each(function(groupVar) {
-                    varQuery.getProject().add(groupVar);
-                    //varQuery.getGroupBy().push(new sparql.ExprVar(groupVar));
-                });
-            }
-
-            
-            varQuery.setDistinct(useDistinct);
-            if(variable) {
-                varQuery.getProject().add(variable)
-            } else {
-                varQuery.setResultStar(true);
-            }
-
-            var elementVarQuery = new sparql.ElementSubQuery(varQuery);
+                      
+                        
             
             var result = new sparql.Query();
+            result.setQueryPattern(queryPattern);
             
             if(groupVars) {
                 _(groupVars).each(function(groupVar) {
@@ -17406,9 +18478,53 @@ ns.createDefaultConstraintElementFactories = function() {
                     result.getGroupBy().push(new sparql.ExprVar(groupVar));
                 });
             }
-            
+
             result.getProject().add(outputVar, new sparql.E_Count());
-            result.getElements().push(elementVarQuery);
+
+            return result;
+            
+            // Note Virtuoso has a bug that
+            // TODO Add the fix to SparqlServiceVirtFix for that
+            // Select Count(*) { ... } Limit 1000 will prevent from counting beyond 1000 (the limit should only limit the result set after counting to at most 10000 lines) 
+
+            /*
+            var tmp = new sparql.Query();
+            tmp.setQueryPattern(new sparql.ElementSubQuery(result));
+//            if(variable) {
+//                tmp.getProject().add(outputVar);
+//            } else {
+                tmp.setResultStar(true);
+//            }
+
+            return tmp;
+//            *
+            //return result;
+
+            
+            /*
+            if(variable) {
+                varQuery.getProject().add(variable)
+            } else {
+                varQuery.setResultStar(true);
+            }
+            */
+            
+            
+            /*
+            else {
+                varQuery = new sparql.Query();
+                //varQuery.getElements().push(new sparql.ElementSubQuery(subQuery));            
+
+                var varQueryElements = varQuery.getElements();
+                varQueryElements.push.apply(varQueryElements, elements);
+            }
+            */
+            
+            //result.groupBy.push(outputVar);
+
+            //var elementVarQuery = new sparql.ElementSubQuery(varQuery);
+            
+            
             
             //exp, new sparql.E_Count(exprVar, useDistinct));
             //ns.applyQueryOptions(result, options);
@@ -17417,7 +18533,6 @@ ns.createDefaultConstraintElementFactories = function() {
             
     //debugger;
             //console.log("Created count query:" + result + " for element " + element);
-            return result;
         },
         
         
@@ -22300,7 +23415,7 @@ ns.createDefaultConstraintElementFactories = function() {
         createCountTask: function(node) {
 
             var self = this;
-            var limit = self.maxItemsPerTileCount ? self.maxItemsPerTileCount + 1 : null;
+            var limit = self.maxItemsPerTileCount; //self.maxItemsPerTileCount ? self.maxItemsPerTileCount + 1 : null;
 
             var countFlow = this.createFlowForBounds(node.getBounds()).find().concept(this.concept).limit(limit);
             var result = countFlow.count().pipe(function(itemCount) {
