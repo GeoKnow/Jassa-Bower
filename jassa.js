@@ -2045,7 +2045,7 @@ module["exports"] = jassa;
       // By default we assume non-equality
       var result = false;
 
-      if(that === null) {
+      if(that == null) {
         result = false;
 
       } else if(this.isLiteral()) {
@@ -2460,8 +2460,8 @@ module["exports"] = jassa;
       var uriToDt = this.uriToDt;
       var dtype = uriToDt[uri];
 
-      if (dtype === null) {
-        if (uri === null) {
+      if (dtype == null) {
+        if (uri == null) {
           // Plain literal
           return null;
 
@@ -2491,7 +2491,7 @@ module["exports"] = jassa;
   ns.TypeMapper.getInstance = function() {
     var self = ns.TypeMapper;
 
-    if(self.staticInstance === null) {
+    if(self.staticInstance == null) {
       self.staticInstance = new ns.TypeMapper(ns.RdfDatatypes);
     }
 
@@ -2512,7 +2512,7 @@ module["exports"] = jassa;
   },
 
     createPlainLiteral: function(value, lang) {
-       if(lang === null) {
+       if(lang == null) {
         lang = '';
       }
 
