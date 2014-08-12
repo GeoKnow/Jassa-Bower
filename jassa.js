@@ -7266,7 +7266,7 @@ module["exports"] = jassa;
 	        var query = this.query.clone();
 	        
 	        var filterExpr = new sparql.E_OneOf(this.indexExpr, nodes);
-	        var filterElement = new sparql.ElementFilter([filterExpr]);
+	        var filterElement = new sparql.ElementFilter(filterExpr);
 	        query.getElements().push(filterElement);
 	        
 	        var qe = this.sparqlService.createQueryExecution(query);
@@ -14737,8 +14737,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             var els = [];
             els.push(new sparql.ElementTriplesBlock([ new rdf.Triple(s, p, o)] ));
-            els.push(new sparql.ElementFilter([propFilter]));
-            els.push(new sparql.ElementFilter([langConstraint]));
+            els.push(new sparql.ElementFilter(propFilter));
+            els.push(new sparql.ElementFilter(langConstraint));
             
             var langElement = new sparql.ElementGroup(els);
             
@@ -15002,8 +15002,8 @@ or simply: Angular + Magic Sparql = Angular Marql
             
             var els = [];
             els.push(new sparql.ElementTriplesBlock([ new rdf.Triple(s, p, o)] ));
-            els.push(new sparql.ElementFilter([propFilter]));
-            els.push(new sparql.ElementFilter([langConstraint]));
+            els.push(new sparql.ElementFilter(propFilter));
+            els.push(new sparql.ElementFilter(langConstraint));
             
             var langElement = new sparql.ElementGroup(els);
             
@@ -18744,7 +18744,7 @@ ns.createDefaultConstraintElementFactories = function() {
 				expr = new sparql.E_LogicalNot(expr);
 			}
 
-			result = new sparql.ElementFilter([expr]);
+			result = new sparql.ElementFilter(expr);
 		}
 		
 		return result;
@@ -19140,7 +19140,7 @@ ns.createDefaultConstraintElementFactories = function() {
 			if(singleStep) {
 				var exprVar = new sparql.ExprVar(propertyVar);
 				var expr = new sparql.E_Equals(exprVar, sparql.NodeValue.makeNode(singleProperty));
-				facetElements.push(new sparql.ElementFilter([expr]));
+				facetElements.push(new sparql.ElementFilter(expr));
 			}
 			
 			
