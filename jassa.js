@@ -24561,6 +24561,7 @@ ns.createDefaultConstraintElementFactories = function() {
 	});
 */
 	 
+/*
 	{
 	    var sparqlService = new service.SparqlServiceHttp('http://dbpedia.org/sparql', ['http://dbpedia.org']);
 	    //sparqlService = new service.SparqlServiceVirtFix(sparqlService);
@@ -24588,7 +24589,7 @@ ns.createDefaultConstraintElementFactories = function() {
 		    alert(JSON.stringify(countInfo)); 
 		});
 	}
-	
+*/
 	//throw 'done';
 	
 	
