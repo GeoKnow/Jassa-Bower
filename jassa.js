@@ -16437,7 +16437,7 @@ or simply: Angular + Magic Sparql = Angular Marql
         },
         
         createElementsAndExprs: function(facetNode) {
-            var result = ns.ConstraintUtils.createConstraintRegex(facetNode, this.path, this.regexStr);
+            var result = ns.ConstraintUtils.createConstraintRegex(facetNode, this.path, this.value.getLiteralLexicalForm());
             return result;
         }
     });
@@ -16772,7 +16772,8 @@ or simply: Angular + Magic Sparql = Angular Marql
 //	};
 //
 	
-})();(function() {
+})();
+(function() {
 	
     var vocab = Jassa.vocab;
     var sparql = Jassa.sparql;
