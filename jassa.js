@@ -14720,6 +14720,7 @@ var Class = require('../ext/Class');
 
 var ObjectUtils = require('../util/ObjectUtils');
 
+var NodeUtils = require('../rdf/NodeUtils');
 var Node = require('../rdf/node/Node');
 var NodeFactory = require('../rdf/NodeFactory');
 
@@ -14734,6 +14735,8 @@ var AggCustomAgg = require('./agg/AggMap');
 var AggRef = require('./agg/AggRef');
 var AggArray = require('./agg/AggArray');
 var AggTransform = require('./agg/AggTransform');
+
+var AggUtils = require('./AggUtils');
 
 var RefSpec = require('./RefSpec');
 
@@ -14821,6 +14824,10 @@ var TemplateParser = Class.create({
             // Expects a AggLiteral with a BindingMapperExpr
             var attrToAgg = subAgg.getAttrToAgg();
             var idAgg = attrToAgg[idAttr];
+
+            // TODO This is more like a hack - we should ensure in advance that ID attributes do not make use of transformations
+            idAgg = AggUtils.unwrapAggTransform(idAgg);
+
             var idBm = idAgg.getBindingMapper();
             //var idExpr = bm.getExpr();
             result = new AggMap(idBm, subAgg);
@@ -14865,9 +14872,18 @@ var TemplateParser = Class.create({
     },
 
     parseLiteral: function(val) {
-        var expr = this.parseExprString(val);
+        var items = val.split('|').map(function(item) { return item.trim(); });
+        var exprStr = items[0];
+
+        var expr = this.parseExprString(exprStr);
 
         var result = new AggLiteral(new BindingMapperExpr(expr));
+
+        var options = items[1];
+        if(options !== 'node') {
+            result = new AggTransform(result, NodeUtils.getValue);
+        }
+
         return result;
     },
 
@@ -15006,7 +15022,7 @@ var TemplateParser = Class.create({
 
 module.exports = TemplateParser;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":65,"../rdf/node/Node":77,"../sparql/expr/Expr":211,"../sparql/expr/ExprVar":220,"../sparql/expr/NodeValue":221,"../util/ObjectUtils":280,"./RefSpec":244,"./agg/AggArray":257,"./agg/AggLiteral":260,"./agg/AggMap":261,"./agg/AggObject":262,"./agg/AggRef":263,"./agg/AggTransform":264,"./binding_mapper/BindingMapperExpr":266,"lodash.uniq":468}],248:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":65,"../rdf/NodeUtils":66,"../rdf/node/Node":77,"../sparql/expr/Expr":211,"../sparql/expr/ExprVar":220,"../sparql/expr/NodeValue":221,"../util/ObjectUtils":280,"./AggUtils":233,"./RefSpec":244,"./agg/AggArray":257,"./agg/AggLiteral":260,"./agg/AggMap":261,"./agg/AggObject":262,"./agg/AggRef":263,"./agg/AggTransform":264,"./binding_mapper/BindingMapperExpr":266,"lodash.uniq":468}],248:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
