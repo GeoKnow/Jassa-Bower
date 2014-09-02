@@ -1,0 +1,36 @@
+{
+  "name": "jassa",
+  "version": "0.6.0-SNAPSHOT",
+  "homepage": "https://github.com/GeoKnow/Jassa",
+  "authors": [
+    "Claus Stadler <cstadler@informatik.uni-leipzig.de>"
+  ],
+  "description": "JAvascript Suite for Sparql Access",
+  "main": "dist/jassa.js",
+  "repository": {
+      "type": "git",
+      "url": "git://github.com/GeoKnow/Jassa-Core.git"
+  },
+  "dependencies": {
+  },
+  "keywords": [
+    "rdf",
+    "sparql",
+    "faceted-search",
+    "facete",
+    "sponate",
+    "sparql-to-json",
+    "jena",
+    "cache"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "coverage",
+    "gulp",
+    "lib",
+    "node_modules",
+    "test",
+    "to-port"
+  ]
+}
