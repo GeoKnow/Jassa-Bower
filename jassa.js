@@ -13732,7 +13732,16 @@ var Class = require('../ext/Class');
 var SponateUtils = require('./SponateUtils');
 var MappedConceptSource = require('./MappedConceptSource');
 
+var MappedConcept = require('./MappedConcept');
+var AggUtils = require('./AggUtils');
+
 var ObjectUtils = require('../util/ObjectUtils');
+var RefSpec = require('./RefSpec');
+
+var BindingMapperExpr = require('./binding_mapper/BindingMapperExpr');
+var ExprVar = require('../sparql/expr/ExprVar');
+
+var AggMap = require('./agg/AggMap');
 
 /**
  * A sponate context is a container for mappings, prefixes
@@ -13752,6 +13761,65 @@ var Context = Class.create({
 //    addMappedConcept: function() {
 //
 //    },
+
+    processRefs: function(baseName, source) {
+        var mappedConcept = source.getMappedConcept();
+        var sparqlService = source.getSparqlService();
+        var agg = mappedConcept.getAgg();
+
+        var refs = AggUtils.getRefs(agg);
+
+        var self = this;
+
+        refs.forEach(function(ref) {
+            var refSpec = ref.getRefSpec();
+            //console.log('TEMPLATE REF SPEC ' + JSON.stringify(refSpec));
+
+            var target = refSpec.getTarget();
+
+            if(target instanceof MappedConcept) {
+                // TODO mappedConcepts used as references are AggObject,
+                // however we expect AggMap's - so we have to wrap them
+                var aggObject = target.getAgg();
+
+                var attrToAgg = aggObject.getAttrToAgg();
+                var aggIdLiteral = AggUtils.unwrapAggTransform(attrToAgg.id);
+                var idMapper = aggIdLiteral.getBindingMapper();
+
+                var aggMap = new AggMap(idMapper, aggObject);
+
+                var newTarget = new MappedConcept(target.getConcept(), aggMap);
+
+                // Allocate a new name and source for this anonymous mapped concept
+                var i = 0;
+                var name;
+                while(self.getSource(name = (baseName + '_' + i))) {
+                    ++i;
+                }
+
+                ref.setRefSpec(new RefSpec(name, refSpec.getAttr()));
+                //console.log('NEW REF SPEC: ' + JSON.stringify(ref));
+                //refSpec.setTarget(name);
+
+                var bindingMapper = ref.getBindingMapper();
+                if(!bindingMapper) {
+                    var c = mappedConcept.getConcept();//newTarget.getConcept();
+                    var v = c.getVar();
+                    bindingMapper = new BindingMapperExpr(new ExprVar(v));
+                    ref.setBindingMapper(bindingMapper);
+                }
+
+                var newSource = new MappedConceptSource(newTarget, sparqlService);
+                self.nameToSource[name] = newSource;
+
+
+                //console.log('STATE: ' + JSON.stringify(self.nameToSource, null, 4));
+            }
+            else if(!ObjectUtils.isString(target)) {
+                throw new Error('Unknown target type: ', target);
+            }
+        });
+    },
 
     addTemplate: function(spec) {
         var name = spec.name;
@@ -13778,16 +13846,21 @@ var Context = Class.create({
         var mappedConcept;
         if(ObjectUtils.isString(spec.template)) {
             var templateName = spec.template;
-            mappedConcept = this.nameToMappedConcept[templateName];
-            if(!mappedConcept) {
+            var tmp = this.nameToMappedConcept[templateName];
+            if(!tmp) {
                 throw new Error('No template with name ' + templateName + ' registered.');
             }
+
+            mappedConcept = new MappedConcept(tmp.getConcept(), tmp.getAgg().clone());
         } else {
             mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
         }
+
         //console.log('MAPPED CONCEPT ' + name + ': ' + JSON.stringify(mappedConcept, null, null));
 
         var source = new MappedConceptSource(mappedConcept, sparqlService);
+
+        this.processRefs(name, source);
 
         this.nameToSource[name] = source;
     },
@@ -13795,7 +13868,7 @@ var Context = Class.create({
 
 module.exports = Context;
 
-},{"../ext/Class":2,"../util/ObjectUtils":280,"./MappedConceptSource":240,"./SponateUtils":246}],236:[function(require,module,exports){
+},{"../ext/Class":2,"../sparql/expr/ExprVar":220,"../util/ObjectUtils":280,"./AggUtils":233,"./MappedConcept":239,"./MappedConceptSource":240,"./RefSpec":244,"./SponateUtils":246,"./agg/AggMap":261,"./binding_mapper/BindingMapperExpr":266}],236:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ListServiceUtils = require('./ListServiceUtils');
@@ -13816,17 +13889,6 @@ var shared = require('../util/shared');
 var Promise = shared.Promise;
 
 
-var ExecutionContext = Class.create({
-    initialize: function() {
-        this.mappingToKeyToAcc = {};
-    },
-
-//    getOrCreateEntry: function(mappingName) {
-//        this.mappingToKeyToAcc
-//    }
-});
-
-
 var indexAccMap = function(state, sourceName, nodeToAcc) {
     var map = state[sourceName];
     if(!map) {
@@ -13835,21 +13897,39 @@ var indexAccMap = function(state, sourceName, nodeToAcc) {
     }
 
     map.putAll(nodeToAcc);
-    /*
-    accEntries.forEach(function(accEntry) {
-        var id = accEntry.key;
-        var acc = accEntry.val;
-
-        map.put(id, acc);
-    });
-    */
 };
+
+
+var Slot = Class.create({
+    initialize: function(obj, attr, meta) {
+        this.obj = obj;
+        this.attr = attr;
+
+        this.meta = meta;
+    },
+
+    setValue: function(value) {
+        this.obj[this.attr] = value;
+    },
+
+    getValue: function() {
+        return this.obj[this.attr];
+    },
+
+    getMeta: function() {
+        return this.data;
+    },
+
+    toString: function() {
+        return JSON.stringify(this);
+    }
+});
 
 
 var mergeRefs = function(open, refs) {
     refs.forEach(function(ref) {
         var refSpec = ref.getRefSpec();
-        var sourceName = refSpec.getTargetSourceName();
+        var sourceName = refSpec.getTarget();
         var refValue = ref.getRefValue();
 
         var set;
@@ -13871,12 +13951,12 @@ var filterRefs = function(state, refs) {
 
     refs.forEach(function(ref) {
         var refSpec = ref.getRefSpec();
-        var sourceName = refSpec.getTargetSourceName();
+        var sourceName = refSpec.getTarget();
         var refValue = ref.getRefValue();
 
         var map = state[sourceName];
 
-        var isResolved = map.containsKey(refValue);
+        var isResolved = map && map.containsKey(refValue);
         if(!isResolved) {
             result.push(ref);
         }
@@ -13884,6 +13964,58 @@ var filterRefs = function(state, refs) {
 
     return result;
 };
+
+var buildObjs = function(state) {
+    var result = {};
+
+    // Retrieve the value of each acc and extend the original object with it
+    // At this point we do not resolve references yet
+    forEach(state, function(srcMap, sourceName) {
+
+        var objMap = new HashMap();
+        result[sourceName] = objMap;
+
+        srcMap.entries().forEach(function(entry) {
+            var id = entry.key;
+            var acc = entry.val;
+
+            var val = acc.getValue();
+            objMap.put(id, val);
+        });
+    });
+
+
+    return result;
+};
+
+
+var buildSlots = function(obj, result) {
+    result = result || [];
+
+    if(Array.isArray(obj)) {
+
+        obj.forEach(function(item) {
+            buildSlots(item, result);
+        });
+
+    } else if(ObjectUtils.isObject(obj)) {
+
+        forEach(obj, function(v, k) {
+            if(v && v._ref) {
+                var slot = new Slot(obj, k, v._ref);
+                result.push(slot);
+            } else {
+                buildSlots(v, result);
+            }
+        });
+
+    } /* else {
+        // Nothing to do
+    } */
+
+    return result;
+};
+
 
 var Engine = Class.create({
     initialize: function(sparqlService) {
@@ -13968,11 +14100,6 @@ var Engine = Class.create({
 
                 map.putAll(state);
 
-                //console.log('Item: ', item);
-                //var id = item.key;
-                //var acc = item.val;
-                //map.put(id, acc);
-
                 var refs = AccUtils.getRefs(acc);
 
                 mergeRefs(open, refs);
@@ -13986,25 +14113,7 @@ var Engine = Class.create({
 
         }).spread(function(rootIds, p) {
 
-            // console.log('STATE: ' + Object.keys(state));
-            //console.log('STATE: ' + JSON.stringify(state, null, 4));
-
-            // Allocate objects for all acc-structures
-            var objs = {};
-
-            forEach(state, function(srcMap, sourceName) {
-                //console.log('SOURCE NAME: ' + sourceName);
-                var objMap = new HashMap();
-                objs[sourceName] = objMap;
-
-                srcMap.entries().forEach(function(entry) {
-                    var id = entry.key;
-                    objMap.put(id, {});
-                });
-            });
-
-
-            // Fill out AccRef instances with the object
+            // Retain all references
             var accRefs = [];
             forEach(state, function(srcMap) {
                 var accs = srcMap.values();
@@ -14013,61 +14122,50 @@ var Engine = Class.create({
                 accRefs.push.apply(accRefs, refs);
             });
 
-
-            //console.log('accRefs: ' + JSON.stringify(accRefs));
             accRefs.forEach(function(accRef) {
                 var refSpec = accRef.getRefSpec();
-                var sourceName = refSpec.getTargetSourceName();
+                var targetName = refSpec.getTarget();
                 var refValue = accRef.getRefValue();
 
-                var idToObj = objs[sourceName];
-                if(!idToObj) {
-                    throw new Error('Something went wrong');
-                }
-
-                var obj = idToObj.get(refValue);
-                accRef.setValue(obj);
-            });
-
-            // Retrieve the value of each acc and extend the original object with it
-            forEach(state, function(srcMap, sourceName) {
-                srcMap.entries().forEach(function(entry) {
-                    var id = entry.key;
-                    var acc = entry.val;
-
-                    var val = acc.getValue();
-
-                    var idToObj = objs[sourceName];
-
-                    var obj = idToObj.get(id);
-                    //console.log('EXTEND: ' + JSON.stringify(obj) + ' with ' + JSON.stringify(val));
-                    ObjectUtils.extend(obj, val);
+                accRef.setBaseValue({
+                    _ref: {targetName: targetName, refValue: refValue, attr: refSpec.getAttr() }
                 });
             });
-            // console.log('Retrieved: ' + JSON.stringify(objs, null, 4));
+
+            var sourceToIdToObj = buildObjs(state);
+
+            var slots = buildSlots(sourceToIdToObj);
+
+            slots.forEach(function(slot) {
+                var meta = slot.meta;
+
+                var idToObj = sourceToIdToObj[meta.targetName];
+                var obj = idToObj.get(meta.refValue);
+
+                if(meta.attr) {
+                    obj = obj[meta.attr];
+                }
+                //console.log('SLOT: ' + meta + ' ' + meta.attr + ' ' + obj);
+
+                slot.setValue(obj);
+            });
 
             // Prepare the result
             var r = rootIds.map(function(rootId) {
-                var idToObj = objs[sourceName];
+                var idToObj = sourceToIdToObj[sourceName];
                 var obj = idToObj.get(rootId);
-
                 var s = {
                     key: rootId,
                     val: obj
                 };
-
                 return s;
             });
-
-            // console.log('RESULT ' + JSON.stringify(r, null, 4));
-            // console.log('RESULT ' + JSON.stringify(r, null, 4));
 
             return r;
         });
 
-
-        //var result = this.execRec(decl, open, {});
         return result;
+
     },
 
     /**
@@ -14102,12 +14200,7 @@ var Engine = Class.create({
                 var next = {};
                 mergeRefs(next, openRefs);
 
-                //console.log('RESOLVED: ' + JSON.stringify(state, null, 4));
-                //console.log('NEXT: ' + JSON.stringify(next, null, 4));
-                //console.log('XST: ' + Object.keys(state));
-
                 return self.resolveRefs(decls, next, state);
-                //return null;
             });
 
             return subPromise;
@@ -14378,6 +14471,7 @@ var BindingMapperTransform = require('./binding_mapper/BindingMapperTransform');
 var Concept = require('../sparql/Concept');
 var MappedConcept = require('./MappedConcept');
 
+var NodeUtils = require('../rdf/NodeUtils');
 
 var MappedConceptUtils = {
 
@@ -14389,7 +14483,7 @@ var MappedConceptUtils = {
 
         var agg =
             new AggObject({
-                id: new AggLiteral(new BindingMapperExpr(new ExprVar(s))),
+                id: new AggTransform(new AggLiteral(new BindingMapperExpr(new ExprVar(s))), NodeUtils.getValue),
                 displayLabel: new AggTransform(new AggBestLabel(bestLabelConfig), NodeUtils.getValue),
                 hiddenLabels: new AggArray(
                     new AggTransform(new AggLiteral(new BindingMapperExpr(new ExprVar(o))), NodeUtils.getValue))
@@ -14526,12 +14620,19 @@ module.exports = Query;
 var Class = require('../ext/Class');
 
 var RefSpec = Class.create({
-   initialize: function(targetSourceName) {
-       this.targetSourceName = targetSourceName;
+   initialize: function(target, attr) {
+       // Target can be (temporarily) an arbitrary object - but eventually
+       // it usually becomes a string denoting the id of the target
+       this.target = target;
+       this.attr = attr;
    },
 
-   getTargetSourceName: function() {
-       return this.targetSourceName;
+   getTarget: function() {
+       return this.target;
+   },
+
+   getAttr: function() {
+       return this.attr;
    },
 
 });
@@ -14939,19 +15040,24 @@ var TemplateParser = Class.create({
     },
 
     parseRef: function(val) {
-        var targetSourceName = val.target;
-        if(!targetSourceName) {
+        var target = val.target;
+        if(!target) {
             throw new Error('Missing target attribute in ref: ', val);
         }
 
-        var refSpec = new RefSpec(targetSourceName);
+        var refSpec = new RefSpec(target, val.attr);
 
         var onStr = val.on;
 
-        var joinExpr = this.parseExprString(onStr);
-        var bindingMapper = new BindingMapperExpr(joinExpr);
+        var bindingMapper = null;
+        if(onStr) {
+            var joinExpr = this.parseExprString(onStr);
+            bindingMapper = new BindingMapperExpr(joinExpr);
+        }
 
         var result = new AggRef(bindingMapper, refSpec);
+        //console.log('PARSED REF SPEC: ' + JSON.stringify(refSpec), val.attr);
+
         return result;
     },
 
@@ -15026,6 +15132,8 @@ var TemplateParser = Class.create({
 
         if (ObjectUtils.isString(obj)) {
             result = this.parseExprString(obj);
+        } else {
+            throw new Error('Could not parse expression: ', obj);
         }
 
         return result;
@@ -15436,7 +15544,7 @@ var AccRef = Class.create(Acc, {
 
         this.refValue = null;
 
-        this.value = null;
+        this.baseValue = null;
     },
 
     getSubAccs: function() {
@@ -15457,14 +15565,31 @@ var AccRef = Class.create(Acc, {
         this.refValue = refValue;
     },
 
-    getValue: function() {
-        return this.value;
+    getBaseValue: function() {
+        return this.baseValue;
     },
 
-    // The sponate system takes care of resolving references
-    setValue: function(value) {
-        this.value = value;
+    setBaseValue: function(baseValue) {
+        this.baseValue = baseValue;
+        //console.log('Base VALUE: ', this.refSpec.getAttr(), this.getValue());
     },
+
+    getValue: function() {
+        return this.baseValue;
+
+//        var baseValue = this.baseValue;
+//
+//        var attr = this.refSpec.getAttr();
+//        var result = baseValue != null
+//            ? (attr != null ? baseValue[attr] : baseValue)
+//            : baseValue
+//            ;
+//
+//        console.log('GET VALUE: ', result);
+//
+//        return result;
+    },
+
 });
 
 module.exports = AccRef;
@@ -15517,6 +15642,10 @@ var Agg = Class.create({
         throw new Error('override me');
     },
 
+    clone: function() {
+        throw new Error('override me');
+    },
+
 });
 
 module.exports = Agg;
@@ -15534,6 +15663,11 @@ var AggArray = Class.create(Agg, {
     initialize: function(subAgg, indexBindingMapper) {
         this.subAgg = subAgg;
         this.indexBindingMapper = indexBindingMapper;
+    },
+
+    clone: function() {
+        var result = new AggArray(this.subAgg.clone(), this.indexBindingMapper);
+        return result;
     },
 
     createAcc: function() {
@@ -15575,19 +15709,24 @@ var AggBestLabel = Class.create(Agg, {
     initialize: function(bestLiteralConfig) {
         this.bestLiteralConfig = bestLiteralConfig;
     },
-    
+
+    clone: function() {
+        var result = new AggBestLabel(this.bestLiteralConfig);
+        return result;
+    },
+
     createAcc: function() {
         var result = new AccBestLiteral(this.bestLiteralConfig);
 
         return result;
     },
-    
+
     getSubAggs: function() {
         return [];
     },
-    
+
     toString: function() {
-        var result = 'bestLabel[' + this.bestLiteralConfig + ']'; 
+        var result = 'bestLabel[' + this.bestLiteralConfig + ']';
     },
 
 //    getVarsMentioned: function() {
@@ -15595,9 +15734,9 @@ var AggBestLabel = Class.create(Agg, {
 //            var result = expr ? expr.getVarsMentioned() : [];
 //            return result;
 //        };
-//        
+//
 //        var blc = this.bestLiteralConfig;
-//        
+//
 //        var result = union(vm(blc.getLabelExpr()), vm(blc.getSubjectExpr()), vm(blc.getPropertyExpr()));
 //        return result;
 //    }
@@ -15663,6 +15802,11 @@ var AggLiteral = Class.create(Agg, {
         this.bindingMapper = bindingMapper;
     },
 
+    clone: function() {
+        var result = new AggLiteral(this.bindingMapper);
+        return result;
+    },
+
     getBindingMapper: function() {
         return this.bindingMapper;
     },
@@ -15704,6 +15848,11 @@ var AggMap = Class.create(AggBase, {
     initialize: function(keyBindingMapper, subAgg) {
         this.keyBindingMapper = keyBindingMapper;
         this.subAgg = subAgg;
+    },
+
+    clone: function() {
+        var result = new AggMap(this.keyBindingMapper, this.subAgg.clone());
+        return result;
     },
 
     getKeyBindingMapper: function() {
@@ -15750,6 +15899,16 @@ var AggObject = Class.create(Agg, {
 
     initialize: function(attrToAgg) {
         this.attrToAgg = attrToAgg;
+    },
+
+    clone: function() {
+        var tmp = {};
+        forEach(this.attrToAgg, function(agg, attr) {
+            tmp[attr] = agg.clone();
+        });
+
+        var result = new AggObject(tmp);
+        return result;
     },
 
     getAttrToAgg: function() {
@@ -15812,12 +15971,25 @@ var AggRef = Class.create(Agg, {
         this.refSpec = refSpec;
     },
 
+    clone: function() {
+        var result = new AggRef(this.bindingMapper, this.refSpec);
+        return result;
+    },
+
     getBindingMapper: function() {
         return this.bindingMapper;
     },
 
+    setBindingMapper: function(bindingMapper) {
+        this.bindingMapper = bindingMapper;
+    },
+
     getRefSpec: function() {
         return this.refSpec;
+    },
+
+    setRefSpec: function(refSpec) {
+        this.refSpec = refSpec;
     },
 
     getSubAggs: function() {
@@ -15851,6 +16023,11 @@ var AggTransform = Class.create(Agg, {
     initialize: function(subAgg, fn) {
         this.subAgg = subAgg;
         this.fn = fn;
+    },
+
+    clone: function() {
+        var result = new AggTransform(this.subAgg.clone(), this.fn);
+        return result;
     },
 
     getSubAgg: function() {
