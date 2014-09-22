@@ -6426,6 +6426,7 @@ var SparqlServiceBuilder = Class.create({
 
     limit: function(limit) {
         this.sparqlService = new SparqlServiceLimit(this.sparqlService, limit);
+        return this;
     },
 
 
@@ -16161,9 +16162,9 @@ var zip = function(a, b) {
 
     for(var i = 0; i < n; ++i) {
         var item = [a[i], b[i]];
-        result.push(i);
+        result.push(item);
     }
-    
+
     return result;
 };
 
@@ -16179,7 +16180,7 @@ var compareArray = function(as, bs, op) {
             if (op(b, a)) {
                 continue;
             }
-            
+
             result = true;
             break;
         } else { //else if(op(b, a)) {
@@ -16195,7 +16196,7 @@ var compareArray = function(as, bs, op) {
     return result;
 };
 
-    
+
 var cmpLessThan = function(a, b) {
     return a < b;
 };
@@ -16209,10 +16210,10 @@ var indexOf = function(a, v) {
             break;
         }
     }
-    
+
     return result;
 };
-    
+
 var AccBestLabel = Class.create(Acc, {
     initialize: function(bestLiteralConfig) {
         this.bestLiteralConfig = bestLiteralConfig;
@@ -16220,11 +16221,11 @@ var AccBestLabel = Class.create(Acc, {
         this.bestMatchNode = null;
         this.bestMatchScore = [1000, 1000];
     },
-    
+
     getSubAccs: function() {
         return [];
     },
-    
+
     accumulate: function(binding) {
 
         // Evaluate label, property and subject based on the binding
@@ -16245,11 +16246,11 @@ var AccBestLabel = Class.create(Acc, {
         var langScore = blc.getLangs().indexOf(candidateLang);
 
         var score = [propertyScore, langScore];
-        
+
         var allNonNegative = score.every(function(item) {
             return item >= 0;
         });
-        
+
         if(allNonNegative) {
             // Check if the new score is better (less than) than the current best match
             var cmp = compareArray(score, this.bestMatchScore, cmpLessThan);
@@ -16260,11 +16261,11 @@ var AccBestLabel = Class.create(Acc, {
             }
         }
     },
-    
+
     getValue: function() {
         return this.bestMatchNode;
     },
-    
+
 });
 
 module.exports = AccBestLabel;
@@ -16700,6 +16701,7 @@ var AggBestLabel = Class.create(Agg, {
 
     toString: function() {
         var result = 'bestLabel[' + this.bestLiteralConfig + ']';
+        return result;
     },
 
 //    getVarsMentioned: function() {
