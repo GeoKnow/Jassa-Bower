@@ -1568,6 +1568,7 @@ var LookupServiceMulti = require('../service/lookup_service/LookupServiceMulti')
 var LookupServiceKeyMap = require('../service/lookup_service/LookupServiceKeyMap');
 var LookupServiceTransformKey = require('../service/lookup_service/LookupServiceTransformKey');
 var LookupServiceFn = require('../service/lookup_service/LookupServiceFn');
+var LookupServiceConst = require('../service/lookup_service/LookupServiceConst');
 
 
 var FacetUtils = require('./FacetUtils');
@@ -1576,6 +1577,7 @@ var LookupServiceFacetPreCount = require('./lookup_service/LookupServiceFacetPre
 var LookupServiceFacetExactCount = require('./lookup_service/LookupServiceFacetExactCount');
 
 var Step = require('./Step');
+var Path = require('./Path');
 
 var FacetServiceUtils = {
     /*
@@ -1654,24 +1656,22 @@ var FacetServiceUtils = {
 
         //var self = this;
         var createLookupService = function(pathHead) {
-            // TODO We could make lsPreCount and lsExactCount to depend on a complete path
-            // rather than just a property - that would make tagging of facets much easier
-            // Alternatively we could use a LookupServiceTransformKey which prepends the path
-            // before passing it to a path-based lookup service
 
-
-            var facetRelationIndex = FacetUtils.createFacetRelationIndex(facetConfig, pathHead);
-            var lsPreCount = new LookupServiceFacetPreCount(sparqlService, facetRelationIndex);
-            var lsExactCount = new LookupServiceFacetExactCount(sparqlService, facetRelationIndex);
-            var lsCount = new LookupServiceFacetCount(lsPreCount, lsExactCount);
+            //var basePath = pathHead ? pathHead.getPath() : new Path();
+            //console.log('PathHead: ' + pathHead);
 
             var lsTags;
             if(pathTaggerFn) {
                 var pathTaggerLs = new LookupServiceFn(pathTaggerFn);
 
                 lsTags = new LookupServiceTransformKey(pathTaggerLs, function(property) {
-                    var step = new Step(property.getUri(), pathHead.isInverse());
-                    var path = pathHead.getPath().copyAppendStep(step);
+                    var path;
+                    if(pathHead) {
+                        var step = new Step(property.getUri(), pathHead.isInverse());
+                        path = pathHead.getPath().copyAppendStep(step);
+                    } else {
+                        path = new Path();
+                    }
 
                     return path;
                 });
@@ -1679,14 +1679,37 @@ var FacetServiceUtils = {
                 lsTags = null;
             }
 
-            var infoLs = new LookupServiceMulti({
-                id: new LookupServiceKeyMap(), // identity mapping
-                countInfo: lsCount,
-                labelInfo: lookupServiceNodeLabels,
-                tags : lsTags
-            });
+            var r;
+            if(pathHead == null) {
+                console.log('Tagger for path ' + pathHead + ': ' + lsTags);
+                r = new LookupServiceMulti({
+                    id: new LookupServiceKeyMap(), // identity mapping
+                    countInfo: new LookupServiceConst({count: 0, hasMoreItems: true}),
+                    labelInfo: new LookupServiceConst({displayLabel: 'root', hiddenLabels: ['root']}),
+                    tags : lsTags
+                });
+            } else {
 
-            return infoLs;
+                // TODO We could make lsPreCount and lsExactCount to depend on a complete path
+                // rather than just a property - that would make tagging of facets much easier
+                // Alternatively we could use a LookupServiceTransformKey which prepends the path
+                // before passing it to a path-based lookup service
+
+
+                var facetRelationIndex = FacetUtils.createFacetRelationIndex(facetConfig, pathHead);
+                var lsPreCount = new LookupServiceFacetPreCount(sparqlService, facetRelationIndex);
+                var lsExactCount = new LookupServiceFacetExactCount(sparqlService, facetRelationIndex);
+                var lsCount = new LookupServiceFacetCount(lsPreCount, lsExactCount);
+
+                r = new LookupServiceMulti({
+                    id: new LookupServiceKeyMap(), // identity mapping
+                    countInfo: lsCount,
+                    labelInfo: lookupServiceNodeLabels,
+                    tags : lsTags
+                });
+            }
+
+            return r;
         };
 
 
@@ -1722,7 +1745,7 @@ var FacetServiceUtils = {
 
 module.exports = FacetServiceUtils;
 
-},{"../service/lookup_service/LookupServiceFn":124,"../service/lookup_service/LookupServiceKeyMap":126,"../service/lookup_service/LookupServiceMulti":128,"../service/lookup_service/LookupServiceTransformKey":132,"../sparql/BestLabelConfig":165,"../sparql/ConceptUtils":169,"../sparql/LabelUtils":179,"../sparql/search/KeywordSearchUtils":244,"../sponate/LookupServiceUtils":251,"../sponate/MappedConceptUtils":254,"./ConstraintManager":5,"./FacetConfig":10,"./FacetNode":11,"./FacetUtils":17,"./Step":23,"./facet_concept_supplier/FacetConceptSupplierExact":37,"./facet_concept_supplier/FacetConceptSupplierMeta":38,"./facet_service/FacetServiceClientIndex":40,"./facet_service/FacetServiceLookup":41,"./facet_service/FacetServiceSparql":43,"./facet_service/FacetServiceTransformConcept":45,"./lookup_service/LookupServiceFacetCount":52,"./lookup_service/LookupServiceFacetExactCount":53,"./lookup_service/LookupServiceFacetPreCount":54}],15:[function(require,module,exports){
+},{"../service/lookup_service/LookupServiceConst":122,"../service/lookup_service/LookupServiceFn":124,"../service/lookup_service/LookupServiceKeyMap":126,"../service/lookup_service/LookupServiceMulti":128,"../service/lookup_service/LookupServiceTransformKey":132,"../sparql/BestLabelConfig":165,"../sparql/ConceptUtils":169,"../sparql/LabelUtils":179,"../sparql/search/KeywordSearchUtils":244,"../sponate/LookupServiceUtils":251,"../sponate/MappedConceptUtils":254,"./ConstraintManager":5,"./FacetConfig":10,"./FacetNode":11,"./FacetUtils":17,"./Path":19,"./Step":23,"./facet_concept_supplier/FacetConceptSupplierExact":37,"./facet_concept_supplier/FacetConceptSupplierMeta":38,"./facet_service/FacetServiceClientIndex":40,"./facet_service/FacetServiceLookup":41,"./facet_service/FacetServiceSparql":43,"./facet_service/FacetServiceTransformConcept":45,"./lookup_service/LookupServiceFacetCount":52,"./lookup_service/LookupServiceFacetExactCount":53,"./lookup_service/LookupServiceFacetPreCount":54}],15:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var FacetNodeState = require('./FacetNodeState');
@@ -1761,25 +1784,32 @@ var FacetTreeServiceUtils = {//Class.create({
 //        this.facetService = facetService;
 //    },
 
+    /**
+     * Note: This method actually fetches the *sub*Facets at a given path
+     * If the startPath is null, conceptually the children of the 'superRoot' facets are returned,
+     * which is an array containing solely the 'root' facet.
+     */
     fetchFacetTree: function(facetService, facetTreeConfig, startPath) {
-        startPath = startPath || new Path();
-
+        // startPath must not be undefined, but may be null to indicate the root facet
+        startPath = startPath || null;
         var state = facetTreeConfig.getState(startPath);
+
+        //console.log('startPath: ' + startPath + ', state: ' + JSON.stringify(state));
 
         var es = state.getExpansionState();
         var filter = state.getListFilter();
 
-        var pathHead;
-        if (es > 0) {
-            pathHead = new PathHead(startPath, false);
-        } else if (es < 0) {
-            pathHead = new PathHead(startPath, true);
-        } else {
-            pathHead = null;
+        var pathHead = null;
+        if(startPath) {
+            if (es > 0) {
+                pathHead = new PathHead(startPath, false);
+            } else if (es < 0) {
+                pathHead = new PathHead(startPath, true);
+            }
         }
 
         var result;
-        if(pathHead) {
+        if(es !== 0) {
             result = facetService.prepareListService(pathHead).then(function(listService) {
                 return listService.fetchItems(filter.getConcept(), filter.getLimit(), filter.getOffset());
             }).then(function(facetEntries) {
@@ -1824,7 +1854,7 @@ var FacetTreeServiceUtils = {//Class.create({
                     facetInfos.forEach(function(facetInfo, i) {
                         var child = children[i];
 
-                        if(pathHead.isInverse()) {
+                        if(pathHead && pathHead.isInverse()) {
                             facetInfo.incoming = child;
                         } else {
                             facetInfo.outgoing = child;
@@ -2433,6 +2463,9 @@ var PathHead = Class.create({
         return this._isInverse;
     },
 
+    toString: function() {
+        return '' + this.path + (this._isInverse ? ' (inverse)' : '');
+    },
 });
 
 PathHead.parse = function(pathStr, isInverse) {
@@ -3377,10 +3410,14 @@ var createIndexedListService = function(listService, lookupServiceNodeLabels) {
 
     var result = listService.fetchItems()
         .then(function(entries) {
-            var keys = entries.map(function(entry) {
+            var keys = [];
+            entries.forEach(function(entry) {
                 //console.log('Entry: ' + JSON.stringify(entry));
-                return entry.key;
-                //return entry.val.property;
+                //return entry.key;
+                var key = entry.val.property;
+                if(key) {
+                    keys.push(key);
+                }
             });
 
             var labelPromise = lookupServiceNodeLabels.lookup(keys);
@@ -3549,10 +3586,13 @@ module.exports = FacetServiceMeta;
 },{"../../ext/Class":2,"../../util/collection/HashMap":308,"./FacetService":39}],43:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
+var NodeFactory = require('../../rdf/NodeFactory');
+
 var Concept = require('../../sparql/Concept');
 var ConceptUtils = require('../../sparql/ConceptUtils');
 
 //var ListServiceConcept = require('../../service/list_service/ListServiceConcept');
+var ListServiceArray = require('../../service/list_service/ListServiceArray');
 var ListServiceSparqlQuery = require('../../service/list_service/ListServiceSparqlQuery');
 var ListServiceTransformItem = require('../../service/list_service/ListServiceTransformItem');
 
@@ -3563,6 +3603,7 @@ var RelationUtils = require('../../sparql/RelationUtils');
 var VarUtils = require('../../sparql/VarUtils');
 
 var Step = require('../Step');
+var Path = require('../Path');
 
 var shared = require('../../util/shared');
 var Promise = shared.Promise;
@@ -3588,42 +3629,67 @@ var FacetServiceSparql = Class.create(FacetService, {
      * }
      */
     prepareListService: function(pathHead) {
-        var concept = this.facetConceptSupplier.getConcept(pathHead);
 
-        var query = ConceptUtils.createQueryList(concept);
+        console.log('Preparing list service for pathHead: ' + pathHead);
 
-        var listService = new ListServiceSparqlQuery(this.sparqlService, query, concept.getVar(), false);
-        listService = new ListServiceTransformItem(listService, function(entry) {
+        // null indicates to return the root facet
+        var listService;
+        if(pathHead == null) {
+            var path = new Path();
+            var superRootFacets = [{
+                key: path,
+                val: {
+                    path: path,
+                    property: NodeFactory.createUri('http://facete.aksw.org/resource/rootFacet')
+                }
+            }];
 
-            // Replace the keys with the appropriate paths
-            var id = entry.key;
+            listService = new ListServiceArray(superRootFacets, function(concept) {
+                // TODO Should we allow filtering by the root facet? I doubt it.
+                return function(item) {
+                    return true;
+                };
+            });
+        } else {
 
-            // TODO DESIGN ISSUE Should the ids here be the property nodes or the whole paths?
-            // It seems the property nodes makes life easier on this level; but only time will tell
-            // So for now we use the key as the ID but already compute the path attribute here
-            var step = new Step(id.getUri(), pathHead.isInverse());
-            var path = pathHead.getPath().copyAppendStep(step);
 
-            var r = {
-              key: id,
-              val: {
-                  path: path,
-                  property: id
-              }
-          };
+            var concept = this.facetConceptSupplier.getConcept(pathHead);
 
-            // Create steps from the properties
+            var query = ConceptUtils.createQueryList(concept);
 
-//            var r = {
-//                key: path,
-//                val: {
-//                    path: path,
-//                    property: entry.key
-//                }
-//            };
+            listService = new ListServiceSparqlQuery(this.sparqlService, query, concept.getVar(), false);
+            listService = new ListServiceTransformItem(listService, function(entry) {
 
-            return r;
-        });
+                // Replace the keys with the appropriate paths
+                var id = entry.key;
+
+                // TODO DESIGN ISSUE Should the ids here be the property nodes or the whole paths?
+                // It seems the property nodes makes life easier on this level; but only time will tell
+                // So for now we use the key as the ID but already compute the path attribute here
+                var step = new Step(id.getUri(), pathHead.isInverse());
+                var path = pathHead.getPath().copyAppendStep(step);
+
+                var r = {
+                    key: id,
+                    val: {
+                        path: path,
+                        property: id
+                    }
+                };
+
+                // Create steps from the properties
+
+    //            var r = {
+    //                key: path,
+    //                val: {
+    //                    path: path,
+    //                    property: entry.key
+    //                }
+    //            };
+
+                return r;
+            });
+        }
 
         var result = Promise.resolve(listService);
 
@@ -3634,7 +3700,7 @@ var FacetServiceSparql = Class.create(FacetService, {
 
 module.exports = FacetServiceSparql;
 
-},{"../../ext/Class":2,"../../service/list_service/ListServiceSparqlQuery":113,"../../service/list_service/ListServiceTransformItem":116,"../../sparql/Concept":168,"../../sparql/ConceptUtils":169,"../../sparql/RelationUtils":186,"../../sparql/VarUtils":191,"../../util/shared":316,"../FacetUtils":17,"../Step":23,"./FacetService":39}],44:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeFactory":67,"../../service/list_service/ListServiceArray":109,"../../service/list_service/ListServiceSparqlQuery":113,"../../service/list_service/ListServiceTransformItem":116,"../../sparql/Concept":168,"../../sparql/ConceptUtils":169,"../../sparql/RelationUtils":186,"../../sparql/VarUtils":191,"../../util/shared":316,"../FacetUtils":17,"../Path":19,"../Step":23,"./FacetService":39}],44:[function(require,module,exports){
 //var Class = require('../../ext/Class');
 //
 //var FacetService = require('./FacetService');
@@ -7739,13 +7805,16 @@ var LookupServiceSparqlQuery = Class.create(LookupServiceBase, {
     /**
      * @param uris An array of rdf.Node objects that represent URIs
      */
-    lookup: Promise.method(function(uris) {
+    lookup: function(uris) {
         var v = this.v;
         var result;
         if(uris.length === 0) {
             result = Promise.resolve(new HashMap());
         } else {
             var q = this.query.clone();
+
+            //console.log('Uris: ' + uris.length + ' ' + JSON.stringify(uris));
+            //throw new Error('here');
 
             var filter = new ElementFilter(new E_OneOf(new ExprVar(v), uris));
 
@@ -7758,9 +7827,9 @@ var LookupServiceSparqlQuery = Class.create(LookupServiceBase, {
                 return r;
             });
         }
-        
+
         return result;
-    })
+    }
 });
 
 module.exports = LookupServiceSparqlQuery;
@@ -18703,6 +18772,12 @@ var HashMap = Class.create({
         this.fnHash = fnHash ? fnHash : ObjectUtils.hashCode;
 
         this.hashToBucket = {};
+
+        var self = this;
+        this.fnGet = function(key) {
+            var r = self.get(key);
+            return r;
+        };
     },
 
     clear: function() {
@@ -18830,7 +18905,15 @@ var HashMap = Class.create({
         });
         var result = '{' + entryStrs.join(', ') + '}';
         return result;
-    }
+    },
+
+    /**
+     * Returns a function for getting elements
+     */
+    asFn: function() {
+        return this.fnGet;
+    },
+
 });
 
 module.exports = HashMap;
