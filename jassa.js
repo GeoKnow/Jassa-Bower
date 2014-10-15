@@ -12793,6 +12793,8 @@ var VarUtils = {
     _p_: NodeFactory.createVar('_p_'),
     _o_: NodeFactory.createVar('_o_'),
 
+    v: NodeFactory.createVar('v'),
+    w: NodeFactory.createVar('w'),
     x: NodeFactory.createVar('x'),
     y: NodeFactory.createVar('y'),
     z: NodeFactory.createVar('z'),
@@ -12801,7 +12803,7 @@ var VarUtils = {
     b: NodeFactory.createVar('b'),
     c: NodeFactory.createVar('c'),
 
-    
+
     /**
      * Convert an array of variable names to variable objects
      *
@@ -12876,7 +12878,7 @@ var VarUtils = {
      */
     freshVarGen: function(baseVarName, blacklistVars) {
         var blacklistNames = VarUtils.getVarNames(blacklistVars);
-        
+
         var genSym = GenSym.create(baseVarName);
         var genFreshName = new GeneratorBlacklist(genSym, blacklistNames);
         var result = new VarGen(genFreshName);
@@ -12898,7 +12900,7 @@ var VarUtils = {
             var r = varMap.get(v); // [v.getName()];
             return r;
         };
-        
+
         return result;
     },
 
