@@ -5543,13 +5543,13 @@ console.log('dammit', this.listServiceBbox);
 
         var countTasks = this.createCountTasks(uncountedNodes);
 
-        return Promise.all(countTasks).done(function() {
+        return Promise.all(countTasks).then(function() {
             var nonLoadedNodes = nodes.filter(function(node) {
                 return self.isLoadingNeeded(node);
             });
 
             var loadTasks = self.createLoadTasks(nonLoadedNodes);
-            return Promise.all(loadTasks).done(function() {
+            return Promise.all(loadTasks).then(function() {
                 return nodes;
             });
         });
@@ -6149,6 +6149,11 @@ var ListServiceBbox = Class.create(ListService, {
     fetchItems: function(bounds, limit, offset) {
         var listService = this.createListService(bounds);
         var result = listService.fetchItems(this.concept, limit, offset);
+
+//        var result = listService.fetchItems(this.concept, limit, offset).then(function(r) {
+//            console.log('GOT: ' + JSON.stringify(r));
+//            return r;
+//        });
         return result;
     },
 
@@ -8971,7 +8976,7 @@ var AugmenterLookup = Class.create({
         this.lookupService = lookupService;
 
         this.itemToKeyFn = itemToKeyFn || function(item) {
-            return item.id;
+            return item.key;
         };
 
         this.mergeFn = mergeFn || function(base, aug) {
@@ -8981,6 +8986,8 @@ var AugmenterLookup = Class.create({
     },
 
     augment: function(items) {
+        //console.log('GOT ITEMS: ' + JSON.stringify(items));
+
         var keys = items.map(this.itemToKeyFn);
 
         var self = this;
@@ -9095,8 +9102,12 @@ var ListServiceAugmenter = Class.create(ListService, {
 
     fetchItems: function(filter, limit, offset) {
         var self = this;
-        var result = this.listService.fetchItems(filter, limit, offset).then(function(items) {
-            var r = self.augmenter.augment(items);
+        var result = this.listService.fetchItems(filter, limit, offset).then(function(entries) {
+//            var keys = items.map(function(item) {
+//                return item.key;
+//            });
+//console.log('Augmenting with keys: ' + JSON.stringify(keys));
+            var r = self.augmenter.augment(entries);
             return r;
         });
 
@@ -10264,6 +10275,17 @@ var LookupServiceSparqlQuery = Class.create(LookupServiceBase, {
      * @param uris An array of rdf.Node objects that represent URIs
      */
     lookup: function(uris) {
+        //console.log('LOOKUP: ' + JSON.stringify(uris));
+        var containsNull = uris.some(function(item) {
+            var r = item == null;
+            return r;
+        });
+
+        if(containsNull) {
+            throw new Error('Lookup requests must not include null values as it most likely indicates a problem');
+        }
+
+
         var v = this.v;
         var result;
         if(uris.length === 0) {
@@ -18424,6 +18446,7 @@ var ObjectUtils = require('../util/ObjectUtils');
 
 var NodeUtils = require('../rdf/NodeUtils');
 var Node = require('../rdf/node/Node');
+var Var = require('../rdf/node/Var');
 var NodeFactory = require('../rdf/NodeFactory');
 
 var Expr = require('../sparql/expr/Expr');
@@ -18777,9 +18800,9 @@ var TemplateParser = Class.create({
             // result = new AggCustomAgg(new AccFactoryFn(val));
         } else if (val instanceof Node && val.isVariable()) {
             var expr = new ExprVar(val);
-            result = new AggLiteral(expr);
+            result = new AggLiteral(new BindingMapperExpr(expr));
         } else if (val instanceof Expr) {
-            result = new AggLiteral(val);
+            result = new AggLiteral(new BindingMapperExpr(val));
         } else if (ObjectUtils.isObject(val)) {
             var fnCustomAggFactory = val.createAgg;
             if (fnCustomAggFactory) {
@@ -18802,6 +18825,8 @@ var TemplateParser = Class.create({
 
         if (ObjectUtils.isString(obj)) {
             result = this.parseExprString(obj);
+        } else if(obj instanceof Node && obj.isVariable()) {
+            result = new ExprVar(obj);
         } else {
             throw new Error('Could not parse expression: ', obj);
         }
@@ -18841,7 +18866,7 @@ var TemplateParser = Class.create({
 
 module.exports = TemplateParser;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":92,"../rdf/NodeUtils":93,"../rdf/node/Node":104,"../sparql/NodeValueUtils":214,"../sparql/expr/Expr":258,"../sparql/expr/ExprVar":267,"../sparql/expr/NodeValue":268,"../util/ObjectUtils":329,"./AggUtils":280,"./RefSpec":291,"./agg/AggArray":306,"./agg/AggArrayStatic":307,"./agg/AggLiteral":310,"./agg/AggMap":311,"./agg/AggObject":312,"./agg/AggRef":313,"./agg/AggTransform":314,"./agg/AggTransformLazy":315,"./binding_mapper/BindingMapperExpr":317,"lodash.uniq":580}],295:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":92,"../rdf/NodeUtils":93,"../rdf/node/Node":104,"../rdf/node/Var":111,"../sparql/NodeValueUtils":214,"../sparql/expr/Expr":258,"../sparql/expr/ExprVar":267,"../sparql/expr/NodeValue":268,"../util/ObjectUtils":329,"./AggUtils":280,"./RefSpec":291,"./agg/AggArray":306,"./agg/AggArrayStatic":307,"./agg/AggLiteral":310,"./agg/AggMap":311,"./agg/AggObject":312,"./agg/AggRef":313,"./agg/AggTransform":314,"./agg/AggTransformLazy":315,"./binding_mapper/BindingMapperExpr":317,"lodash.uniq":580}],295:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
