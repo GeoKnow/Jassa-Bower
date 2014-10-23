@@ -17381,7 +17381,6 @@ module.exports = AttrPath;
 },{"../ext/Class":2,"../util/ObjectUtils":331}],283:[function(require,module,exports){
 var Class = require('../ext/Class');
 
-var SponateUtils = require('./SponateUtils');
 var MappedConceptSource = require('./MappedConceptSource');
 
 var MappedConcept = require('./MappedConcept');
@@ -17395,6 +17394,10 @@ var ExprVar = require('../sparql/expr/ExprVar');
 
 var AggMap = require('./agg/AggMap');
 
+
+var forEach = require('lodash.foreach');
+
+
 /**
  * A sponate context is a container for mappings, prefixes
  * and configuration options
@@ -17404,7 +17407,9 @@ var Context = Class.create({
         this.prefixMapping = prefixMapping;
         this.nameToSource = {};
 
-        this.nameToMappedConcept = {};
+        // This is for the registration of templates
+        // Maybe should be moved to StoreFacade
+        //this.nameToMappedConcept = nameToMappedConcept || {};
     },
 
     /*
@@ -17420,6 +17425,29 @@ var Context = Class.create({
 //
 //    },
 
+    createResolvedContext: function() {
+        var result = new Context(this.prefixMapping);
+
+        forEach(this.nameToSource, function(source, name) {
+
+            var mc = source.getMappedConcept();
+            var agg = mc.getAgg();
+            var aggClone = agg.clone();
+
+            var b = new MappedConcept(mc.getConcept(), aggClone);
+            var s = new MappedConceptSource(b, source.getSparqlService());
+
+            result.addSource(name, s);
+        });
+
+        forEach(result.nameToSource, function(source, name) {
+            result.processRefs(name, source);
+        });
+
+
+        return result;
+    },
+
     processRefs: function(baseName, source) {
         var mappedConcept = source.getMappedConcept();
         var sparqlService = source.getSparqlService();
@@ -17434,6 +17462,11 @@ var Context = Class.create({
             //console.log('TEMPLATE REF SPEC ' + JSON.stringify(refSpec));
 
             var target = refSpec.getTarget();
+
+            // Evaluate function targets
+            if(ObjectUtils.isFunction(target)) {
+                target = target();
+            }
 
             if(target instanceof MappedConcept) {
                 // TODO mappedConcepts used as references are AggObject,
@@ -17484,54 +17517,31 @@ var Context = Class.create({
         });
     },
 
-    addTemplate: function(spec) {
-        var name = spec.name;
-        if(!name) {
-            throw new Error('Sponate spec must have a name');
-        }
-
-        var mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
-
-        this.nameToMappedConcept[name] = mappedConcept;
-    },
-
-    add: function(spec) {
-        var name = spec.name;
-        if(!name) {
-            throw new Error('Sponate spec must have a name');
-        }
-
-        var sparqlService = spec.service;
-        if(!sparqlService) {
-            throw new Error('No service provided for ', spec);
-        }
-
-        var mappedConcept;
-        if(ObjectUtils.isString(spec.template)) {
-            var templateName = spec.template;
-            var tmp = this.nameToMappedConcept[templateName];
-            if(!tmp) {
-                throw new Error('No template with name ' + templateName + ' registered.');
-            }
-
-            mappedConcept = new MappedConcept(tmp.getConcept(), tmp.getAgg().clone());
-        } else {
-            mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
-        }
+//    addTemplate: function(spec) {
+//        var name = spec.name;
+//        if(!name) {
+//            throw new Error('Sponate spec must have a name');
+//        }
+//
+//        var mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
+//
+//        this.nameToMappedConcept[name] = mappedConcept;
+//    },
+//
+    addSource: function(name, source) {
+        this.nameToSource[name] = source;
 
         //console.log('MAPPED CONCEPT ' + name + ': ' + JSON.stringify(mappedConcept, null, null));
 
-        var source = new MappedConceptSource(mappedConcept, sparqlService);
+//        var source = new MappedConceptSource(mappedConcept, sparqlService);
 
-        this.processRefs(name, source);
-
-        this.nameToSource[name] = source;
+        //this.processRefs(name, source);
     },
 });
 
 module.exports = Context;
 
-},{"../ext/Class":2,"../sparql/expr/ExprVar":268,"../util/ObjectUtils":331,"./AggUtils":281,"./MappedConcept":287,"./MappedConceptSource":288,"./RefSpec":292,"./SponateUtils":294,"./agg/AggMap":312,"./binding_mapper/BindingMapperExpr":319}],284:[function(require,module,exports){
+},{"../ext/Class":2,"../sparql/expr/ExprVar":268,"../util/ObjectUtils":331,"./AggUtils":281,"./MappedConcept":287,"./MappedConceptSource":288,"./RefSpec":292,"./agg/AggMap":312,"./binding_mapper/BindingMapperExpr":319,"lodash.foreach":432}],284:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ListServiceUtils = require('./ListServiceUtils');
@@ -18348,12 +18358,18 @@ module.exports = Query;
 var Class = require('../ext/Class');
 
 var RefSpec = Class.create({
-   initialize: function(target, attr) {
+   initialize: function(target, attr) { //, parser) {
+       //this.parser = parser;
+
        // Target can be (temporarily) an arbitrary object - but eventually
        // it usually becomes a string denoting the id of the target
        this.target = target;
        this.attr = attr;
    },
+
+//   getParser: function() {
+//       return this.parser;
+//   },
 
    getTarget: function() {
        return this.target;
@@ -18865,7 +18881,6 @@ var TemplateParser = Class.create({
         }
 
         var refSpec = new RefSpec(target, val.attr);
-
         var onStr = val.on;
 
         var bindingMapper = null;
@@ -18912,6 +18927,7 @@ var TemplateParser = Class.create({
 //
 // // friends: ArrayField(
 // },
+
     parseAgg: function(val) {
 
         // console.log('PARSING: ' + JSON.stringify(val));
@@ -18923,6 +18939,7 @@ var TemplateParser = Class.create({
         } else if (Array.isArray(val)) {
             result = this.parseArray(val);
         } else if (ObjectUtils.isFunction(val)) {
+            //result = this.parseAggSupplier(val);
             throw new Error('Implement this case: ' + JSON.stringify(val));
             // result = new AggCustomAgg(new AccFactoryFn(val));
         } else if (val instanceof Node && val.isVariable()) {
@@ -20167,6 +20184,16 @@ var CollectionFacade = Class.create({
         this.mappingName = mappingName;
     },
 
+    /**
+     * Convenience method to access the object(!) aggregator
+     *
+     * This is not the source's root aggregator, but the root's child
+     */
+    getAggObject: function() {
+        var result = this.getSource().getMappedConcept().getAgg().getSubAgg();
+        return result;
+    },
+
     getSource: function() {
         var result = this.storeFacade.getContext().getSource(this.mappingName);
         return result;
@@ -20248,7 +20275,10 @@ var QueryFlow = Class.create({
 
     list: function() {
         //var engine = this.storeFacade.getEngine();
-        var context = this.storeFacade.getContext();
+        //var context = this.storeFacade.getContext();
+        //var context = this.storeFacade.createContext();
+        var context = this.storeFacade.getContext().createResolvedContext();
+
         var result = Engine.exec(context, this.query);
         return result;
 
@@ -20276,30 +20306,43 @@ var ObjectUtils = require('../../util/ObjectUtils');
 var Context = require('../Context');
 var Engine = require('../Engine');
 
+var SponateUtils = require('../SponateUtils');
+var MappedConceptSource = require('../MappedConceptSource');
+var MappedConcept = require('../MappedConcept');
+
+
 var CollectionFacade = require('./CollectionFacade');
 
 var ObjectUtils = require('../../util/ObjectUtils');
 
+var forEach = require('lodash.foreach');
+
+
 var StoreFacade = Class.create({
-    initialize: function(defaultSparqlService, prefixMapping) {
+    initialize: function(defaultSparqlService, prefixMapping, context) {
         this.defaultSparqlService = defaultSparqlService;
 
-        prefixMapping = prefixMapping
+        this.prefixMapping = prefixMapping
             ? prefixMapping instanceof PrefixMappingImpl
                 ? prefixMapping
                 : new PrefixMappingImpl(prefixMapping)
             : new PrefixMappingImpl();
 
-        this.context = new Context(prefixMapping);
+        this.context = context || new Context(prefixMapping);
+//        this.nameToMap = {};
+
+        // This map is for templates (just convenience in the facade)
+        this.nameToMappedConcept = {};
     },
 
-    getEngine: function() {
-        return this.engine;
-    },
+//    getEngine: function() {
+//        return this.engine;
+//    },
 
     getContext: function() {
         return this.context;
     },
+
 
 //    getPrefixMapping: function() {
 //        return this.prefixMapping;
@@ -20310,23 +20353,79 @@ var StoreFacade = Class.create({
 //    },
 
     addTemplate: function(spec) {
-        this.context.addTemplate(spec);
+        var name = spec.name;
+        if(!name) {
+            throw new Error('Sponate spec must have a name');
+        }
+
+        var mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
+
+        this.nameToMappedConcept[name] = mappedConcept;
+
+        //this.context.addTemplate(spec);
+//        var name = spec.name;
+//        if(!name) {
+//            throw new Error('Sponate spec must have a name');
+//        }
+//
+//        this.nameToTemplate[name] = spec;
     },
 
     addMap: function(spec) {
-        if(!spec.service) {
-            ObjectUtils.extend({}, spec);
-            spec.service = this.defaultSparqlService;
+        var name = spec.name;
+        if(!name) {
+            throw new Error('Sponate spec must have a name');
         }
 
-        this.context.add(spec);
-        var name = spec.name; // context.add will fail if the name is missing
+        var sparqlService = spec.service || this.defaultSparqlService;
+        if(!sparqlService) {
+            throw new Error('No service provided for ', spec);
+        }
+
+        var mappedConcept;
+        if(ObjectUtils.isString(spec.template)) {
+            var templateName = spec.template;
+            var tmp = this.nameToMappedConcept[templateName];
+            if(!tmp) {
+                throw new Error('No template with name ' + templateName + ' registered.');
+            }
+
+            mappedConcept = new MappedConcept(tmp.getConcept(), tmp.getAgg().clone());
+        } else {
+            mappedConcept = SponateUtils.parseSpec(spec, this.prefixMapping);
+        }
+
+        var source = new MappedConceptSource(mappedConcept, sparqlService);
+
+        this.context.addSource(name, source);
 
         this[name] = new CollectionFacade(this, name);
+
+        return source;
+
+//        if(!spec.service) {
+//            ObjectUtils.extend({}, spec);
+//            spec.service = this.defaultSparqlService;
+//        }
+//
+//        this.context.add(spec);
+//        var name = spec.name; // context.add will fail if the name is missing
+//
+//        if(!name) {
+//            throw new Error('Sponate spec must have a name');
+//        }
+//        this.context.add(spec);
+
+//        this[name] = new CollectionFacade(this, name);
+//        this.nameToMap[name] = spec;
     },
 
     getListService: function(sourceName, isLeftJoin) {
-        var result = Engine.createListService(this.context, sourceName, isLeftJoin);
+        var context = this.context.createResolvedContext();
+
+        var result = Engine.createListService(context, sourceName, isLeftJoin);
+
+        //var result = Engine.createListService(this.context, sourceName, isLeftJoin);
         return result;
     },
 
@@ -20334,7 +20433,7 @@ var StoreFacade = Class.create({
 
 module.exports = StoreFacade;
 
-},{"../../ext/Class":2,"../../rdf/PrefixMappingImpl":94,"../../util/ObjectUtils":331,"../Context":283,"../Engine":284,"./CollectionFacade":322}],325:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/PrefixMappingImpl":94,"../../util/ObjectUtils":331,"../Context":283,"../Engine":284,"../MappedConcept":287,"../MappedConceptSource":288,"../SponateUtils":294,"./CollectionFacade":322,"lodash.foreach":432}],325:[function(require,module,exports){
 'use strict';
 
 var ns = {
