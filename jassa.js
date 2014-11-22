@@ -15465,6 +15465,8 @@ module.exports = ElementGroup;
 },{"../../ext/Class":2,"../../rdf/TripleUtils":95,"../PatternUtils":219,"./../ElementHelpers":208,"./Element":234,"./ElementFilter":236,"./ElementTriplesBlock":242,"lodash.uniq":593}],238:[function(require,module,exports){
 var union = require('lodash.union');
 
+var NodeUtils = require('../../rdf/NodeUtils');
+
 var Class = require('../../ext/Class');
 var Element = require('./Element');
 
@@ -15518,7 +15520,7 @@ var ElementNamedGraph = Class.create(Element, {
 
 module.exports = ElementNamedGraph;
 
-},{"../../ext/Class":2,"./Element":234,"lodash.union":570}],239:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":92,"./Element":234,"lodash.union":570}],239:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Element = require('./Element');
 
@@ -17801,11 +17803,11 @@ var UpdateWithUsing = Class.create({
         }
 
         if(this.usingNodes != null) {
-            result += 'USING ' + usingNodes.join(' ') + ' ';
+            result += 'USING ' + this.usingNodes.join(' ') + ' ';
         }
 
         if(this.usingNamedNodes != null) {
-            result += 'USING NAMED' + usingNamedNodes.join(' ') + ' ';
+            result += 'USING NAMED' + this.usingNamedNodes.join(' ') + ' ';
         }
 
         return result;
