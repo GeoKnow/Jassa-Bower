@@ -6797,6 +6797,9 @@ var LiteralLabel = require('./LiteralLabel');
 var TypeMapper = require('./TypeMapper');
 var DefaultRdfDatatypes = require('./rdf_datatype/DefaultRdfDatatypes');
 
+var ObjectUtils = require('../util/ObjectUtils');
+
+
 // TODO Move to util package
 // http://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes
 var strRegex = /"([^"\\]*(\\.[^"\\]*)*)"/;
@@ -6860,6 +6863,10 @@ var NodeFactory = {
             dtype = typeMapper.getSafeTypeByName(typeUri);
         }
 
+        if(!dtype) {
+            throw new Error('Internal error: No datatype object for: ' + typeUri + '(' + typeof(typeUri) + ')');
+        }
+
         var val = dtype.parse(str);
         var lex = str;
         var lang = ''; // TODO Use null instead of empty string???
@@ -6872,7 +6879,9 @@ var NodeFactory = {
         if (!talisJson || typeof(talisJson.type) === 'undefined') {
             throw new Error('Invalid node: ' + JSON.stringify(talisJson));
         }
+
         var result;
+        var datatype = talisJson.datatype;
 
         switch (talisJson.type) {
             case 'bnode':
@@ -6885,13 +6894,18 @@ var NodeFactory = {
                 break;
 
             case 'literal':
-                // Virtuoso at some version had a bug with langs - note: || is coalesce
-                var lang = talisJson.lang || talisJson['xml:lang'];
-                result = NodeFactory.createPlainLiteral(talisJson.value, lang);
+                if(!ObjectUtils.isEmptyString(datatype)) {
+                    result = NodeFactory.createTypedLiteralFromString(talisJson.value, datatype);
+                } else {
+
+                    // Virtuoso at some version had a bug with langs - note: || is coalesce
+                    var lang = talisJson.lang || talisJson['xml:lang'];
+                    result = NodeFactory.createPlainLiteral(talisJson.value, lang);
+                }
                 break;
 
             case 'typed-literal':
-                result = NodeFactory.createTypedLiteralFromString(talisJson.value, talisJson.datatype);
+                result = NodeFactory.createTypedLiteralFromString(talisJson.value, datatype);
                 break;
 
             default:
@@ -6974,7 +6988,7 @@ var NodeFactory = {
 
 module.exports = NodeFactory;
 
-},{"./AnonIdStr":89,"./LiteralLabel":90,"./TypeMapper":96,"./node/Node":103,"./node/Node_Blank":104,"./node/Node_Literal":107,"./node/Node_Uri":108,"./node/Var":110,"./rdf_datatype/DefaultRdfDatatypes":112}],92:[function(require,module,exports){
+},{"../util/ObjectUtils":342,"./AnonIdStr":89,"./LiteralLabel":90,"./TypeMapper":96,"./node/Node":103,"./node/Node_Blank":104,"./node/Node_Literal":107,"./node/Node_Uri":108,"./node/Var":110,"./rdf_datatype/DefaultRdfDatatypes":112}],92:[function(require,module,exports){
 var UriUtils = require('../util/UriUtils');
 
 var NodeUtils = {
@@ -21426,6 +21440,11 @@ var isEqual = require('lodash.isequal');
 var JsonUtils = require('./JsonUtils');
 
 var ObjectUtils = {
+    isEmptyString: function(str) {
+        var result = str == null || str.length === 0 || str.trim() === '';
+        return result;
+    },
+
     isObject: function(obj) {
         var type = typeof obj;
         return type === 'function' || type === 'object' && Boolean(obj);
