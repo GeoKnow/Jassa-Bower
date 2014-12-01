@@ -7175,6 +7175,8 @@ var NodeUtils = {
 
 module.exports = NodeUtils;
 },{"../util/UriUtils":355}],96:[function(require,module,exports){
+var forEach = require('lodash.foreach');
+
 var Class = require('../ext/Class');
 
 var PrefixUtils = require('../util/PrefixUtils');
@@ -7249,16 +7251,19 @@ var PrefixMappingImpl = Class.create({
 //            }
 //        });
 
-        for (var prefix in this.prefixes) {
-            if (this.prefixes.hasOwnProperty(prefix)) {
-                var ns = this.prefixes[prefix];
-                if (startsWith(uri, ns)) {
-                    if (!bestNs || (ns.length > bestNs.length)) {
-                        result = prefix;
-                        bestNs = ns;
-                    }
+        var processCandidate = function(ns, prefix) {
+            if (startsWith(uri, ns)) {
+                if (!bestNs || (ns.length > bestNs.length)) {
+                    result = prefix;
+                    bestNs = ns;
                 }
             }
+        };
+
+        var current = this.prefixes;
+        while(current != null) {
+            forEach(current, processCandidate);
+            current = Object.getPrototypeOf(current);
         }
 
         return result;
@@ -7339,7 +7344,7 @@ var PrefixMappingImpl = Class.create({
 
 module.exports = PrefixMappingImpl;
 
-},{"../ext/Class":2,"../util/PrefixUtils":348}],97:[function(require,module,exports){
+},{"../ext/Class":2,"../util/PrefixUtils":348,"lodash.foreach":450}],97:[function(require,module,exports){
 var Class = require('../ext/Class');
 var NodeUtils = require('./NodeUtils');
 
