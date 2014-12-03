@@ -9046,11 +9046,11 @@ var ServiceUtils = {
      * @returns jassa.rdf.Graph
      */
     execDescribeViaSelect: function(sparqlService, iris) {
-        var query = QueryUtils.createQueryDescribeViaSelect(iris);
+        var query = QueryUtils.createQueryDescribeViaSelect(iris, VarUtils.s, VarUtils.p, VarUtils.o);
 
         var qe = sparqlService.createQueryExecution(query);
         var result = qe.execSelect().then(function(rs) {
-            var r = ResultSetUtils.resultSetToGraph(rs);
+            var r = ResultSetUtils.resultSetToGraph(rs, VarUtils.s, VarUtils.p, VarUtils.o);
             return r;
         });
 
@@ -14970,12 +14970,12 @@ var ElementUnion = require('./element/ElementUnion');
 var ElementSubQuery = require('./element/ElementSubQuery');
 var ElementTriplesBlock = require('./element/ElementTriplesBlock');
 
-var VarUtils = require('./VarUtils');
+//var VarUtils = require('./VarUtils');
 
 var Query = require('./Query');
 
 var QueryUtils = {
-    // This method is dangerous as it attempts to handle to many cases
+    // This method is dangerous as it attempts to handle too many cases
     // don't use
     createQueryCount: function(elements, limit, variable, outputVar, groupVars, useDistinct, options) {
         var element = elements.length === 1 ? elements[0] : new ElementGroup(elements);
@@ -15069,23 +15069,22 @@ var QueryUtils = {
     },
 
     // iris as rdf.Nodes
-    // TODO Move to CannedQueryUtils
-    createQueryDescribeViaSelect: function(iris) {
+    createQueryDescribeViaSelect: function(iris, s, p, o) {
 
         var result = new Query();
         result.setQuerySelectType();
         result.setDistinct(true);
 
         var element = new ElementGroup([
-            new ElementTriplesBlock([new Triple(VarUtils.s, VarUtils.p, VarUtils.o)]),
-            new ElementFilter(new E_OneOf(new ExprVar(VarUtils.s), iris))
+            new ElementTriplesBlock([new Triple(s, p, o)]),
+            new ElementFilter(new E_OneOf(new ExprVar(s), iris))
         ]);
 
         result.setQueryPattern(element);
 
-        result.getProject().add(VarUtils.s);
-        result.getProject().add(VarUtils.p);
-        result.getProject().add(VarUtils.o);
+        result.getProject().add(s);
+        result.getProject().add(p);
+        result.getProject().add(o);
 
         return result;
     }
@@ -15094,7 +15093,7 @@ var QueryUtils = {
 
 module.exports = QueryUtils;
 
-},{"../rdf/Triple":98,"./Query":227,"./VarUtils":236,"./agg/AggCount":237,"./element/ElementFilter":241,"./element/ElementGroup":242,"./element/ElementSubQuery":246,"./element/ElementTriplesBlock":247,"./element/ElementUnion":248,"./expr/E_OneOf":270,"./expr/ExprAggregator":274,"./expr/ExprVar":282}],230:[function(require,module,exports){
+},{"../rdf/Triple":98,"./Query":227,"./agg/AggCount":237,"./element/ElementFilter":241,"./element/ElementGroup":242,"./element/ElementSubQuery":246,"./element/ElementTriplesBlock":247,"./element/ElementUnion":248,"./expr/E_OneOf":270,"./expr/ExprAggregator":274,"./expr/ExprVar":282}],230:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 /**
