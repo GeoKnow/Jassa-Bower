@@ -8670,6 +8670,9 @@ var ResultSetArrayIteratorBinding = require('./result_set/ResultSetArrayIterator
 var ResultSetPart = require('./ResultSetPart');
 var Binding = require('../sparql/Binding');
 
+var Triple = require('../rdf/Triple');
+var GraphImpl = require('../rdf/GraphImpl');
+
 var ResultSetUtils = {
 
     jsonToResultSet: function(json) {
@@ -8725,11 +8728,29 @@ var ResultSetUtils = {
 
         var result = this.createResultSetFromBindings([], varNames);
         return result;
+    },
+
+    resultSetToGraph: function(rs, s, p, o) {
+        var bindings = rs.getBindings();
+
+        var result = this.bindingsToGraph(bindings, s, p, o);
+        return result;
+    },
+
+    bindingsToGraph: function(bindings, s, p, o) {
+        var result = new GraphImpl();
+
+        bindings.forEach(function(b) {
+            var t = new Triple(b.get(s), b.get(p), b.get(o));
+            result.add(t);
+        });
+
+        return result;
     }
 };
 
 module.exports = ResultSetUtils;
-},{"../sparql/Binding":207,"../sparql/VarUtils":236,"../util/collection/HashMap":360,"../util/collection/IteratorArray":364,"./ResultSetPart":130,"./result_set/ResultSetArrayIteratorBinding":184}],132:[function(require,module,exports){
+},{"../rdf/GraphImpl":93,"../rdf/Triple":98,"../sparql/Binding":207,"../sparql/VarUtils":236,"../util/collection/HashMap":360,"../util/collection/IteratorArray":364,"./ResultSetPart":130,"./result_set/ResultSetArrayIteratorBinding":184}],132:[function(require,module,exports){
 var union = require('lodash.union');
 var shared = require('../util/shared');
 var Promise = shared.Promise;
@@ -8749,6 +8770,19 @@ var Binding = require('../sparql/Binding');
 var ConceptUtils = require('../sparql/ConceptUtils');
 var ElementUtils = require('../sparql/ElementUtils');
 var QueryUtils = require('../sparql/QueryUtils');
+
+var ResultSetUtils = require('./ResultSetUtils');
+
+//var Triple = require('../rdf/Triple');
+////var VarUtils = require('../sparql/VarUtils');
+//var Query = require('../sparql/Query');
+////var ExprVar = jassa.sparql.ExprVar;
+////var E_OneOf = require('../sparql/E_OneOf')
+//var ElementGroup = require('../sparql/element/ElementGroup');
+//var ElementTriplesBlock = require('../sparql/element/ElementTriplesBlock');
+//var ElementFilter = jassa.sparql.ElementFilter;
+//var GraphImpl = require('../rdf/GraphImpl');
+
 
 var ServiceUtils = {
 
@@ -9004,11 +9038,30 @@ var ServiceUtils = {
 
         return result;
     },
+
+
+    /**
+     * @param sparqlService
+     * @param iris
+     * @returns jassa.rdf.Graph
+     */
+    execDescribeViaSelect: function(sparqlService, iris) {
+        var query = QueryUtils.createQueryDescribeViaSelect(iris);
+
+        var qe = sparqlService.createQueryExecution(query);
+        var result = qe.execSelect().then(function(rs) {
+            var r = ResultSetUtils.resultSetToGraph(rs);
+            return r;
+        });
+
+        return result;
+    }
+
 };
 
 module.exports = ServiceUtils;
 
-},{"../sparql/Binding":207,"../sparql/ConceptUtils":211,"../sparql/ElementUtils":214,"../sparql/QueryUtils":229,"../sparql/VarUtils":236,"../sparql/element/ElementFilter":241,"../sparql/element/ElementSubQuery":246,"../sparql/expr/E_OneOf":270,"../sparql/expr/ExprVar":282,"../util/ArrayUtils":343,"../util/collection/IteratorArray":364,"../util/shared":368,"./result_set/ResultSetArrayIteratorBinding":184,"lodash.union":578}],133:[function(require,module,exports){
+},{"../sparql/Binding":207,"../sparql/ConceptUtils":211,"../sparql/ElementUtils":214,"../sparql/QueryUtils":229,"../sparql/VarUtils":236,"../sparql/element/ElementFilter":241,"../sparql/element/ElementSubQuery":246,"../sparql/expr/E_OneOf":270,"../sparql/expr/ExprVar":282,"../util/ArrayUtils":343,"../util/collection/IteratorArray":364,"../util/shared":368,"./ResultSetUtils":131,"./result_set/ResultSetArrayIteratorBinding":184,"lodash.union":578}],133:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 
@@ -14903,14 +14956,21 @@ QueryType.Describe = 3;
 module.exports = QueryType;
 
 },{}],229:[function(require,module,exports){
+var Triple = require('../rdf/Triple');
 var ExprVar = require('./expr/ExprVar');
+
+var E_OneOf = require('./expr/E_OneOf');
 
 var ExprAggregator = require('./expr/ExprAggregator');
 var AggCount = require('./agg/AggCount');
 
+var ElementFilter = require('./element/ElementFilter');
 var ElementGroup = require('./element/ElementGroup');
 var ElementUnion = require('./element/ElementUnion');
 var ElementSubQuery = require('./element/ElementSubQuery');
+var ElementTriplesBlock = require('./element/ElementTriplesBlock');
+
+var VarUtils = require('./VarUtils');
 
 var Query = require('./Query');
 
@@ -15008,11 +15068,33 @@ var QueryUtils = {
         return result;
     },
 
+    // iris as rdf.Nodes
+    // TODO Move to CannedQueryUtils
+    createQueryDescribeViaSelect: function(iris) {
+
+        var result = new Query();
+        result.setQuerySelectType();
+        result.setDistinct(true);
+
+        var element = new ElementGroup([
+            new ElementTriplesBlock([new Triple(VarUtils.s, VarUtils.p, VarUtils.o)]),
+            new ElementFilter(new E_OneOf(new ExprVar(VarUtils.s), iris))
+        ]);
+
+        result.setQueryPattern(element);
+
+        result.getProject().add(VarUtils.s);
+        result.getProject().add(VarUtils.p);
+        result.getProject().add(VarUtils.o);
+
+        return result;
+    }
+
 };
 
 module.exports = QueryUtils;
 
-},{"./Query":227,"./agg/AggCount":237,"./element/ElementGroup":242,"./element/ElementSubQuery":246,"./element/ElementUnion":248,"./expr/ExprAggregator":274,"./expr/ExprVar":282}],230:[function(require,module,exports){
+},{"../rdf/Triple":98,"./Query":227,"./VarUtils":236,"./agg/AggCount":237,"./element/ElementFilter":241,"./element/ElementGroup":242,"./element/ElementSubQuery":246,"./element/ElementTriplesBlock":247,"./element/ElementUnion":248,"./expr/E_OneOf":270,"./expr/ExprAggregator":274,"./expr/ExprVar":282}],230:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 /**
