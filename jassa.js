@@ -6961,6 +6961,9 @@ var GraphImpl = Class.create({
 
 });
 
+module.exports = GraphImpl;
+
+
 },{"../ext/Class":2,"../util/collection/HashSet":361}],94:[function(require,module,exports){
 var Class = require('../ext/Class');
 var Node_Concrete = require('./node/Node_Concrete');
