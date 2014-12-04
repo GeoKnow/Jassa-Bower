@@ -21692,6 +21692,21 @@ var ArrayUtils = {
         return arr;
     },
 
+    find: function(arr, predicateFn) {
+        var result = null;
+
+        for(var i = 0; i < arr.length; ++i) {
+            var item = arr[i];
+            var isTrue = predicateFn(item);
+            if(isTrue) {
+                result = item;
+                break;
+            }
+        }
+
+        return result;
+    },
+
     indexOf: function(arr, item, fnEquals) {
         fnEquals = fnEquals || ObjectUtils.isEqual;
         var result = -1;
@@ -23429,6 +23444,7 @@ module.exports = ListMap;
 var Class = require('../../ext/Class');
 
 var HashSet = require('./HashSet');
+var ArrayUtils = require('../ArrayUtils');
 
 var MapUnion = Class.create({
     initialize: function(subMaps) {
@@ -23436,7 +23452,7 @@ var MapUnion = Class.create({
     },
 
     get: function(key) {
-        var map = this.subMaps.find(function(subMap) {
+        var map = ArrayUtils.find(this.subMaps, function(subMap) {
             var r = subMap.containsKey(key);
             return r;
         });
@@ -23477,7 +23493,7 @@ var MapUnion = Class.create({
 
 module.exports = MapUnion;
 
-},{"../../ext/Class":2,"./HashSet":361}],367:[function(require,module,exports){
+},{"../../ext/Class":2,"../ArrayUtils":343,"./HashSet":361}],367:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var MultiMapObjectArray = Class.create({
