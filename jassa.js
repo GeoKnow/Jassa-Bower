@@ -6808,12 +6808,14 @@ var TalisRdfJsonUtils = {
     shortForm: function(iriStr, prefixMapping) {
         var result = prefixMapping ? prefixMapping.shortForm(iriStr) : iriStr;
         if(result === iriStr) {
-            result = '<' + iriStr + '>\n';
+            result = '<' + iriStr + '>';
         }
 
         return result;
     },
 
+    // TODO Add a flag whether to ouput prefix declarations
+    // TODO Add a method to create a new prefix mapping from prefixes that are in actually in use in a graph
     talisRdfJsonToTurtle: function(data, prefixMapping) {
         var ss = Object.keys(data);
         ss.sort();
@@ -6821,7 +6823,7 @@ var TalisRdfJsonUtils = {
         var result = '';
         ss.forEach(function(s) {
 
-            result += TalisRdfJsonUtils.shortForm(s, prefixMapping);
+            result += TalisRdfJsonUtils.shortForm(s, prefixMapping) + '\n';
 
             var po = data[s];
             var ps = Object.keys(po);
@@ -6838,6 +6840,7 @@ var TalisRdfJsonUtils = {
 
                     var r;
                     try {
+                        // TODO Shorten datatype IRIs
                         var node = NodeFactory.createFromTalisRdfJson(clone);
                         r = node.isUri()
                             ? TalisRdfJsonUtils.shortForm(node.getUri(), prefixMapping)
@@ -6858,7 +6861,7 @@ var TalisRdfJsonUtils = {
                     return r;
                 });
 
-                result += oStrs.join(', ') + ' ; \n';
+                result += ' ' + oStrs.join(', ') + ' ; \n';
             });
             result += '    . \n';
         });
