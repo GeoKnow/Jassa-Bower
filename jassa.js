@@ -6830,7 +6830,7 @@ var TalisRdfJsonUtils = {
             ps.sort();
 
             ps.forEach(function(p) {
-                result += '   ' + TalisRdfJsonUtils.shortForm(p, prefixMapping);
+                result += '    ' + TalisRdfJsonUtils.shortForm(p, prefixMapping);
 
                 var os = po[p];
 
@@ -7432,6 +7432,8 @@ var PrefixMappingImpl = Class.create({
 
     /**
      * Answer the prefix for the given URI, or null if there isn't one.
+     *
+     * TODO Do not return prefix matches if it using it for the short form would lead to an invalid CURIE
      */
     getNsURIPrefix: function(uri) {
         var result = null;
@@ -22147,8 +22149,8 @@ var PrefixUtils = {
         return result;
     },
 
-    // A very permissive curie pattern: anything with a colon that does not contain slashes or whitespaces
-    permissiveCuriePattern: /^\s*([^:/]+):([^\s/]+)\s*$/,
+    // A very permissive curie pattern: anything with a colon that does not contain slashes, colons or whitespaces
+    permissiveCuriePattern: /^\s*([^:/]+):([^\s/:]+)\s*$/,
     permissivePrefixPattern: /\s*([^:]+)\s*:\s*([^\s]*)\s*/mg,
 
 
