@@ -7574,6 +7574,20 @@ var Triple = Class.create({
         this.predicate = predicate;
         this.object = object;
     },
+
+    equals: function(that) {
+        var result =
+            this.subject.equals(that.subject) &&
+            this.predicate.equals(that.predicate) &&
+            this.object.equals(that.object);
+
+        return result;
+    },
+
+    hashCode: function() {
+        return this.toString();
+    },
+
     toString: function() {
         return this.subject + ' ' + this.predicate + ' ' + this.object;
     },
@@ -14545,6 +14559,7 @@ module.exports = PatternUtils;
 },{"lodash.union":580}],225:[function(require,module,exports){
 var Class = require('../ext/Class');
 var NodeUtils = require('../rdf/NodeUtils');
+var NodeFactory = require('../rdf/NodeFactory');
 
 var Triple = require('../rdf/Triple');
 
@@ -14605,9 +14620,19 @@ var Quad = Class.create({
 
 });
 
+Quad.defaultGraphNodeGenerated =  NodeFactory.createUri('urn:x-arq:DefaultGraphNode');
+Quad.defaultGraphIri           =  NodeFactory.createUri('urn:x-arq:DefaultGraph');
+Quad.unionGraph                =  NodeFactory.createUri('urn:x-arq:UnionGraph');
+
+Quad.createFromTriple = function(graphNode, triple) {
+    graphNode = graphNode || Quad.defaultGraphNodeGenerated;
+    var result = new Quad(graphNode, triple.subject, triple.predicate, triple.object);
+    return result;
+};
+
 module.exports = Quad;
 
-},{"../ext/Class":2,"../rdf/NodeUtils":96,"../rdf/Triple":98}],226:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":95,"../rdf/NodeUtils":96,"../rdf/Triple":98}],226:[function(require,module,exports){
 var HashMap = require('../util/collection/HashMap');
 
 var Triple = require('../rdf/Triple');
