@@ -6742,6 +6742,7 @@ var GraphImpl = require('../rdf/GraphImpl');
 var NodeFactory = require('../rdf/NodeFactory');
 var NodeUtils = require('../rdf/NodeUtils');
 
+
 var TalisRdfJsonUtils = {
 
     triplesToTalisRdfJson: function(triples) {
@@ -6766,7 +6767,7 @@ var TalisRdfJsonUtils = {
         return result;
     },
 
-    taisRdfJsonToGraph: function(talisRdfJson) {
+    talisRdfJsonToGraph: function(talisRdfJson) {
         var triples = this.talisRdfJsonToTriples(talisRdfJson);
         var result = new GraphImpl();
         result.addAll(triples);
