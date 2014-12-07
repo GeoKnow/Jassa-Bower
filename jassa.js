@@ -6738,6 +6738,7 @@ module.exports = Jassa;
 
 },{"./ext":4,"./facete":55,"./geo":87,"./io":90,"./rdf":107,"./service":142,"./sparql":285,"./sponate":342,"./util":369,"./util/shared":370,"./vocab":372}],89:[function(require,module,exports){
 var Triple = require('../rdf/Triple');
+var GraphImpl = require('../rdf/GraphImpl');
 var NodeFactory = require('../rdf/NodeFactory');
 var NodeUtils = require('../rdf/NodeUtils');
 
@@ -6762,6 +6763,13 @@ var TalisRdfJsonUtils = {
             os.push(o);
         });
 
+        return result;
+    },
+
+    taisRdfJsonToGraph: function(talisRdfJson) {
+        var triples = this.talisRdfJsonToTriples(talisRdfJson);
+        var result = new GraphImpl();
+        result.addAll(triples);
         return result;
     },
 
@@ -6886,7 +6894,7 @@ var TalisRdfJsonUtils = {
 
 module.exports = TalisRdfJsonUtils;
 
-},{"../rdf/NodeFactory":95,"../rdf/NodeUtils":96,"../rdf/Triple":98}],90:[function(require,module,exports){
+},{"../rdf/GraphImpl":93,"../rdf/NodeFactory":95,"../rdf/NodeUtils":96,"../rdf/Triple":98}],90:[function(require,module,exports){
 'use strict';
 
 var ns = {
@@ -6936,8 +6944,8 @@ var Class = require('../ext/Class');
 var HashSet = require('../util/collection/HashSet');
 
 var GraphImpl = Class.create({
-    initialize: function() {
-        this.triples = new HashSet();
+    initialize: function(triplesSet) {
+        this.triples = triplesSet || new HashSet();
     },
 
     add: function(triple) {
@@ -6966,9 +6974,9 @@ var GraphImpl = Class.create({
 
 
     // Adds items from a .forEach-able object (i.e. graph or array of triples)
-    addAll: function(otherGraph) {
+    addAll: function(triples) {
         var self = this;
-        otherGraph.forEach(function(triple) {
+        triples.forEach(function(triple) {
             self.add(triple);
         });
     },
