@@ -23367,8 +23367,8 @@ var HashSet = Class.create({
 
     map: function(fn) {
         var items = this.entries();
-
-        items.forEach(fn);
+        var result = items.map(fn);
+        return result;
     },
 
     retainAll: function(otherSet) {
