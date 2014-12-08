@@ -6963,6 +6963,10 @@ var GraphImpl = Class.create({
         this.triples.forEach(callback);
     },
 
+    map: function(callback) {
+        this.triples.map(callback);
+    },
+
     contains: function(triple) {
         var result = this.triples.contains(triple);
         return result;
@@ -7622,6 +7626,7 @@ module.exports = Triple;
 
 },{"../ext/Class":2,"./NodeUtils":96}],99:[function(require,module,exports){
 var uniq = require('lodash.uniq');
+
 
 var TripleUtils = {
     uniqTriples: function(triples) {
@@ -14646,6 +14651,17 @@ var ElementUtils = require('./ElementUtils');
 var Quad = require('./Quad');
 
 var QuadUtils = {
+    triplesToQuads: function(triples, graphNode) {
+
+        var result = triples.map(function(triple) {
+            var r = new Quad.createFromTriple(graphNode, triple);
+            return r;
+        });
+
+        return result;
+    },
+
+
     quadsToElement: function(quads) {
         var map = this.groupByGraph(quads);
         var result = this.groupToElement(map);
