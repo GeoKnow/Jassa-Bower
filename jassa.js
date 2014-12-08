@@ -23365,6 +23365,12 @@ var HashSet = Class.create({
         items.forEach(fn);
     },
 
+    map: function(fn) {
+        var items = this.entries();
+
+        items.forEach(fn);
+    },
+
     retainAll: function(otherSet) {
         this.forEach(function(item) {
             var isContained = otherSet.contains(item);
