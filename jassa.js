@@ -23486,6 +23486,10 @@ var HashMap = Class.create({
         var doRemove = i >= 0;
         if (doRemove) {
             bucket.splice(i, 1);
+
+            if(bucket.length === 0) {
+                delete this.hashToBucket[hash];
+            }
         }
 
         return doRemove;
