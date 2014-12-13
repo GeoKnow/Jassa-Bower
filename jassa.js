@@ -7607,7 +7607,11 @@ var Triple = Class.create({
     },
 
     hashCode: function() {
-        return this.toString();
+        if(this.hash == null) {
+            this.hash = this.subject.hashCode() + 3 * this.predicate.hashCode() + 7 * this.object.hashCode();
+        }
+
+        return this.hash;
     },
 
     toString: function() {
@@ -7891,8 +7895,7 @@ var Node = Class.create({
     },
 
     getBlankNodeLabel: function() {
-        // Convenience override
-        return this.getBlankNodeId().getLabelString();
+        throw new Error('is not a blank node');
     },
 
     getLiteral: function() {
@@ -7931,43 +7934,51 @@ var Node = Class.create({
         return false;
     },
 
-    equals: function(that) {
-        // By default we assume non-equality
-        var result = false;
+    equals: function() {
+        throw new Error('not overridden');
+    },
 
-        if (that == null) {
-            result = false;
-
-        } else if (this.isLiteral()) {
-            if (that.isLiteral()) {
-                var isSameLex = this.getLiteralLexicalForm() === that.getLiteralLexicalForm();
-                var isSameType = this.getLiteralDatatypeUri() === that.getLiteralDatatypeUri();
-                var isSameLang = this.getLiteralLanguage() === that.getLiteralLanguage();
-
-                result = isSameLex && isSameType && isSameLang;
-            }
-
-        } else if (this.isUri()) {
-            if (that.isUri()) {
-                result = this.getUri() === that.getUri();
-            }
-
-        } else if (this.isVariable()) {
-            if (that.isVariable()) {
-                result = this.getName() === that.getName();
-            }
-
-        } else if (this.isBlank()) {
-            if (that.isBlank()) {
-                result = this.getBlankNodeLabel() === that.getBlankNodeLabel();
-            }
-
-        } else {
-            throw new Error('not implemented yet');
-        }
-
-        return result;
+    hashCode: function() {
+        throw new Error('not overridden');
     }
+
+//    equals: function(that) {
+//        // By default we assume non-equality
+//        var result = false;
+//
+//        if (that == null) {
+//            result = false;
+//
+//        } else if (this.isLiteral()) {
+//            if (that.isLiteral()) {
+//                var isSameLex = this.getLiteralLexicalForm() === that.getLiteralLexicalForm();
+//                var isSameType = this.getLiteralDatatypeUri() === that.getLiteralDatatypeUri();
+//                var isSameLang = this.getLiteralLanguage() === that.getLiteralLanguage();
+//
+//                result = isSameLex && isSameType && isSameLang;
+//            }
+//
+//        } else if (this.isUri()) {
+//            if (that.isUri()) {
+//                result = this.getUri() === that.getUri();
+//            }
+//
+//        } else if (this.isVariable()) {
+//            if (that.isVariable()) {
+//                result = this.getName() === that.getName();
+//            }
+//
+//        } else if (this.isBlank()) {
+//            if (that.isBlank()) {
+//                result = this.getBlankNodeLabel() === that.getBlankNodeLabel();
+//            }
+//
+//        } else {
+//            throw new Error('not implemented yet');
+//        }
+//
+//        return result;
+//    }
 });
 
 module.exports = Node;
@@ -7975,6 +7986,8 @@ module.exports = Node;
 },{"../../ext/Class":2}],109:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node_Concrete = require('./Node_Concrete');
+
+var ObjectUtils = require('../../util/ObjectUtils');
 
 var Node_Blank = Class.create(Node_Concrete, {
     classLabel: 'jassa.rdf.Node_Blank',
@@ -7994,6 +8007,32 @@ var Node_Blank = Class.create(Node_Concrete, {
         return this.anonId;
     },
 
+    getBlankNodeLabel: function() {
+        // Convenience override
+        return this.anonId.getLabelString();
+    },
+
+
+    hashCode: function() {
+        if(this.hash == null) {
+            var str = this.anonId.getLabelString();
+            this.hash = ObjectUtils.hashCodeStr(str);
+        }
+
+        return this.hash;
+    },
+
+    equals: function(that) {
+        var result =
+            that != null &&
+            that.anonId != null &&
+            that.anonId.getLabelString != null &&
+            this.anonId.getLabelString() === that.anonId.getLabelString()
+        ;
+
+        return result;
+    },
+
     toString: function() {
         return '_:' + this.anonId;
     }
@@ -8001,7 +8040,7 @@ var Node_Blank = Class.create(Node_Concrete, {
 
 module.exports = Node_Blank;
 
-},{"../../ext/Class":2,"./Node_Concrete":110}],110:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":355,"./Node_Concrete":110}],110:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node = require('./Node');
 
@@ -8031,6 +8070,8 @@ module.exports = Node_Fluid;
 var Class = require('../../ext/Class');
 var Node_Concrete = require('./Node_Concrete');
 
+var ObjectUtils = require('../../util/ObjectUtils');
+
 var Node_Literal = Class.create(Node_Concrete, {
     classLabel: 'Node_Literal',
     initialize: function(literalLabel) {
@@ -8059,6 +8100,27 @@ var Node_Literal = Class.create(Node_Concrete, {
     getLiteralLanguage: function() {
         return this.literalLabel.getLanguage();
     },
+    hashCode: function() {
+        if(this.hash == null) {
+            this.hash =
+                ObjectUtils.hashCodeStr(this.getLiteralLexicalForm()) +
+                3 * ObjectUtils.hashCodeStr(this.getLiteralDatatypeUri()) +
+                7 * ObjectUtils.hashCodeStr(this.getLiteralLanguage());
+        }
+
+        return this.hash;
+    },
+    equals: function(that) {
+        var result =
+            that != null &&
+            that.isLiteral != null &&
+            that.isLiteral() &&
+            this.getLiteralLexicalForm() === that.getLiteralLexicalForm() &&
+            this.getLiteralDatatypeUri() === that.getLiteralDatatypeUri() &&
+            this.getLiteralLanguage() === that.getLiteralLanguage();
+
+        return result;
+    },
     toString: function() {
         return this.literalLabel.toString();
     }
@@ -8066,9 +8128,11 @@ var Node_Literal = Class.create(Node_Concrete, {
 
 module.exports = Node_Literal;
 
-},{"../../ext/Class":2,"./Node_Concrete":110}],113:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":355,"./Node_Concrete":110}],113:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node_Concrete = require('./Node_Concrete');
+
+var ObjectUtils = require('../../util/ObjectUtils');
 
 var Node_Uri = Class.create(Node_Concrete, {
     classLabel: 'jassa.rdf.Node_Uri',
@@ -8083,12 +8147,29 @@ var Node_Uri = Class.create(Node_Concrete, {
     },
     toString: function() {
         return '<' + this.uri + '>';
+    },
+
+    hashCode: function() {
+        if(this.hash == null) {
+            this.hash = ObjectUtils.hashCodeStr(this.uri);
+        }
+
+        return this.hash;
+    },
+    equals: function(that) {
+        var result =
+            that != null &&
+            that.isUri != null &&
+            that.isUri() &&
+            this.uri === that.uri;
+
+        return result;
     }
 });
 
 module.exports = Node_Uri;
 
-},{"../../ext/Class":2,"./Node_Concrete":110}],114:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":355,"./Node_Concrete":110}],114:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node_Fluid = require('./Node_Fluid');
 
@@ -8105,6 +8186,9 @@ module.exports = Node_Variable;
 var Class = require('../../ext/Class');
 var Node_Variable = require('./Node_Variable');
 
+var ObjectUtils = require('../../util/ObjectUtils');
+
+
 var Var = Class.create(Node_Variable, {
     classLabel: 'Var',
     initialize: function(name) {
@@ -8115,12 +8199,29 @@ var Var = Class.create(Node_Variable, {
     },
     toString: function() {
         return '?' + this.name;
+    },
+
+    hashCode: function() {
+        if(this.hash == null) {
+            this.hash = ObjectUtils.hashCodeStr(this.name);
+        }
+
+        return this.hash;
+    },
+    equals: function(that) {
+        var result =
+            that != null &&
+            that.isVariable != null &&
+            that.isVariable() &&
+            this.name === that.name;
+
+        return result;
     }
 });
 
 module.exports = Var;
 
-},{"../../ext/Class":2,"./Node_Variable":114}],116:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":355,"./Node_Variable":114}],116:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var RdfDatatype = require('./RdfDatatype');
 var TypedValue = require('./TypedValue');
@@ -22392,6 +22493,17 @@ var ObjectUtils = {
      */
     identity: function(x) {
         return x;
+    },
+
+    // http://jsperf.com/hashing-strings
+    hashCodeStr : function(str) {
+        var res = 0,
+        len = str.length;
+        for (var i = 0; i < len; i++) {
+            res = res * 31 + str.charCodeAt(i);
+            res = res & res;
+        }
+        return res;
     },
 
     /**
