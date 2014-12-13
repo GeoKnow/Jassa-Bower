@@ -22482,7 +22482,7 @@ var ObjectUtils = {
         if (a && a.hashCode) {
             result = a.hashCode();
         } else {
-            result = a.toString();
+            result = ObjectUtils.hashCode(a);//a.toString();
         }
 
         return result;
@@ -23480,7 +23480,7 @@ var HashMap = Class.create({
     initialize: function(fnEquals, fnHash) {
 
         this.fnEquals = fnEquals ? fnEquals : ObjectUtils.isEqual;
-        this.fnHash = fnHash ? fnHash : ObjectUtils.hashCode;
+        this.fnHash = fnHash ? fnHash : ObjectUtils.defaultHashCode;
 
         this.hashToBucket = {};
 
