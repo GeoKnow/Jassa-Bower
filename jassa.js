@@ -6961,11 +6961,7 @@ var GraphImpl = Class.create({
     },
 
     hashCode: function() {
-        var result = 0;
-        this.triples.forEach(function(triple) {
-            result += triple.hashCode();
-        });
-
+        var result = this.triples.hashCode();
         return result;
     },
 
@@ -22519,6 +22515,7 @@ var ObjectUtils = {
         return res;
     },
 
+
     /**
      * Recursively iterate the object tree and use a .hashCode function if available
      * TODO Add support to exclude attributes
@@ -23490,6 +23487,7 @@ var Class = require('../../ext/Class');
 var ObjectUtils = require('./../ObjectUtils');
 
 var HashMap = Class.create({
+
     initialize: function(fnEquals, fnHash) {
 
         this.fnEquals = fnEquals ? fnEquals : ObjectUtils.isEqual;
@@ -23503,7 +23501,6 @@ var HashMap = Class.create({
             return r;
         };
 
-
         Object.defineProperty(this, 'length', {
             get: function() {
                 var r = self.entries().length;
@@ -23512,8 +23509,39 @@ var HashMap = Class.create({
         });
     },
 
+    hashCode: function() {
+        if(this.hash == null) {
+            var self = this;
+            var entries = this.entries();
+            var h = 0;
+
+            entries.forEach(function(entry) {
+                var keyHash = self.fnHash(entry.key);
+                if(ObjectUtils.isString(keyHash)) {
+                    keyHash = ObjectUtils.hashCodeStr(keyHash);
+                }
+
+                var valHash = self.fnHash(entry.val);
+                if(ObjectUtils.isString(valHash)) {
+                    valHash = ObjectUtils.hashCodeStr(valHash);
+                }
+
+                h += 19 * keyHash + 7919 * valHash;
+            });
+
+            this.hash = h;
+        }
+
+        return this.hash;
+    },
+
+    equals: function(that) {
+        throw new Error('Not implemented yet');
+    },
+
     clear: function() {
         this.hashToBucket = {};
+        this.hash = null;
     },
 
     putEntry: function(entry) {
@@ -23555,6 +23583,8 @@ var HashMap = Class.create({
     },
 
     put: function(key, val) {
+        this.hash = null;
+
         var hash = this.fnHash(key);
 
         var bucket = this.hashToBucket[hash];
@@ -23610,6 +23640,8 @@ var HashMap = Class.create({
 
         var doRemove = i >= 0;
         if (doRemove) {
+            this.hash = null;
+
             bucket.splice(i, 1);
 
             if(bucket.length === 0) {
@@ -23703,6 +23735,19 @@ var HashSet = Class.create({
         this._map.put(item, true);
     },
 
+    hashCode: function() {
+        var result = this._map.hashCode();
+        return result;
+    },
+
+    equals: function(that) {
+        var result =
+            that != null &&
+            that._map != null &&
+            this._map.equals(that._map);
+
+        return result;
+    },
     /*
     clone: function() {
         var result = new HashSet(this.map.fnEquals, this.map.fnHash);
