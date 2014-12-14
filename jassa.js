@@ -7022,6 +7022,7 @@ var Node_Concrete = require('./node/Node_Concrete');
 
 var escapeLiteralString = function(str) {
     var result = str
+        .replace(/\\/g, '\\\\')
         .replace(/\n/g, '\\n')
         .replace(/"/g, '\\"');
 
