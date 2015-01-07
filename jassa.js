@@ -4342,6 +4342,7 @@ var ConceptUtils = require('../../sparql/ConceptUtils');
 var ServiceUtils = require('../../service/ServiceUtils');
 
 var ListServiceSparqlQuery = require('../../service/list_service/ListServiceSparqlQuery');
+var ListServiceTransformItem = require('../../service/list_service/ListServiceTransformItem');
 var SortCondition = require('../../sparql/SortCondition');
 
 
@@ -4403,6 +4404,20 @@ var FacetValueService = Class.create({
 
             }
 
+
+            r = new ListServiceTransformItem(r, function(entry) {
+                var labelInfo = entry.val.labelInfo = {};
+                labelInfo.displayLabel = '' + entry.key;
+                //console.log('entry: ', entry);
+
+                entry.val.node = entry.key;
+                entry.val.path = path;
+
+                entry.val.tags = {};
+
+                return entry;
+            });
+
             return r;
         });
 
@@ -4414,7 +4429,7 @@ var FacetValueService = Class.create({
 module.exports = FacetValueService;
 
 
-},{"../../ext/Class":2,"../../service/ServiceUtils":133,"../../service/list_service/ListServiceSparqlQuery":153,"../../sparql/ConceptUtils":215,"../../sparql/ElementUtils":218,"../../sparql/Relation":234,"../../sparql/RelationUtils":235,"../../sparql/SortCondition":236,"../FacetUtils.js":20}],55:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/ServiceUtils":133,"../../service/list_service/ListServiceSparqlQuery":153,"../../service/list_service/ListServiceTransformItem":156,"../../sparql/ConceptUtils":215,"../../sparql/ElementUtils":218,"../../sparql/Relation":234,"../../sparql/RelationUtils":235,"../../sparql/SortCondition":236,"../FacetUtils.js":20}],55:[function(require,module,exports){
 'use strict';
 
 var ns = {
