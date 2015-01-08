@@ -4333,9 +4333,14 @@ module.exports = FacetValueConceptServiceExact;
 
 },{"../../ext/Class":2,"../../util/shared":378,"../FacetUtils":20,"./FacetValueConceptService":52}],54:[function(require,module,exports){
 var Class = require('../../ext/Class');
+
+var NodeUtils = require('../../rdf/NodeUtils');
+
 var Relation = require('../../sparql/Relation');
 var RelationUtils = require('../../sparql/RelationUtils');
 var FacetUtils = require('../FacetUtils.js');
+
+var Binding = require('../../sparql/Binding');
 
 var ElementUtils = require('../../sparql/ElementUtils');
 var ConceptUtils = require('../../sparql/ConceptUtils');
@@ -4381,11 +4386,12 @@ var FacetValueService = Class.create({
 
             var r;
             var query;
+            var countVar;
             if(canUseCounts) {
                 var relation = new Relation(concept.getElement(), concept.getVar(), baseVar);
 
                 // Create a service with counts
-                var countVar = ElementUtils.freshVar(relation.getElement(), 'c');
+                countVar = ElementUtils.freshVar(relation.getElement(), 'c');
                 query = RelationUtils.createQueryDistinctValueCount(relation, countVar);
 
                 // Create a schema with two sortable columns
@@ -4396,6 +4402,7 @@ var FacetValueService = Class.create({
                 r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar());
 
             } else {
+                countVar = null;
                 query = ConceptUtils.createQueryList(concept);
                 r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar());
 
@@ -4406,6 +4413,26 @@ var FacetValueService = Class.create({
 
 
             r = new ListServiceTransformItem(r, function(entry) {
+                var rsp = entry.val;
+                var bindings = rsp.getBindings();
+                var binding = bindings[0] || new Binding();
+
+                var count = countVar ? NodeUtils.getValue(binding.get(countVar)) : null;
+
+                var r = {
+                    key: entry.key,
+                    val: {
+                        node: entry.key,
+                        path: path,
+                        countInfo: {
+                            hasMoreItems: !canUseCounts,
+                            count: count
+                        }
+                    }
+                };
+
+                return r;
+                /*
                 var labelInfo = entry.val.labelInfo = {};
                 labelInfo.displayLabel = '' + entry.key;
                 //console.log('entry: ', entry);
@@ -4416,6 +4443,7 @@ var FacetValueService = Class.create({
                 entry.val.tags = {};
 
                 return entry;
+                */
             });
 
             return r;
@@ -4429,7 +4457,7 @@ var FacetValueService = Class.create({
 module.exports = FacetValueService;
 
 
-},{"../../ext/Class":2,"../../service/ServiceUtils":133,"../../service/list_service/ListServiceSparqlQuery":153,"../../service/list_service/ListServiceTransformItem":156,"../../sparql/ConceptUtils":215,"../../sparql/ElementUtils":218,"../../sparql/Relation":234,"../../sparql/RelationUtils":235,"../../sparql/SortCondition":236,"../FacetUtils.js":20}],55:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":97,"../../service/ServiceUtils":133,"../../service/list_service/ListServiceSparqlQuery":153,"../../service/list_service/ListServiceTransformItem":156,"../../sparql/Binding":211,"../../sparql/ConceptUtils":215,"../../sparql/ElementUtils":218,"../../sparql/Relation":234,"../../sparql/RelationUtils":235,"../../sparql/SortCondition":236,"../FacetUtils.js":20}],55:[function(require,module,exports){
 'use strict';
 
 var ns = {
