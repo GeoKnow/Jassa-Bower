@@ -22937,20 +22937,13 @@ var SerializationContext = require('./SerializationContext');
 
 var Serializer = Class.create({
     initialize: function() {
-        /**
-         * A map from class label to the class object
-         *
-         */
+        /** A map from class label to the class object */
         this.classNameToClass = {};
 
-        /**
-         * A map from class label to serialization function
-         */
+        /** A map from class label to serialization function */
         this.classNameToFnSerialize = {};
 
-        /**
-         * A map from class label to deserialization function
-         */
+        /** A map from class label to deserialization function */
         this.classNameToFnDeserialize = {};
 
         /**
@@ -22968,7 +22961,6 @@ var Serializer = Class.create({
 
     /**
      * Find and index all classes that appear as members of the namespace (a JavaScript Object)
-     *
      */
     indexClasses: function(ns) {
         var tmp = this.findClasses(ns);
@@ -22994,7 +22986,6 @@ var Serializer = Class.create({
 
     /**
      * Returns the class label for an instance
-     *
      */
     getLabelForClass: function(obj) {
         var objProto = Object.getPrototypeOf(obj);
@@ -23011,6 +23002,7 @@ var Serializer = Class.create({
     },
 
     getClassForLabel: function(classLabel) {
+        // FIXME: not initialized
         var result;
         this.classNameToClass.find(function(ctor, cl) {
             if (cl === classLabel) {
@@ -23029,7 +23021,7 @@ var Serializer = Class.create({
 
         var result = {
             root: data,
-            idToState: context.getIdToState(),
+            idToState: context.getIdToState()
         };
 
         return result;
@@ -23054,13 +23046,11 @@ var Serializer = Class.create({
 
         if (state) {
             result = {
-                ref: id,
+                ref: id
             };
         } else if (ObjectUtils.isFunction(obj)) {
             result = undefined;
         } else if (ObjectUtils.isObject(obj)) {
-
-            result = {};
 
             // Try to figure out the class of the object
             // var objClassLabel = obj.classLabel;
@@ -23177,12 +23167,12 @@ var Serializer = Class.create({
             idToState[id] = x;
 
             result = {
-                ref: id,
+                ref: id
             };
         } else {
             // result = {type: 'literal', 'value': obj};//null; //obj;
             result = {
-                value: obj,
+                value: obj
             };
             // throw "unhandled case for " + obj;
         }
@@ -23354,7 +23344,7 @@ var Serializer = Class.create({
         */
 
         return result;
-    },
+    }
 });
 
 module.exports = new Serializer();
