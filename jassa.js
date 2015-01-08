@@ -879,11 +879,14 @@ var ElementFilter = require('../sparql/element/ElementFilter');
 var ElementGroup = require('../sparql/element/ElementGroup');
 var Query = require('../sparql/Query');
 
+
 var Concept = require('../sparql/Concept');
 var ConceptUtils = require('../sparql/ConceptUtils');
 
+var NodeValueUtils = require('../sparql/NodeValueUtils');
 var ExprVar = require('../sparql/expr/ExprVar');
 var E_OneOf = require('../sparql/expr/E_OneOf');
+var E_Equals = require('../sparql/expr/E_Equals');
 
 //var ListServiceConcept = require('../service/list_service/ListServiceConcept');
 var ListServiceSparqlQuery = require('../service/list_service/ListServiceSparqlQuery');
@@ -936,7 +939,8 @@ var CountUtils = {
         return result;
     },
 
-    createQueriesPreCount: function(facetRelationIndex, countVar, properties, rowLimit) {
+
+    createQueriesPreCountCore: function(facetRelationIndex, countVar, properties, propertyQueryFn) {
         // Create the queries
         var defaultRelation = facetRelationIndex.getDefaultRelation();
         var propertyToRelation = facetRelationIndex.getPropertyToRelation();
@@ -947,6 +951,15 @@ var CountUtils = {
                 relation = defaultRelation;
             }
 
+            var r = propertyQueryFn(relation, property, countVar);
+            return r;
+        });
+
+        return result;
+    },
+
+    createQueriesPreCount: function(facetRelationIndex, countVar, properties, rowLimit) {
+        var result = this.createQueriesPreCountCore(facetRelationIndex, countVar, properties, function(relation, property, countVar) {
             var r = RelationUtils.createQueryRawSize(relation, property, countVar, rowLimit);
             return r;
         });
@@ -955,6 +968,28 @@ var CountUtils = {
     },
 
     createQueriesExactCount: function(facetRelationIndex, countVar, properties) {
+        var result = this.createQueriesExactCountSingle(facetRelationIndex, countVar, properties);
+        return result;
+    },
+
+    createQueriesExactCountSingle: function(facetRelationIndex, countVar, properties) {
+        var result = this.createQueriesPreCountCore(facetRelationIndex, countVar, properties, function(relation, property, countVar) {
+            var sourceVar = relation.getSourceVar();
+
+            var filter = new ElementFilter(new E_Equals(new ExprVar(sourceVar), NodeValueUtils.makeNode(property)));
+            var filteredRel = new Relation(new ElementGroup([relation.getElement(), filter]), sourceVar, relation.getTargetVar());
+
+            var r = RelationUtils.createQueryDistinctValueCount(filteredRel, countVar);
+            return r;
+        });
+
+        return result;
+    },
+
+
+    // TODO This approach uses ?property In (propertyList)
+    // but it is utterly slow on virtuoso :( - thus we created the single version
+    createQueriesExactCountMulti: function(facetRelationIndex, countVar, properties) {
         var sourceVar = facetRelationIndex.getSourceVar();
         var defaultRelation = facetRelationIndex.getDefaultRelation();
         var propertyToRelation = facetRelationIndex.getPropertyToRelation();
@@ -989,7 +1024,7 @@ var CountUtils = {
 
 module.exports = CountUtils;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":96,"../rdf/NodeUtils":97,"../service/list_service/ListServiceSparqlQuery":153,"../service/lookup_service/LookupService":158,"../sparql/Concept":214,"../sparql/ConceptUtils":215,"../sparql/Query":231,"../sparql/QueryUtils":233,"../sparql/Relation":234,"../sparql/RelationUtils":235,"../sparql/VarUtils":240,"../sparql/element/ElementFilter":245,"../sparql/element/ElementGroup":246,"../sparql/element/ElementSubQuery":250,"../sparql/element/ElementUnion":252,"../sparql/expr/E_OneOf":274,"../sparql/expr/ExprVar":286,"../sponate/LookupServiceUtils":309,"../sponate/ServiceUtils":317,"../sponate/agg/AggLiteral":335,"../sponate/agg/AggMap":336,"../sponate/agg/AggTransform":340,"../sponate/binding_mapper/BindingMapperExpr":343,"../util/collection/HashMap":369,"../util/shared":378,"./FacetUtils":20}],8:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":96,"../rdf/NodeUtils":97,"../service/list_service/ListServiceSparqlQuery":153,"../service/lookup_service/LookupService":158,"../sparql/Concept":214,"../sparql/ConceptUtils":215,"../sparql/NodeValueUtils":227,"../sparql/Query":231,"../sparql/QueryUtils":233,"../sparql/Relation":234,"../sparql/RelationUtils":235,"../sparql/VarUtils":240,"../sparql/element/ElementFilter":245,"../sparql/element/ElementGroup":246,"../sparql/element/ElementSubQuery":250,"../sparql/element/ElementUnion":252,"../sparql/expr/E_Equals":263,"../sparql/expr/E_OneOf":274,"../sparql/expr/ExprVar":286,"../sponate/LookupServiceUtils":309,"../sponate/ServiceUtils":317,"../sponate/agg/AggLiteral":335,"../sponate/agg/AggMap":336,"../sponate/agg/AggTransform":340,"../sponate/binding_mapper/BindingMapperExpr":343,"../util/collection/HashMap":369,"../util/shared":378,"./FacetUtils":20}],8:[function(require,module,exports){
 var FacetUtils = require('./FacetUtils');
 var ElementGroup = require('../sparql/element/ElementGroup');
 var ElementOptional = require('../sparql/element/ElementOptional');
