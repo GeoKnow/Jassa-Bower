@@ -4533,6 +4533,9 @@ module.exports = ns;
 
 },{"../service/ListFilter":125,"./ConstraintManager":5,"./ConstraintUtils":6,"./CountUtils":7,"./ElementUtils":8,"./ElementsAndExprs":9,"./FacetConfig":10,"./FacetNode":11,"./FacetNodeState":12,"./FacetRelationIndex":13,"./FacetServiceBuilder":14,"./FacetServiceUtils":15,"./FacetTreeConfig":16,"./FacetTreeServiceHelpers":17,"./FacetTreeServiceUtils":18,"./FacetTreeState":19,"./FacetUtils":20,"./Path":21,"./PathHead":22,"./QueryUtils":23,"./ServiceUtils":24,"./Step":25,"./StepRelation":26,"./StepUtils":27,"./VarNode":28,"./constraint/Constraint":29,"./constraint/ConstraintBasePath":30,"./constraint/ConstraintBasePathValue":31,"./constraint/ConstraintConcept":32,"./constraint/ConstraintElementFactoryBBoxRange":33,"./constraint/ConstraintEquals":34,"./constraint/ConstraintExists":35,"./constraint/ConstraintLang":36,"./constraint/ConstraintRegex":37,"./facet_concept_supplier/FacetConceptSupplier":38,"./facet_concept_supplier/FacetConceptSupplierDeclared":39,"./facet_concept_supplier/FacetConceptSupplierExact":40,"./facet_concept_supplier/FacetConceptSupplierMeta":41,"./facet_service/FacetService":42,"./facet_service/FacetServiceClientIndex":43,"./facet_service/FacetServiceFn":44,"./facet_service/FacetServiceLookup":45,"./facet_service/FacetServiceMeta":46,"./facet_service/FacetServiceSparql":47,"./facet_service/FacetServiceTagger":48,"./facet_service/FacetServiceTransformConcept":49,"./facet_system/FacetSystem":50,"./facet_tree_service/FacetTreeService":51,"./facet_value_concept_service/FacetValueConceptService":52,"./facet_value_concept_service/FacetValueConceptServiceExact":53,"./facet_value_service/FacetValueService":54,"./lookup_service/LookupServiceConstraintLabels":56,"./lookup_service/LookupServiceFacetCount":57,"./lookup_service/LookupServiceFacetExactCount":58,"./lookup_service/LookupServiceFacetPreCount":59,"./lookup_service/LookupServicePathLabels":60,"./table/Aggregator":61,"./table/ColumnView":62,"./table/FilterString":63,"./table/QueryFactoryFacetTable":64,"./table/SortCondition":65,"./table/TableConfigFacet":66,"./table/TableMod":67,"./table/TableUtils":68}],56:[function(require,module,exports){
 var Class = require('../../ext/Class');
+
+var NodeUtils = require('../../rdf/NodeUtils');
+
 var LookupServiceBase = require('../../service/lookup_service/LookupServiceBase');
 var LookupServicePathLabels = require('./LookupServicePathLabels');
 var HashMap = require('../../util/collection/HashMap');
@@ -4549,19 +4552,19 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
         // Note: For now we just assume subclasses of ConstraintBasePathValue
 
         var paths = [];
-        var nodes = [];
+        var uriNodes = [];
 
         constraints.forEach(function(constraint) {
             var cPaths = constraint.getDeclaredPaths();
             var cNode = constraint.getValue ? constraint.getValue() : null;
 
             paths.push.apply(paths, cPaths);
-            if(cNode) {
-                nodes.push(cNode);
+            if(cNode && cNode.isUri()) {
+                uriNodes.push(cNode);
             }
         });
 
-        var p1 = this.lookupServiceNodeLabels.lookup(nodes);
+        var p1 = this.lookupServiceNodeLabels.lookup(uriNodes);
         var p2 = this.lookupServicePathLabels.lookup(paths);
 
         var result = Promise.all([
@@ -4574,8 +4577,14 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
                 var cPath = constraint.getDeclaredPath();
                 var cNode = constraint.getValue();
 
+                var nodeLabel = cNode && cNode.isUri()
+                    ? nodeMap.get(cNode)
+                    : null
+                    ;
+
+                nodeLabel = nodeLabel || NodeUtils.toPrettyString(cNode);
+
                 var pathLabel = pathMap.get(cPath);
-                var nodeLabel = nodeMap.get(cNode);
 
                 var cLabel = pathLabel + ' = ' + nodeLabel;
                 r.put(constraint, cLabel);
@@ -4590,7 +4599,7 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceConstraintLabels;
 
-},{"../../ext/Class":2,"../../service/lookup_service/LookupServiceBase":159,"../../util/collection/HashMap":369,"../../util/shared":378,"./LookupServicePathLabels":60}],57:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":97,"../../service/lookup_service/LookupServiceBase":159,"../../util/collection/HashMap":369,"../../util/shared":378,"./LookupServicePathLabels":60}],57:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var HashMap = require('../../util/collection/HashMap');
