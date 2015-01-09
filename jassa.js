@@ -2711,7 +2711,14 @@ var Path = Class.create({
     },
 
     hashCode: function() {
-        return this.toString();
+        if(this.hash == null) {
+            this.hash = this.steps.reduce(function(tmpHash, step) {
+                var r = tmpHash + step.hashCode();
+                return r;
+            }, 1357);
+        }
+
+        return this.hash;
     },
 
     // a equals b = a startsWidth b && a.len = b.len
@@ -2823,6 +2830,8 @@ var Class = require('../ext/Class');
 
 var Path = require('./Path');
 
+var ObjectUtils = require('../util/ObjectUtils');
+
 /**
  * A path head combines a path with a direction it is facing.
  * It is used to denote the set of outgoing or incoming facets.
@@ -2835,6 +2844,23 @@ var PathHead = Class.create({
 
     getPath: function() {
         return this.path;
+    },
+
+    equals: function(that) {
+        var result =
+            this === that ||
+                (this._isInverse === that._isInverse && (
+                    ObjectUtils.isEqual(this.path, that.path)));
+
+        return result;
+    },
+
+    hashCode: function() {
+        if(this.hash == null) {
+            this.hash = (this._isInverse ? 3 : 7) * this.path.hashCode();
+        }
+
+        return this.hash;
     },
 
     isInverse: function() {
@@ -2854,7 +2880,7 @@ PathHead.parse = function(pathStr, isInverse) {
 
 module.exports = PathHead;
 
-},{"../ext/Class":2,"./Path":21}],23:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":356,"./Path":21}],23:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var Query = require('../sparql/Query');
 
@@ -3131,6 +3157,16 @@ var Step = Class.create({
         //return ObjectUtils.isEqual(this, other);
         var result = isEqual(this, other);
         return result;
+    },
+
+    hashCode: function() {
+        if(this.hash == null) {
+            this.hash =
+                (this._isInverse ? 3 : 7) *
+                ObjectUtils.hashCodeStr(this.propertyName);
+        }
+
+        return this.hash;
     },
 
     toString: function() {
@@ -19637,6 +19673,15 @@ module.exports = ListServiceUtils;
 var ConceptUtils = require('../sparql/ConceptUtils');
 var LookupServiceSparqlQuery = require('../service/lookup_service/LookupServiceSparqlQuery');
 var LookupServiceTransform = require('../service/lookup_service/LookupServiceTransform');
+
+var LookupServiceIdFilter = require('../service/lookup_service/LookupServiceIdFilter');
+var LookupServiceChunker = require('../service/lookup_service/LookupServiceChunker');
+
+var BestLabelConfig = require('../sparql/BestLabelConfig');
+var ObjectUtils = require('../util/ObjectUtils');
+var MappedConceptUtils = require('./MappedConceptUtils');
+var NodeUtils = require('../rdf/NodeUtils');
+
 //var HashMap = require('../util/collection/HashMap');
 
 var AccUtils = require('./AccUtils');
@@ -19680,6 +19725,43 @@ var LookupServiceUtils = {
         return result;
     },
 
+
+    createLookupServiceNodeLabels: function(sparqlService, chunkSize, langs, predicates) {
+        var blc = new BestLabelConfig(langs, predicates);
+        var mappedConcept = MappedConceptUtils.createMappedConceptBestLabel(blc);
+        var result = this.createLookupServiceMappedConcept(sparqlService, mappedConcept);
+
+
+        if(chunkSize) {
+            result = new LookupServiceChunker(result, chunkSize);
+        }
+
+        result = new LookupServiceIdFilter(result, function(node) {
+            // TODO Using a proper URI validator would increase quality
+            var r = node && node.isUri();
+            if(r) {
+                var uri = node.getUri();
+                r = r && uri.indexOf(' ') < 0;
+                r = r && uri.indexOf('<') < 0;
+                r = r && uri.indexOf('>') < 0;
+            }
+            return r;
+        });
+
+        result = new LookupServiceTransform(result, function(doc, id) {
+            var result = {};
+            ObjectUtils.extend(result, doc); // Make a copy to avoid possibly corrupting cached data
+
+            if(result.displayLabel == null) {
+                result.displayLabel = id == null ? null : NodeUtils.toPrettyString(id);
+            }
+
+            return result;
+        });
+
+
+        return result;
+    },
 
     /**
      * public static <T> LookupService<Node, T> createLookupService(QueryExecutionFactory sparqlService, MappedConcept<T> mappedConcept)
@@ -19746,7 +19828,7 @@ var LookupServiceUtils = {
 
 module.exports = LookupServiceUtils;
 
-},{"../service/lookup_service/LookupServiceSparqlQuery":170,"../service/lookup_service/LookupServiceTransform":172,"../sparql/ConceptUtils":215,"./AccUtils":303}],310:[function(require,module,exports){
+},{"../rdf/NodeUtils":97,"../service/lookup_service/LookupServiceChunker":161,"../service/lookup_service/LookupServiceIdFilter":165,"../service/lookup_service/LookupServiceSparqlQuery":170,"../service/lookup_service/LookupServiceTransform":172,"../sparql/BestLabelConfig":210,"../sparql/ConceptUtils":215,"../util/ObjectUtils":356,"./AccUtils":303,"./MappedConceptUtils":312}],310:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 /**
