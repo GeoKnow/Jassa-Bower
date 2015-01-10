@@ -11991,10 +11991,11 @@ var QueryExecutionCache = Class.create(QueryExecution, {
                 executionPromise = trans.then(function(cacheData) {
                     skipInsert = true;
 
-                    delete executionCache[cacheKey];
                     resultCache.setItem(cacheKey, cacheData);
 
                     return cacheData;
+                }).finally(function() {
+                    delete executionCache[cacheKey];
                 });
 
                 if (!skipInsert) {
