@@ -11131,7 +11131,7 @@ var LookupServiceIdFilter = Class.create(LookupServiceDelegateBase, {
         var lookupKeys = [];
         var nullKeys = [];
 
-        keys.each(function(key) {
+        keys.forEach(function(key) {
             var isAccepted = self.predicateFn(key);
             if(isAccepted) {
                 lookupKeys.push(key);
@@ -11144,7 +11144,7 @@ var LookupServiceIdFilter = Class.create(LookupServiceDelegateBase, {
             var r = new HashMap();
             r.putEntries(map.entries());
 
-            nullKeys.each(function(key) {
+            nullKeys.forEach(function(key) {
                 r.put(key, null);
             });
 
