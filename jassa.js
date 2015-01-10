@@ -11956,6 +11956,8 @@ var QueryExecutionCache = Class.create(QueryExecution, {
     },
 
     execSelect: function() {
+        //var self = this;
+
         var cacheKey = this.cacheKey;
 
         var requestCache = this.requestCache;
@@ -11967,45 +11969,121 @@ var QueryExecutionCache = Class.create(QueryExecution, {
 
         // TODO Reusing promises must take timeouts into account
 
-        var executionPromise = executionCache[cacheKey];
+        // Check if there is an entry in the result cache
+        var executionPromise;
+        var cacheData = resultCache.getItem(cacheKey);
+        if (cacheData) {
+            executionPromise = Promise.resolve(cacheData);
+        } else {
 
-        if (!executionPromise) {
-            // Check if there is an entry in the result cache
-            var cacheData = resultCache.getItem(cacheKey);
-            if (cacheData) {
-                executionPromise = Promise.resolve(cacheData);
-            } else {
-                var request = this.queryExecution.execSelect();
+            // The data is not cached yet, but a request for it might already be running
+            var executionCacheEntry = executionCache[cacheKey];
 
-                var trans = request.then(function(rs) {
-                    var cacheData = {
-                        bindings: rs.getBindings(),
-                        varNames: rs.getVarNames(),
-                    };
-
-                    return cacheData;
-                });
+            if (executionCacheEntry == null) {
 
                 var skipInsert = false;
 
-                executionPromise = trans.then(function(cacheData) {
+                var cleanupExecutionCache = function() {
                     skipInsert = true;
-
-                    resultCache.setItem(cacheKey, cacheData);
-
-                    return cacheData;
-                }).finally(function() {
                     delete executionCache[cacheKey];
-                });
+                };
+
+                var promise =
+                    this.queryExecution.execSelect()
+                        .then(function(rs) {
+                            cleanupExecutionCache();
+
+                            var cacheData = {
+                                bindings: rs.getBindings(),
+                                varNames: rs.getVarNames(),
+                            };
+
+                            resultCache.setItem(cacheKey, cacheData);
+
+                            return cacheData;
+                        }, function(e) {
+                            cleanupExecutionCache();
+
+                            throw e;
+                        })
+                        ;
+
+
+                /*
+                var fetchResultSet = function() {
+                    var r = self.queryExecution.execSelect().disposer(function() {
+                        skipInsert = true;
+                        delete executionCache[cacheKey];
+                    });
+
+                    return r;
+                };
+
+                var executionPromise =
+                    Promise.using(fetchResultSet, function(rs) {
+                         var cacheData = {
+                             bindings: rs.getBindings(),
+                             varNames: rs.getVarNames(),
+                         };
+
+                         resultCache.setItem(cacheKey, cacheData);
+
+                         return cacheData;
+                     });
+                */
+
+                executionCacheEntry = {
+                    promise: promise,
+                    clients: {},
+                    nextId: 0
+                };
 
                 if (!skipInsert) {
-                    executionCache[cacheKey] = executionPromise;
+                    executionCache[cacheKey] = executionCacheEntry;
                 }
             }
-        } else {
-            // Note: Multiple query execution could happen from angular apply loops that execute too often
-            // So this could indicate performance issues
-            console.log('[INFO] Joined query execution for: ' + cacheKey);
+//            else {
+                // Note: Multiple query execution could happen from angular apply loops that execute too often
+                // So this could indicate performance issues
+                //console.log('[INFO] Joined query execution for: ' + cacheKey);
+//            }
+
+            // Now we need to register ourself as a client of the query execution
+
+
+            // Create a new promise that will cancel the core promise
+            // only if there are no more un-cancelled references
+            var corePromise = executionCacheEntry.promise;
+            var clients = executionCacheEntry.clients;
+            var clientId = 'client_' + (executionCacheEntry.nextId++);
+
+            clients[clientId] = true;
+
+            var cleanupClient = function() {
+                delete executionCacheEntry.clients[clientId];
+            };
+
+            executionPromise = new Promise(function(resolve, reject) {
+                    corePromise.then(function(cacheData) {
+                        cleanupClient();
+                        resolve(cacheData);
+                        //return cacheData;
+                    }, function(e) {
+                        cleanupClient();
+                        reject(e);
+                        //throw e;
+                    });
+                })
+                .cancellable()
+                .catch(function(e) {
+                    //cleanup();
+
+                    if(Object.keys(clients).length === 0) {
+                        corePromise.cancel();
+                    }
+
+                    throw e;
+                });
         }
 
         var self = this;
@@ -23163,18 +23241,19 @@ var PromiseUtils = {
      * Only the resolution of the most recently created promise will be resolved.
      */
     lastRequest: function(promiseSupplierFn, abortFn, deferredFactoryFn) {
-        this.deferred = null;
+        var deferred = null;
         var prior = null;
         var counter = 0;
 
         abortFn = abortFn || PromiseUtils.defaultAbortFn;
         deferredFactoryFn = deferredFactoryFn || PromiseUtils.defaultDeferredFn;
 
-        var self = this;
         return function() {
-            if(self.deferred == null) {
-                self.deferred = deferredFactoryFn(); // jQuery.Deferred()
+            if(deferred == null) {
+                deferred = deferredFactoryFn(); // jQuery.Deferred()
             }
+
+            this.deferred = deferred;
 
             //var args = arguments;
 
@@ -23188,21 +23267,21 @@ var PromiseUtils = {
             prior = next;
 
             next.then(function() {
-                if(now === counter && self.deferred) {
+                if(now === counter && deferred) {
                     //console.log('resolved' + now + ' for ', args);
-                    self.deferred.resolve.apply(this, arguments);
-                    self.deferred = null;
+                    deferred.resolve.apply(this, arguments);
+                    deferred = null;
                 }
             }, function() {
-                if(now === counter && self.deferred) {
+                if(now === counter && deferred) {
                     //console.log('rejected' + now + ' for ', args);
-                    self.deferred.reject.apply(this, arguments);
-                    self.deferred = null;
+                    deferred.reject.apply(this, arguments);
+                    deferred = null;
                 }
             });
 
 
-            return self.deferred.promise();
+            return deferred.promise();
         };
 
     },
