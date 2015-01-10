@@ -5516,6 +5516,9 @@ var GeoExprUtils = require('./GeoExprUtils');
 
 var tryMergeNode = function() { return false; }; // TODO Implement
 
+
+var PromiseUtils = require('../util/PromiseUtils');
+
 /**
  * Adds a quad tree cache to the lookup service
  */
@@ -5680,13 +5683,13 @@ console.log('dammit', this.listServiceBbox);
 
         var countTasks = this.createCountTasks(uncountedNodes);
 
-        return Promise.all(countTasks).then(function() {
+        return PromiseUtils.all(countTasks).then(function() {
             var nonLoadedNodes = nodes.filter(function(node) {
                 return self.isLoadingNeeded(node);
             });
 
             var loadTasks = self.createLoadTasks(nonLoadedNodes);
-            return Promise.all(loadTasks).then(function() {
+            return PromiseUtils.all(loadTasks).then(function() {
                 return nodes;
             });
         });
@@ -5846,7 +5849,7 @@ console.log('dammit', this.listServiceBbox);
 
 module.exports = DataServiceBboxCache;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":97,"../service/data_service/DataService":143,"../util/shared":380,"../vocab/wgs84":386,"./Bounds":73,"./GeoExprUtils":77,"./QuadTree":85,"lodash.flatten":394,"lodash.uniq":613}],75:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":97,"../service/data_service/DataService":143,"../util/PromiseUtils":360,"../util/shared":380,"../vocab/wgs84":386,"./Bounds":73,"./GeoExprUtils":77,"./QuadTree":85,"lodash.flatten":394,"lodash.uniq":613}],75:[function(require,module,exports){
 var Concept = require('../sparql/Concept');
 var ElementString = require('../sparql/element/ElementString');
 var VarUtils = require('../sparql/VarUtils');
@@ -23034,7 +23037,28 @@ var Promise = shared.Promise;
 
 var PromiseUtils = {
 
-    createDeferred: function() {
+    all: function(promises) {
+        var r = Promise.all(promises)
+            .cancellable()
+            .catch(Promise.CancellationError, function(e) {
+                promises.forEach(function(promise) {
+                    try {
+                        if(promise && promise.cancel) {
+                            promise.cancel();
+                        }
+                    } catch(x) {
+                        console.log('[ERROR] Cancelling a promise raised an exception');
+                    }
+                });
+
+                throw e;
+            });
+
+        return r;
+    },
+
+
+    createDeferred: function(isCancellable) {
         var _resolve;
         var _reject;
 
@@ -23042,6 +23066,10 @@ var PromiseUtils = {
             _resolve = arguments[0];
             _reject = arguments[1];
         });
+
+        if(isCancellable) {
+            promise.cancellable();
+        }
 
         return {
             resolve: _resolve,
@@ -23073,7 +23101,7 @@ var PromiseUtils = {
     },
 
     defaultDeferredFn: function() {
-        return PromiseUtils.createDeferred();
+        return PromiseUtils.createDeferred(true);
     },
 
 
