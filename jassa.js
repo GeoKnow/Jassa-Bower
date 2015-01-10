@@ -23119,16 +23119,17 @@ var PromiseUtils = {
      * Only the resolution of the most recently created promise will be resolved.
      */
     lastRequest: function(promiseSupplierFn, abortFn, deferredFactoryFn) {
-        var deferred = null;
+        this.deferred = null;
         var prior = null;
         var counter = 0;
 
         abortFn = abortFn || PromiseUtils.defaultAbortFn;
         deferredFactoryFn = deferredFactoryFn || PromiseUtils.defaultDeferredFn;
 
+        var self = this;
         return function() {
-            if(deferred == null) {
-                deferred = deferredFactoryFn(); // jQuery.Deferred()
+            if(self.deferred == null) {
+                self.deferred = deferredFactoryFn(); // jQuery.Deferred()
             }
 
             //var args = arguments;
@@ -23145,19 +23146,19 @@ var PromiseUtils = {
             next.then(function() {
                 if(now === counter) {
                     //console.log('resolved' + now + ' for ', args);
-                    deferred.resolve.apply(this, arguments);
-                    deferred = null;
+                    self.deferred.resolve.apply(this, arguments);
+                    self.deferred = null;
                 }
             }, function() {
                 if(now === counter) {
                     //console.log('rejected' + now + ' for ', args);
-                    deferred.reject.apply(this, arguments);
-                    deferred = null;
+                    self.deferred.reject.apply(this, arguments);
+                    self.deferred = null;
                 }
             });
 
 
-            return deferred.promise();
+            return self.deferred.promise();
         };
 
     },
