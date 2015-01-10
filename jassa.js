@@ -11107,7 +11107,7 @@ var LookupServiceFallback = Class.create(LookupServiceBase, {
                 return r;
             });
 
-            var r = this.fallbackLookupService.lookup(fallbackKeys).then(function(m2) {
+            var r = self.fallbackLookupService.lookup(fallbackKeys).then(function(m2) {
                 var r = new HashMap();
 
                 r.putEntries(m1.entries());
@@ -19877,15 +19877,17 @@ var LookupServiceUtils = {
             return r;
         });
 
-        var fallback = new LookupServiceFn(function(keys) {
-            var r = new HashMap();
-
-            keys.forEach(function(key) {
-                var val = NodeUtils.toPrettyString(key);
-                r.put(key, val);
-            });
-
+        var fallback = new LookupServiceFn(function(key) {
+            var r = NodeUtils.toPrettyString(key);
             return r;
+            //var r = new HashMap();
+
+            //keys.forEach(function(key) {
+                //var val = NodeUtils.toPrettyString(key);
+                //r.put(key, val);
+            //});
+
+            //return r;
         });
 
 //        var fallback = new LookupServiceTransform(result, function(doc, id) {
