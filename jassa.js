@@ -2049,6 +2049,7 @@ var ListFilter = require('../service/ListFilter');
 
 var ObjectUtils = require('../util/ObjectUtils');
 
+var PromiseUtils = require('../util/PromiseUtils');
 
 
 var FacetTreeServiceHelpers = {//Class.create({
@@ -2103,7 +2104,7 @@ var FacetTreeServiceHelpers = {//Class.create({
 
         }
 
-        return Promise.all(promises).spread(function(outgoing, incoming) {
+        return PromiseUtils.all(promises).spread(function(outgoing, incoming) {
             var r = {
                 path: startPath,
                 isExpanded: isExpanded,
@@ -2153,7 +2154,7 @@ var FacetTreeServiceHelpers = {//Class.create({
                     return r;
                 });
 
-                var r = Promise.all(subPromises).then(function(children) {
+                var r = PromiseUtils.all(subPromises).then(function(children) {
 
                     facetInfos.forEach(function(facetInfo, i) {
                         var child = children[i];
@@ -2182,7 +2183,7 @@ var FacetTreeServiceHelpers = {//Class.create({
 
 module.exports = FacetTreeServiceHelpers;
 
-},{"../service/ListFilter":126,"../util/ObjectUtils":358,"../util/shared":380,"./FacetNodeState":12,"./Path":21,"./PathHead":22,"./Step":26}],18:[function(require,module,exports){
+},{"../service/ListFilter":126,"../util/ObjectUtils":358,"../util/PromiseUtils":360,"../util/shared":380,"./FacetNodeState":12,"./Path":21,"./PathHead":22,"./Step":26}],18:[function(require,module,exports){
 var FacetTreeService = require('./facet_tree_service/FacetTreeService');
 var HashMap = require('../util/collection/HashMap');
 var FacetServiceBuilder = require('./FacetServiceBuilder');
@@ -4641,6 +4642,8 @@ var HashMap = require('../../util/collection/HashMap');
 var shared = require('../../util/shared');
 var Promise = shared.Promise;
 
+var PromiseUtils = require('../../util/PromiseUtils');
+
 var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
     initialize: function(lookupServiceNodeLabels, lookupServicePathLabels) {
         this.lookupServiceNodeLabels = lookupServiceNodeLabels;
@@ -4666,7 +4669,7 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
         var p1 = this.lookupServiceNodeLabels.lookup(uriNodes);
         var p2 = this.lookupServicePathLabels.lookup(paths);
 
-        var result = Promise.all([
+        var result = PromiseUtils.all([
             p1,
             p2,
         ]).spread(function(nodeMap, pathMap) {
@@ -4698,7 +4701,7 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceConstraintLabels;
 
-},{"../../ext/Class":2,"../../rdf/NodeUtils":98,"../../service/lookup_service/LookupServiceBase":160,"../../util/collection/HashMap":371,"../../util/shared":380,"./LookupServicePathLabels":61}],58:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":98,"../../service/lookup_service/LookupServiceBase":160,"../../util/PromiseUtils":360,"../../util/collection/HashMap":371,"../../util/shared":380,"./LookupServicePathLabels":61}],58:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var HashMap = require('../../util/collection/HashMap');
@@ -8872,6 +8875,9 @@ var Promise = shared.Promise;
 
 //var LookupServiceSparqlQuery = require('./lookup_service/LookupServiceSparqlQuery');
 
+var PromiseUtils = require('../util/PromiseUtils');
+
+
 var LookupServiceUtils = {
     /**
      * Yields a promise resolving to an empty array if lookupService or keys are null
@@ -8894,7 +8900,7 @@ var LookupServiceUtils = {
      * valuePromises
      */
     zip: function(keys, valuePromises) {
-        var result = Promise.all(valuePromises).then(function() {
+        var result = PromiseUtils.all(valuePromises).then(function() {
             var r = new HashMap();
 
             for (var i = 0; i < keys.length; ++i) {
@@ -8959,7 +8965,7 @@ var LookupServiceUtils = {
 
 module.exports = LookupServiceUtils;
 
-},{"../util/collection/HashMap":371,"../util/shared":380}],129:[function(require,module,exports){
+},{"../util/PromiseUtils":360,"../util/collection/HashMap":371,"../util/shared":380}],129:[function(require,module,exports){
 /**
  * Returns an object:
  * {
@@ -9208,6 +9214,9 @@ var QueryUtils = require('../sparql/QueryUtils');
 
 var ResultSetUtils = require('./ResultSetUtils');
 
+
+var PromiseUtils = require('../util/PromiseUtils');
+
 //var Triple = require('../rdf/Triple');
 ////var VarUtils = require('../sparql/VarUtils');
 //var Query = require('../sparql/Query');
@@ -9278,7 +9287,7 @@ var ServiceUtils = {
             return r;
         });
 
-        var masterTask = Promise.all(promises);
+        var masterTask = PromiseUtils.all(promises);
 
         var self = this;
         var result = masterTask.then(function( /* arguments will be result sets */ ) {
@@ -9496,7 +9505,7 @@ var ServiceUtils = {
 
 module.exports = ServiceUtils;
 
-},{"../sparql/Binding":213,"../sparql/ConceptUtils":217,"../sparql/ElementUtils":220,"../sparql/QueryUtils":235,"../sparql/VarUtils":242,"../sparql/element/ElementFilter":247,"../sparql/element/ElementSubQuery":252,"../sparql/expr/E_OneOf":276,"../sparql/expr/ExprVar":288,"../util/ArrayUtils":352,"../util/collection/IteratorArray":375,"../util/shared":380,"./ResultSetUtils":133,"./result_set/ResultSetArrayIteratorBinding":188,"lodash.union":590}],135:[function(require,module,exports){
+},{"../sparql/Binding":213,"../sparql/ConceptUtils":217,"../sparql/ElementUtils":220,"../sparql/QueryUtils":235,"../sparql/VarUtils":242,"../sparql/element/ElementFilter":247,"../sparql/element/ElementSubQuery":252,"../sparql/expr/E_OneOf":276,"../sparql/expr/ExprVar":288,"../util/ArrayUtils":352,"../util/PromiseUtils":360,"../util/collection/IteratorArray":375,"../util/shared":380,"./ResultSetUtils":133,"./result_set/ResultSetArrayIteratorBinding":188,"lodash.union":590}],135:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 
@@ -10855,6 +10864,8 @@ var HashMap = require('../../util/collection/HashMap');
 var shared = require('../../util/shared');
 var Promise = shared.Promise;
 
+var PromiseUtils = require('../../util/PromiseUtils');
+
 /**
  * This function must convert ids to unique strings
  * Only the actual service (e.g. sparql or rest) needs to implement it
@@ -10924,7 +10935,7 @@ var LookupServiceCache = Class.create(LookupServiceDelegateBase, {
             waitForPromises.push(p);
         }
 
-        var result = Promise.all(waitForPromises).then(function() {
+        var result = PromiseUtils.all(waitForPromises).then(function() {
             var maps = arguments;
             waitForIds.forEach(function(id) {
 
@@ -10988,7 +10999,7 @@ var LookupServiceCache = Class.create(LookupServiceDelegateBase, {
 
 module.exports = LookupServiceCache;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":371,"../../util/shared":380,"../RequestCache":131,"./LookupServiceDelegateBase":164,"lodash.uniq":613}],162:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/PromiseUtils":360,"../../util/collection/HashMap":371,"../../util/shared":380,"../RequestCache":131,"./LookupServiceDelegateBase":164,"lodash.uniq":613}],162:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var uniq = require('lodash.uniq');
 var ArrayUtils = require('../../util/ArrayUtils');
@@ -11697,6 +11708,8 @@ var ElementFilter = require('../../sparql/element/ElementFilter');
 var shared = require('../../util/shared');
 var Promise = shared.Promise;
 
+var PromiseUtils = require('../../util/PromiseUtils');
+
 var QueryCacheBindingHashSingle = Class.create({
     initialize: function(sparqlService, query, indexExpr) {
         this.sparqlService = sparqlService;
@@ -11738,7 +11751,7 @@ var QueryCacheBindingHashSingle = Class.create({
             return promise;
         });
 
-        var masterTask = Promise.all(fetchTasks);
+        var masterTask = PromiseUtils.all(fetchTasks);
 
         var exprEvaluator = this.exprEvaluator;
         var indexExpr = this.indexExpr;
@@ -11842,7 +11855,7 @@ var QueryCacheBindingHashSingle = Class.create({
 
 module.exports = QueryCacheBindingHashSingle;
 
-},{"../../ext/Class":2,"../../sparql/ExprEvaluatorImpl":222,"../../sparql/element/ElementFilter":247,"../../sparql/expr/E_OneOf":276,"../../util/collection/IteratorArray":375,"../../util/shared":380,"../result_set/ResultSetArrayIteratorBinding":188}],177:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/ExprEvaluatorImpl":222,"../../sparql/element/ElementFilter":247,"../../sparql/expr/E_OneOf":276,"../../util/PromiseUtils":360,"../../util/collection/IteratorArray":375,"../../util/shared":380,"../result_set/ResultSetArrayIteratorBinding":188}],177:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var QueryCacheNodeFactory = Class.create({
@@ -19346,6 +19359,8 @@ var forEach = require('lodash.foreach');
 
 var shared = require('../util/shared');
 var Promise = shared.Promise;
+var PromiseUtils = require('../util/PromiseUtils');
+
 
 var Engine = {
     indexAccMap : function(state, sourceName, nodeToAcc) {
@@ -19697,14 +19712,14 @@ var Engine = {
             return subPromise;
         });
 
-        return Promise.all(subPromises);
+        return PromiseUtils.all(subPromises);
     }),
 
 };
 
 module.exports = Engine;
 
-},{"../ext/Class":2,"../service/list_service/ListServiceTransformItems":158,"../util/ObjectUtils":358,"../util/Slot":364,"../util/collection/HashMap":371,"../util/collection/HashSet":372,"../util/shared":380,"./AccUtils":305,"./ListServiceUtils":310,"./LookupServiceUtils":311,"lodash.foreach":463}],310:[function(require,module,exports){
+},{"../ext/Class":2,"../service/list_service/ListServiceTransformItems":158,"../util/ObjectUtils":358,"../util/PromiseUtils":360,"../util/Slot":364,"../util/collection/HashMap":371,"../util/collection/HashSet":372,"../util/shared":380,"./AccUtils":305,"./ListServiceUtils":310,"./LookupServiceUtils":311,"lodash.foreach":463}],310:[function(require,module,exports){
 var Concept = require('../sparql/Concept');
 var ConceptUtils = require('../sparql/ConceptUtils');
 var ServiceUtils = require('./ServiceUtils');
