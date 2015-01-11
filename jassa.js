@@ -23176,7 +23176,7 @@ var PromiseUtils = {
             oldService.cancelAll();
         }
 
-        obj[attr] = PromiseUtils.lastRequestify(newRawService);
+        obj[attr] = newRawService != null ? PromiseUtils.lastRequestify(newRawService) : null;
     },
 
     /**
