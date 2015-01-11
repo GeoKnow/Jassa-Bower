@@ -12063,7 +12063,15 @@ var QueryExecutionCache = Class.create(QueryExecution, {
             clients[clientId] = true;
 
             var cleanupClient = function() {
-                delete executionCacheEntry.clients[clientId];
+                if(clientId != null) {
+                    var isKnown = clients[clientId];
+
+                    if(!isKnown) {
+                        console.log('[ASSERTION ERROR] unknown client ' + clientId);
+                    }
+
+                    delete clients[clientId];
+                }
             };
 
             executionPromise = new Promise(function(resolve, reject) {
@@ -12079,7 +12087,8 @@ var QueryExecutionCache = Class.create(QueryExecution, {
                 })
                 .cancellable()
                 .catch(function(e) {
-                    //cleanup();
+                    cleanupClient();
+                    clientId = null;
 
                     if(Object.keys(clients).length === 0) {
                         corePromise.cancel();
