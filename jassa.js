@@ -23166,6 +23166,20 @@ var ObjectUtils = require('./ObjectUtils');
 var PromiseUtils = {
 
     /**
+     * Set a new service as an attribute of an object, thereby cancelling
+     * all prior requests
+     */
+    replaceService: function(obj, attr, newRawService) {
+
+        var oldService = obj[attr];
+        if(oldService && oldService.cancelAll) {
+            oldService.cancelAll();
+        }
+
+        obj[attr] = PromiseUtils.lastRequestify(newRawService);
+    },
+
+    /**
      * Takes an object and creates a new one where each method is wrapped
      * such that sucessive calls will cancel prior promises yeld by that method
      *
