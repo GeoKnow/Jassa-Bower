@@ -3181,9 +3181,12 @@ var Step = Class.create({
     },
 
 
-    equals: function(other) {
+    equals: function(that) {
         //return ObjectUtils.isEqual(this, other);
-        var result = isEqual(this, other);
+        var result =
+            this.isInverse === that.isInverse &&
+            this.propertyName === that.propertyName;
+
         return result;
     },
 
@@ -4460,7 +4463,7 @@ var FacetValueService = Class.create({
     prepareTableService: function(path, excludeSelfConstraints) {
         var concept = FacetUtils.createConceptResources(this.facetConfig, path, excludeSelfConstraints);
 
-        console.log('FacetValueConcept: ' + concept + ' config: ', this.facetConfig);
+        //console.log('FacetValueConcept: ' + concept + ' config: ', this.facetConfig);
 
         var baseVar = this.facetConfig.getRootFacetNode().getVar();
 
