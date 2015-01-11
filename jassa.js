@@ -2638,6 +2638,8 @@ var Step = require('./Step');
 /**
  * A path is a sequence of steps
  *
+ * TODO This class should inherit from array; the main difference are the equal and hashCode functions
+ *
  * @param steps
  * @returns {ns.Path}
  */
@@ -2690,6 +2692,12 @@ var Path = Class.create({
 
     getSteps: function() {
         return this.steps;
+    },
+
+    slice: function(start, end) {
+        var newSteps = this.steps.slice(start, end);
+        var result = new Path(newSteps);
+        return result;
     },
 
     startsWith: function(other) {
@@ -2871,6 +2879,14 @@ var PathHead = Class.create({
     toString: function() {
         return '' + this.path + (this._isInverse ? ' (inverse)' : '');
     },
+
+    up: function(_isInverse) {
+        var newPath = this.path.slice(0, -1);
+        _isInverse = _isInverse == null ? this._isInverse : _isInverse;
+
+        var result = new PathHead(newPath, _isInverse);
+        return result;
+    }
 });
 
 PathHead.parse = function(pathStr, isInverse) {
