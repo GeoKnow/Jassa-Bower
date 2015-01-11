@@ -3766,7 +3766,7 @@ var FacetConceptSupplierDeclared = Class.create(FacetConceptSupplierExact, {
             : $super(pathHead)
             ;
 
-        console.log('ARGH: ' + result);
+        //console.log('ARGH: ' + result);
 
         return result;
     },
