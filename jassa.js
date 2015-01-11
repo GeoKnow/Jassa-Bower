@@ -5591,7 +5591,7 @@ fetchCount: function(bounds, threshold) {
 //console.log('dammit', this.listServiceBbox);
             result = globalCountTask.then(function(countInfo) {
                 var canUseGlobal = !countInfo.hasMoreItems;
-                console.log('Global check counts', countInfo);
+                //console.log('Global check counts', countInfo);
                 rootNode.canUseGlobal = canUseGlobal;
                 rootNode.checkedGlobal = true;
 
@@ -14848,7 +14848,7 @@ var ElementUtils = {
     freshVar: function(element, baseVarName) {
         var gen = this.freshVarGen(element, baseVarName);
         var result = gen.next();
-        console.log('freshVar: ' + result);
+        //console.log('freshVar: ' + result);
         return result;
     },
 
