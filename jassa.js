@@ -24383,8 +24383,7 @@ var HashMap = Class.create({
      */
     asFn: function() {
         return this.fnGet;
-    },
-
+    }
 });
 
 module.exports = HashMap;
@@ -24426,8 +24425,6 @@ var HashSet = Class.create({
     clone: function() {
         var result = new HashSet(this.map.fnEquals, this.map.fnHash);
 
-
-
         return result;
     },*/
 
@@ -24438,7 +24435,6 @@ var HashSet = Class.create({
 
     forEach: function(fn) {
         var items = this.entries();
-
         items.forEach(fn);
     },
 
@@ -24449,11 +24445,12 @@ var HashSet = Class.create({
     },
 
     retainAll: function(otherSet) {
+        var self = this;
         this.forEach(function(item) {
             var isContained = otherSet.contains(item);
 
             if(!isContained) {
-                this.remove(item);
+                self.remove(item);
             }
         });
     },
