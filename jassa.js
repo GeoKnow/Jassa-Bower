@@ -5114,6 +5114,9 @@ var ElementUtils = require('../ElementUtils');
 var Path = require('../Path');
 var Concept = require('../../sparql/Concept');
 
+var ArrayList = require('../../util/collection/ArrayList');
+
+
 // TODO: Maybe this class should be TableModFacet and inherit from TableMod?
 var TableConfigFacet = Class.create({
     initialize: function(facetConfig, tableMod, paths) {
@@ -5164,7 +5167,8 @@ var TableConfigFacet = Class.create({
 
     togglePath: function(path) {
         // Updates the table model accordingly
-        var status = CollectionUtils.toggleItem(this.paths, path);
+        var tmp = new ArrayList(this.paths);
+        var status = CollectionUtils.toggleItem(tmp, path);
 
         var varName = this.getColIdForPath(path);
 
@@ -5210,7 +5214,7 @@ var TableConfigFacet = Class.create({
 module.exports = TableConfigFacet;
 
 
-},{"../../ext/Class":2,"../../sparql/Concept":216,"../../util/CollectionUtils":354,"../ElementUtils":8,"../Path":21,"./TableMod":68}],68:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":216,"../../util/CollectionUtils":354,"../../util/collection/ArrayList":368,"../ElementUtils":8,"../Path":21,"./TableMod":68}],68:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var ArrayUtils = require('../../util/ArrayUtils');
@@ -24009,8 +24013,8 @@ var Class = require('../../ext/Class');
 var ObjectUtils = require('../ObjectUtils');
 
 var ArrayList = Class.create({
-    initialize: function(fnEquals) {
-        this.items = [];
+    initialize: function(items, fnEquals) {
+        this.items = items || [];
         this.fnEquals = fnEquals || ObjectUtils.isEqual;
     },
 
