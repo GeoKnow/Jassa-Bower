@@ -6902,6 +6902,8 @@ var Jassa = function(Promise, ajaxRequest) {
     };
 };
 
+Jassa.ext = require('./ext');
+
 /*
 Jassa.util = require('./util');
 Jassa.rdf = require('./rdf');
