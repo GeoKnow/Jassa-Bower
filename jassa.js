@@ -5106,7 +5106,7 @@ module.exports = SortCondition;
 },{"../../ext/Class":2}],67:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
-var ArrayUtils = require('../../util/ArrayUtils');
+var CollectionUtils = require('../../util/CollectionUtils');
 var TableMod = require('./TableMod');
 
 var ElementUtils = require('../ElementUtils');
@@ -5164,7 +5164,7 @@ var TableConfigFacet = Class.create({
 
     togglePath: function(path) {
         // Updates the table model accordingly
-        var status = ArrayUtils.toggleItem(this.paths, path);
+        var status = CollectionUtils.toggleItem(this.paths, path);
 
         var varName = this.getColIdForPath(path);
 
@@ -5210,7 +5210,7 @@ var TableConfigFacet = Class.create({
 module.exports = TableConfigFacet;
 
 
-},{"../../ext/Class":2,"../../sparql/Concept":216,"../../util/ArrayUtils":352,"../ElementUtils":8,"../Path":21,"./TableMod":68}],68:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":216,"../../util/CollectionUtils":354,"../ElementUtils":8,"../Path":21,"./TableMod":68}],68:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var ArrayUtils = require('../../util/ArrayUtils');
