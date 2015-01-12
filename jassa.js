@@ -5207,6 +5207,9 @@ var TableConfigFacet = Class.create({
 */
 });
 
+module.exports = TableConfigFacet;
+
+
 },{"../../ext/Class":2,"../../sparql/Concept":216,"../../util/ArrayUtils":352,"../ElementUtils":8,"../Path":21,"./TableMod":68}],68:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
