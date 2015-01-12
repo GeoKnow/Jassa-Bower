@@ -529,9 +529,10 @@ var ns = {
     JSONCanonical: require('./JSONCanonical'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./Class":2,"./JSONCanonical":3}],5:[function(require,module,exports){
 var forEach = require('lodash.foreach');
@@ -4647,7 +4648,7 @@ var ns = {
     PathUtils: require('./PathUtils'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
 
@@ -6864,9 +6865,10 @@ var ns = {
     Range: require('./Range'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./BboxExprFactory":70,"./BboxExprFactoryWgs84":71,"./BboxExprFactoryWkt":72,"./Bounds":73,"./DataServiceBboxCache":74,"./GeoConceptUtils":75,"./GeoDataSourceUtils":76,"./GeoExprUtils":77,"./GeoMapFactory":78,"./GeoMapFactoryUtils":79,"./GeoMapUtils":80,"./GeoUtils":81,"./ListServiceBbox":82,"./Point":83,"./PointUtils":84,"./QuadTree":85,"./QuadTreeNode":86,"./Range":87}],89:[function(require,module,exports){
 var shared = require('./util/shared');
@@ -7084,9 +7086,10 @@ var ns = {
     TalisRdfJsonUtils: require('./TalisRdfJsonUtils'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./TalisRdfJsonUtils":90}],92:[function(require,module,exports){
 var Class = require('../ext/Class');
@@ -8133,7 +8136,7 @@ var ns = {
     TypedValue: require('./rdf_datatype/TypedValue'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
 
@@ -10001,9 +10004,10 @@ var ns = {
     TableServiceQuery: require('./table_service/TableServiceQuery'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./AjaxUtils":124,"./BindingLookup":125,"./ListFilter":126,"./LookupServiceBuilder":127,"./LookupServiceUtils":128,"./PageExpandUtils":129,"./QueryPaginator":130,"./RequestCache":131,"./ResultSetPart":132,"./ResultSetUtils":133,"./ServiceUtils":134,"./SparqlServiceBuilder":135,"./TableServiceUtils":136,"./cache/Cache":137,"./cache/CacheSimple":138,"./criteria/Criteria":139,"./criteria/Order":140,"./criteria/Restrictions":141,"./criteria/ServiceBuilder":142,"./data_service/DataService":143,"./list_service/AugmenterLookup":145,"./list_service/ListService":146,"./list_service/ListServiceArray":147,"./list_service/ListServiceAugmenter":148,"./list_service/ListServiceConcept":149,"./list_service/ListServiceConceptKeyLookup":150,"./list_service/ListServiceFn":151,"./list_service/ListServiceIndexSubString":152,"./list_service/ListServicePageExpand":153,"./list_service/ListServiceSparqlQuery":154,"./list_service/ListServiceTransformConcept":155,"./list_service/ListServiceTransformConceptMode":156,"./list_service/ListServiceTransformItem":157,"./list_service/ListServiceTransformItems":158,"./lookup_service/LookupService":159,"./lookup_service/LookupServiceBase":160,"./lookup_service/LookupServiceCache":161,"./lookup_service/LookupServiceChunker":162,"./lookup_service/LookupServiceConst":163,"./lookup_service/LookupServiceDelegateBase":164,"./lookup_service/LookupServiceFallback":165,"./lookup_service/LookupServiceFn":166,"./lookup_service/LookupServiceIdFilter":167,"./lookup_service/LookupServiceKeyMap":168,"./lookup_service/LookupServiceListServiceSparql":169,"./lookup_service/LookupServiceMap":170,"./lookup_service/LookupServiceMulti":171,"./lookup_service/LookupServiceSparqlQuery":172,"./lookup_service/LookupServiceTimeout":173,"./lookup_service/LookupServiceTransform":174,"./lookup_service/LookupServiceTransformKey":175,"./query_cache/QueryCacheBindingHashSingle":176,"./query_cache/QueryCacheNodeFactory":177,"./query_cache/QueryCacheNodeFactoryImpl":178,"./query_execution/QueryExecution":179,"./query_execution/QueryExecutionCache":180,"./query_execution/QueryExecutionDelegate":181,"./query_execution/QueryExecutionFailover":182,"./query_execution/QueryExecutionHttp":183,"./query_execution/QueryExecutionPageExpand":184,"./query_execution/QueryExecutionPaginate":185,"./query_execution/UpdateExecutionHttp":186,"./result_set/ResultSet":187,"./result_set/ResultSetArrayIteratorBinding":188,"./result_set/ResultSetHashJoin":189,"./sparql_service/SparqlService":190,"./sparql_service/SparqlServiceBaseString":191,"./sparql_service/SparqlServiceCache":192,"./sparql_service/SparqlServiceConsoleLog":193,"./sparql_service/SparqlServiceFactory":194,"./sparql_service/SparqlServiceFactoryConst":195,"./sparql_service/SparqlServiceFactoryDefault":196,"./sparql_service/SparqlServiceFailover":197,"./sparql_service/SparqlServiceHttp":198,"./sparql_service/SparqlServiceLimit":199,"./sparql_service/SparqlServicePageExpand":200,"./sparql_service/SparqlServicePaginate":201,"./sparql_service/SparqlServiceReliableLimit":202,"./sparql_service/SparqlServiceVirtFix":203,"./sparql_service/SparqlUpdateBaseString":204,"./sparql_service/SparqlUpdateHttp":205,"./table_service/TableService":206,"./table_service/TableServiceDelegateBase":207,"./table_service/TableServiceFacet":208,"./table_service/TableServiceListService":209,"./table_service/TableServiceNodeLabels":210,"./table_service/TableServiceQuery":211}],145:[function(require,module,exports){
 var Class = require('../../ext/Class');
@@ -18429,7 +18433,7 @@ var ns = {
     UpdateWithUsing: require('./update/UpdateWithUsing'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
 
@@ -22614,9 +22618,10 @@ var ns = {
     RexUtils: require('./RexUtils'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./AccUtils":305,"./AggUtils":306,"./AttrPath":307,"./Context":308,"./Engine":309,"./ListServiceUtils":310,"./LookupServiceUtils":311,"./MappedConcept":312,"./MappedConceptSource":313,"./MappedConceptUtils":314,"./MappingRef":315,"./Query":316,"./RefSpec":317,"./RexUtils":318,"./ServiceUtils":319,"./SponateUtils":320,"./TemplateParser":321,"./acc/Acc":322,"./acc/AccArray":323,"./acc/AccArrayStatic":324,"./acc/AccBestLabel":325,"./acc/AccLiteral":326,"./acc/AccMap":327,"./acc/AccObject":328,"./acc/AccRef":329,"./acc/AccTransform":330,"./acc/AccTransformLazy":331,"./agg/Agg":332,"./agg/AggArray":333,"./agg/AggArrayStatic":334,"./agg/AggBestLabel":335,"./agg/AggCustomAcc":336,"./agg/AggLiteral":337,"./agg/AggMap":338,"./agg/AggObject":339,"./agg/AggObjectCustom":340,"./agg/AggRef":341,"./agg/AggTransform":342,"./agg/AggTransformLazy":343,"./binding_mapper/BindingMapper":344,"./binding_mapper/BindingMapperExpr":345,"./binding_mapper/BindingMapperIndex":346,"./binding_mapper/BindingMapperTransform":347,"./facade/CollectionFacade":348,"./facade/QueryFlow":349,"./facade/StoreFacade":350}],352:[function(require,module,exports){
 var ObjectUtils = require('./ObjectUtils');
@@ -24838,9 +24843,10 @@ var ns = {
     MultiMapObjectArray: require('./collection/MultiMapObjectArray'),
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./ArrayUtils":352,"./ClusterUtils":353,"./CollectionUtils":354,"./JsonUtils":356,"./MapUtils":357,"./ObjectUtils":358,"./PrefixUtils":359,"./PromiseUtils":360,"./SerializationContext":361,"./Serializer":362,"./SetUtils":363,"./StringUtils":365,"./TreeUtils":366,"./UriUtils":367,"./collection/ArrayList":368,"./collection/Entry":369,"./collection/HashBidiMap":370,"./collection/HashMap":371,"./collection/HashSet":372,"./collection/Iterator":373,"./collection/IteratorAbstract":374,"./collection/IteratorArray":375,"./collection/ListMap":376,"./collection/MapUnion":377,"./collection/MultiMapObjectArray":378,"./shared":380}],380:[function(require,module,exports){
 var shared = {
@@ -24917,9 +24923,10 @@ var ns = {
     InitialContext: require('./InitialContext')
 };
 
-Object.freeze(ns);
+//Object.freeze(ns);
 
 module.exports = ns;
+
 
 },{"./InitialContext":381,"./owl":383,"./rdf":384,"./rdfs":385,"./wgs84":386,"./xsd":387}],383:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
