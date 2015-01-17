@@ -1181,7 +1181,7 @@ var Class = require('../ext/Class');
 
 var NodeFactory = require('../rdf/NodeFactory');
 
-var ElementTriplesBlock = require('../sparql/element/ElementTriplesBlock'); 
+var ElementTriplesBlock = require('../sparql/element/ElementTriplesBlock');
 var GenSym = require('../sparql/GenSym');
 var VarUtils = require('../sparql/VarUtils');
 
@@ -1189,14 +1189,16 @@ var Path = require('./Path');
 var Step = require('./Step');
 var VarNode = require('./VarNode');
 
+var HashMap = require('../util/collection/HashMap');
+
 
 /**
  * This class only has the purpose of allocating variables
  * and generating elements.
- * 
+ *
  * The purpose is NOT TO DECIDE on which elements should be created.
- * 
- * 
+ *
+ *
  * @param parent
  * @param root
  * @param generator
@@ -1215,174 +1217,184 @@ var FacetNode = Class.create({
             }
         }
 
-        
+
         this.varNode = varNode;
-        
+
         /**
          * The step for how this node can be  reached from the parent
-         * Null for the root 
+         * Null for the root
          */
         this.step = step;
 
 
         this._isActive = true; // Nodes can be disabled; in this case no triples/constraints will be generated
-        
-        this.idToChild = {};
-        
+
+        //this.idToChild = {};
+        this.idToChild = new HashMap();
+
         //this.idToConstraint = {};
+    },
+
+    hashCode: function() {
+        var result = this.idToChild.hashCode() * 3; // * (this.step ? this.step.hashCode() : 7);
+        return result;
+    },
+
+    equals: function(that) {
+        throw new Error('Should not be called');
     },
 
     getRootNode: function() {
         return this.root;
     },
-        
+
     isRoot: function() {
         var result = this.parent ? false : true;
         return result;
     },
-    
+
     /*
     getVariableName: function() {
         return this.varNode.getVariableName();
     },*/
-    
+
     getVar: function() {
         var varName = this.varNode.getVariableName();
         var result = NodeFactory.createVar(varName);
-        return result;          
+        return result;
     },
-    
+
     getVariable: function() {
-        if(!this.warningShown) {                
+        if(!this.warningShown) {
             //console.log('[WARN] Deprecated. Use .getVar() instead');
             this.warningShown = true;
         }
 
         return this.getVar();
     },
-    
+
     getStep: function() {
         return this.step;
     },
-    
+
     getParent: function() {
         return this.parent;
     },
-    
+
     getPath: function() {
         var steps = [];
-        
+
         var tmp = this;
         while(tmp != this.root) {
             steps.push(tmp.getStep());
             tmp = tmp.getParent();
         }
-        
+
         steps.reverse();
-        
+
         var result = new Path(steps);
-        
+
         return result;
     },
-    
+
     forPath: function(path) {
         var steps = path.getSteps();
-        
+
         var result = this;
         steps.forEach(function(step) {
             // TODO Allow steps back
             result = result.forStep(step);
         });
-        
-        return result;
-    },      
 
-    getIdStr: function() {
-        // TODO concat this id with those of all parents
+        return result;
     },
-    
+
+//    getIdStr: function() {
+//        // TODO concat this id with those of all parents
+//    },
+
     getSteps: function() {
         return this.steps;
     },
-        
+
     isActiveDirect: function() {
         return this._isActive;
     },
-            
-    
+
+
     /**
      * Returns an array having at most one element.
-     * 
-     * 
+     *
+     *
      */
     getElements: function() {
         var result = [];
-        
+
         var triples = this.getTriples();
         if(triples.length > 0) {
             var element = new ElementTriplesBlock(triples);
             result.push(element);
         }
-        
-        
+
+
         return result;
     },
-    
+
     /**
      * Get triples for the path starting from the root node until this node
-     * 
+     *
      * @returns {Array}
      */
     getTriples: function() {
-        var result = [];            
+        var result = [];
         this.getTriples2(result);
         return result;
     },
-    
+
     getTriples2: function(result) {
         this.createDirectTriples2(result);
-        
+
         if(this.parent) {
             this.parent.getTriples2(result);
         }
-        return result;          
+        return result;
     },
 
     /*
     createTriples2: function(result) {
-        
+
     },*/
-    
+
     createDirectTriples: function() {
         var result = [];
         this.createDirectTriples2(result);
         return result;
     },
-            
-    
-    
+
+
+
     /**
      * Create the element for moving from the parent to this node
-     * 
+     *
      * TODO Cache the element, as the generator might allocate new vars on the next call
      */
     createDirectTriples2: function(result) {
         if(this.step) {
             var sourceVar = this.parent.getVariable();
             var targetVar = this.getVariable();
-            
+
             var tmp = this.step.createElement(sourceVar, targetVar, this.generator);
-            
+
             // FIXME
             var triples = tmp.getTriples();
-            
+
             result.push.apply(result, triples);
-            
+
             //console.log('Created element', result);
         }
-        
+
         return result;
-        
+
         /*
         if(step instanceof ns.Step) {
             result = ns.FacetUtils.createTriplesStepProperty(step, startVar, endVar);
@@ -1393,114 +1405,114 @@ var FacetNode = Class.create({
         }
         */
     },
-    
+
     isActive: function() {
         if(!this._isActive) {
             return false;
         }
-        
+
         if(this.parent) {
             return this.parent.isActive();
         }
-        
+
         return true;
     },
-    
+
     attachToParent: function() {
         if(!this.parent) {
             return;
         }
-        
-        this.parent[this.id] = this;            
+
+        this.parent[this.id] = this;
         this.parent.attachToParent();
     },
-        
+
     /**
      * Convenience method, uses forStep
-     * 
+     *
      * @param propertyUri
      * @param isInverse
      * @returns
      */
     forProperty: function(propertyUri, isInverse) {
         var step = new Step(propertyUri, isInverse);
-        
+
         var result = this.forStep(step);
 
         return result;
     },
-        
+
     forStep: function(step) {
         //console.log('Step is', step);
-        
-        var stepId = '' + JSON.stringify(step);
-        
-        var child = this.idToChild[stepId];
-        
+
+        //var stepId = '' + JSON.stringify(step);
+
+        var child = this.idToChild.get(step);//[stepId];
+
         if(!child) {
-            
-            var subVarNode = this.varNode.forStepId(stepId);
-            
+
+            var subVarNode = this.varNode.forStep(step);
+
             child = new FacetNode(subVarNode, step, this, this.root);
-            
+
             /*
             child = {
                     step: step,
                     child: facet
             };*/
-            
+
             //Unless we change something
             // we do not add the node to the parent
-            this.idToChild[stepId] = child;             
+            this.idToChild.put(step, child);
         }
 
         return child;
     },
 
     /**
-     * 
-     * 
+     *
+     *
      * @returns the new root node.
      */
     copyExclude: function() {
         // Result is a new root node
         var result = new FacetNode();
         console.log('Now root:' , result);
-        
+
         this.root.copyExcludeRec(result, this);
-        
+
         return result;
     },
-        
+
     copyExcludeRec: function(targetNode, excludeNode) {
-        
+
         console.log('Copy:', this, targetNode);
-        
+
         if(this === excludeNode) {
             return;
         }
-        
+
         this.copyTo(targetNode);
-        
+
         this.steps.forEach(function(s) {
             var childStep = s.step;
             var childNode = s.child;
-            
+
             console.log('child:', childStep, childNode);
-            
+
             if(childNode === excludeNode) {
                 return;
             }
-            
-            
-            
+
+
+
             var newChildNode = targetNode.forStep(childStep);
             console.log('New child:', newChildNode);
-            
-            childNode.copyExcludeRec(newChildNode, excludeNode);
-        });         
 
-        
+            childNode.copyExcludeRec(newChildNode, excludeNode);
+        });
+
+
         //return result;
     }
 });
@@ -1508,21 +1520,21 @@ var FacetNode = Class.create({
 
 /**
  * Use this instead of the constructor
- * 
+ *
  */
 FacetNode.createRoot = function(v, generator) {
 
     var varName = v ? v.getName() : VarUtils.s.getName();
     generator = generator ? generator : new GenSym('fv');
-    
-    var varNode = new VarNode(varName, generator);       
+
+    var varNode = new VarNode(varName, generator);
     var result = new FacetNode(varNode);
     return result;
 };
 
 module.exports = FacetNode;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":97,"../sparql/GenSym":225,"../sparql/VarUtils":242,"../sparql/element/ElementTriplesBlock":253,"./Path":21,"./Step":26,"./VarNode":29}],12:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":97,"../sparql/GenSym":225,"../sparql/VarUtils":242,"../sparql/element/ElementTriplesBlock":253,"../util/collection/HashMap":371,"./Path":21,"./Step":26,"./VarNode":29}],12:[function(require,module,exports){
 var Class = require('../ext/Class');
 var ListFilter = require('../service/ListFilter');
 
@@ -3324,10 +3336,13 @@ var Class = require('../ext/Class');
 var VarNode = require('./VarNode');
 var Step = require('./Step');
 
+var HashMap = require('../util/collection/HashMap');
+var ObjectUtils = require('../util/ObjectUtils');
+
 /**
  * A class for generating variables for step-ids.
  * So this class does not care about the concrete step taken.
- * 
+ *
  * @param variableName
  * @param generator
  * @param parent
@@ -3335,14 +3350,15 @@ var Step = require('./Step');
  * @returns {ns.VarNode}
  */
 var VarNode = Class.create({
-    initialize: function(variableName, generator, stepId, parent, root) {
+    initialize: function(variableName, generator, step, parent, root) {
         this.variableName = variableName;
         this.generator = generator;
-        this.stepId = stepId; // Null for root
+        //this.stepId = stepId; // Null for root
+        this.step = step; // Null for root
         this.parent = parent;
         this.root = root;
-        
-        
+
+
         //console.log('VarNode status' , this);
         if(!this.root) {
             if(this.parent) {
@@ -3353,8 +3369,17 @@ var VarNode = Class.create({
             }
         }
 
-        
-        this.idToChild = {};
+
+        this.idToChild = new HashMap();
+    },
+
+    hashCode: function() {
+        var result = ObjectUtils.hashCodeStr(this.variableName) * (this.step ? this.step.hashCode() : 7);
+        return result;
+    },
+
+    equals: function(that) {
+        throw new Error('Should not be called');
     },
 
     isRoot: function() {
@@ -3368,90 +3393,94 @@ var VarNode = Class.create({
         return result;
     },
     */
-    
+
     getVariableName: function() {
         return this.variableName;
     },
-    
+
     /*
     forPath: function(path) {
         var steps = path.getSteps();
-        
+
         var result;
         if(steps.length === 0) {
             result = this;
         } else {
             var step = steps[0];
-            
+
             // TODO Allow steps back
-            
+
             result = forStep(step);
         }
-        
+
         return result;
     },
     */
 
-    getIdStr: function() {
-        var tmp = this.parent ? this.parent.getIdStr() : '';
-        
-        var result = tmp + this.variableName;
-        return result;
+//    getIdStr: function() {
+//        var tmp = this.parent ? this.parent.getIdStr() : '';
+//
+//        var result = tmp + this.variableName;
+//        return result;
+//    },
+
+    getStop: function(step) {
+        return this.step;
     },
 
-    getStepId: function(step) {
-        return '' + JSON.stringify(step);
-    },
-    
+//    getStepId: function(step) {
+//        return '' + JSON.stringify(step);
+//    },
+
     getSteps: function() {
         return this.steps;
     },
-        
+
     /**
      * Convenience method, uses forStep
-     * 
+     *
      * @param propertyUri
      * @param isInverse
      * @returns
      */
     forProperty: function(propertyUri, isInverse) {
         var step = new Step(propertyUri, isInverse);
-        
+
         var result = this.forStep(step);
 
         return result;
     },
 
-    forStepId: function(stepId) {
-        var child = this.idToChild[stepId];
-        
+    forStep: function(step) {
+        var child = this.idToChild.get(step);
+
         if(!child) {
-            
+
             var subName = this.generator.next();
-            child = new VarNode(subName, this.generator, stepId, this);
-            
+            child = new VarNode(subName, this.generator, step, this);
+
             //Unless we change something
             // we do not add the node to the parent
-            this.idToChild[stepId] = child;             
+            this.idToChild.put(step, child);
         }
-        
+
         return child;
     },
-    
+
     /*
      * Recursively scans the tree, returning the first node
      * whose varName matches. Null if none found.
-     * 
-     * TODO: Somehow cache the variable -> node mapping 
+     *
+     * TODO: Somehow cache the variable -> node mapping
      */
     findNodeByVarName: function(varName) {
         if(this.variableName === varName) {
             return this;
         }
-        
+
         var children = [];
         forEach(this.idToChild, function(child) {
-           children.push(child); 
+           children.push(child);
         });
 
         //var children = _.values(this.idToChild);
@@ -3464,14 +3493,14 @@ var VarNode = Class.create({
                 return tmp;
             }
         }
-        
+
         return null;
     }
 });
 
 module.exports = VarNode;
 
-},{"../ext/Class":2,"./Step":26,"./VarNode":29,"lodash.foreach":527}],30:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":358,"../util/collection/HashMap":371,"./Step":26,"./VarNode":29,"lodash.foreach":527}],30:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -4922,7 +4951,8 @@ var LookupServicePathLabels = Class.create(LookupServiceBase, {
                     var result = memo;
 
                     var property = NodeFactory.createUri(step.getPropertyName());
-                    var label = map.get(property);
+                    var data = map.get(property);
+                    var label = data.displayLabel || '(no label found)';
 
                     result = result === '' ? result : result + '&raquo;';
                     result += label;
@@ -5148,14 +5178,14 @@ var TableConfigFacet = Class.create({
     },
 
     getColumnId: function(path) {
-        var index = this.paths.firstIndexOf(path);
+        var index = ArrayUtils.firstIndexOf(this.paths, path);
         var result = this.tableMod.getColumnIds()[index];
         return result;
     },
 
     removeColumn: function(colId) {
         var path = this.getPath(colId);
-        this.paths.remove(path);
+        ArrayUtils.removeItem(this.paths, path);
     },
 
     getColIdForPath: function(path) {
@@ -5588,11 +5618,14 @@ var DataServiceBboxCache = Class.create(DataService, {
                 var wkt = GeoExprUtils.boundsToWkt(node.getBounds());
 
                 var cluster = {
-                    id: wkt,
-                    // type: 'cluster',
-                    // isZoomCluster: true,
-                    zoomClusterBounds: node.getBounds(),
-                    wkt: NodeFactory.createPlainLiteral(wkt),
+                    key: wkt,
+                    val: {
+                        id: wkt,
+                        // type: 'cluster',
+                        // isZoomCluster: true,
+                        zoomClusterBounds: node.getBounds(),
+                        wkt: wkt // NodeFactory.createPlainLiteral(
+                    }
                 };
 
                 docs.push(cluster);
@@ -6122,8 +6155,8 @@ var rdf = require('../vocab/rdf');
 //var TemplateParser = require('../sponate/TemplateParser');
 var SponateUtils = require('../sponate/SponateUtils');
 
-var intersectsFnName = 'bif:st_intersects';
-var geomFromTextFnName = 'bif:st_geomFromText';
+var defaultIntersectsFnName = '<bif:st_intersects>';
+var defaultGeomFromTextFnName = '<bif:st_geomFromText>';
 
 //var mapParser = new TemplateParser();
 
@@ -6137,14 +6170,14 @@ var GeoMapFactoryUtils = {
 
     ogcVirtMapFactory: new GeoMapFactory(
             GeoMapUtils.ogcGeoView,
-            new BboxExprFactoryWkt(VarUtils.w, intersectsFnName, geomFromTextFnName)
+            new BboxExprFactoryWkt(VarUtils.w, defaultIntersectsFnName, defaultGeomFromTextFnName)
     ),
 
     // TODO Replace defaults with geosparql rather than virtuoso bifs
     createWktMapFactory: function(wktPredicateName, intersectsFnName, geomFromTextFnName) {
         wktPredicateName = wktPredicateName || 'http://www.opengis.net/ont/geosparql#asWKT';
-        intersectsFnName = intersectsFnName || 'bif:st_intersects';
-        geomFromTextFnName = geomFromTextFnName || 'bif:st_geomFromText';
+        intersectsFnName = intersectsFnName || defaultIntersectsFnName;
+        geomFromTextFnName = geomFromTextFnName || defaultGeomFromTextFnName;
 
         var predicate = NodeFactory.createUri(wktPredicateName);
 
@@ -6158,7 +6191,7 @@ var GeoMapFactoryUtils = {
             name: 'geoMap-' + wktPredicateName,
             template: [{
                 id: '' + geoConcept.getVar(), // TODO get rid of the '' +
-                wkt: VarUtils.w
+                wkt: '' + VarUtils.w
             }],
             from: geoConcept.getElement()
         });
@@ -6186,14 +6219,16 @@ var SponateUtils = require('../sponate/SponateUtils');
 
 
 var GeoMapUtils = {
+    // Note: String attributes become JSON values; variables become RDF values
     wgs84GeoView: SponateUtils.parseSpec({
         name: 'lonlat',
         template: [{
-            id: '' + GeoConceptUtils.conceptWgs84.getVar(), // TODO Get rid of the '' + //'?s',
-            lon: VarUtils.x,
-            lat: VarUtils.y,
-            wkt: [VarUtils.x, VarUtils.y, function(x, y) {
-                var result = NodeFactory.createTypedLiteralFromString('POINT(' + x + ' ' + y + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral');
+            id: GeoConceptUtils.conceptWgs84.getVar(), // TODO Get rid of the '' + //'?s',
+            lon: '' + VarUtils.x,
+            lat: '' + VarUtils.y,
+            wkt: ['' + VarUtils.x, '' + VarUtils.y, function(x, y) {
+                var result = 'POINT(' + x + ' ' + y + ')';
+                //var result = NodeFactory.createTypedLiteralFromString('POINT(' + x + ' ' + y + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral');
                 //var result = NodeFactory.createTypedLiteralFromString('POINT(' + b.get(VarUtils.x).getLiteralValue() + ' ' + b.get(VarUtils.y).getLiteralValue() + ')', 'http://www.opengis.net/ont/geosparql#wktLiteral');
                 return result;
             }]
@@ -7507,6 +7542,8 @@ module.exports = NodeFactory;
 },{"../util/ObjectUtils":358,"./AnonIdStr":93,"./LiteralLabel":96,"./TypeMapper":102,"./node/Node":110,"./node/Node_Blank":111,"./node/Node_Literal":114,"./node/Node_Uri":115,"./node/Var":117,"./rdf_datatype/DefaultRdfDatatypes":119}],98:[function(require,module,exports){
 var UriUtils = require('../util/UriUtils');
 
+var TypedValue = require('./rdf_datatype/TypedValue');
+
 var NodeUtils = {
 
     getSubstitute: function(node, fnNodeMap) {
@@ -7587,7 +7624,13 @@ var NodeUtils = {
         } else if(node.isBlank()) {
             result = node.toString();
         } else if(node.isLiteral()) {
-            result = node.getLiteralValue();
+            var tmp = node.getLiteralValue();
+
+            result = tmp instanceof TypedValue
+                ? tmp.getLexicalValue()
+                : tmp
+                ;
+
         } else {
             throw new Error('Unknow node type: ', node);
         }
@@ -7632,7 +7675,7 @@ var NodeUtils = {
 };
 
 module.exports = NodeUtils;
-},{"../util/UriUtils":367}],99:[function(require,module,exports){
+},{"../util/UriUtils":367,"./rdf_datatype/TypedValue":123}],99:[function(require,module,exports){
 var forEach = require('lodash.foreach');
 
 var Class = require('../ext/Class');
@@ -9608,10 +9651,12 @@ module.exports = SparqlServiceBuilder;
 
 },{"../ext/Class":2,"./sparql_service/SparqlServiceCache":192,"./sparql_service/SparqlServiceHttp":198,"./sparql_service/SparqlServiceLimit":199,"./sparql_service/SparqlServicePageExpand":200,"./sparql_service/SparqlServicePaginate":201,"./sparql_service/SparqlServiceVirtFix":203}],136:[function(require,module,exports){
 var uniq = require('lodash.uniq');
+var forEach = require('lodash.foreach');
 var VarUtils = require('../sparql/VarUtils');
 var ServiceUtils = require('./ServiceUtils');
 var IteratorArray = require('../util/collection/IteratorArray');
 var ResultSetArrayIteratorBinding = require('./result_set/ResultSetArrayIteratorBinding');
+
 var shared = require('../util/shared');
 var Promise = shared.Promise;
 
@@ -9708,8 +9753,12 @@ var TableServiceUtils = {
         // Collect nodes
         var result = [];
         rows.forEach(function(item) {
-            item.forEach(function(node) {
-                result.push(node);
+            forEach(item, function(node) {
+                if(node != null) {
+                    result.push(node);
+                } else {
+                    console.log('should not happen');
+                }
             });
         });
 
@@ -9759,11 +9808,11 @@ var TableServiceUtils = {
         var result = p.then(function(nodeToLabel) {
             var r = rows.map(function(row) {
                 var r = {};
-                row.forEach(function(node, key) {
-                    var label = nodeToLabel.get(node);
+                forEach(row, function(node, key) {
+                    var labelInfo = nodeToLabel.get(node);
                     r[key] = {
                         node: node,
-                        displayLabel: label,
+                        displayLabel: labelInfo ? labelInfo.displayLabel : '(no label)',
                     };
                 });
                 return r;
@@ -9777,7 +9826,7 @@ var TableServiceUtils = {
 
 module.exports = TableServiceUtils;
 
-},{"../sparql/VarUtils":242,"../util/collection/IteratorArray":375,"../util/shared":380,"./ServiceUtils":134,"./result_set/ResultSetArrayIteratorBinding":188,"lodash.uniq":677}],137:[function(require,module,exports){
+},{"../sparql/VarUtils":242,"../util/collection/IteratorArray":375,"../util/shared":380,"./ServiceUtils":134,"./result_set/ResultSetArrayIteratorBinding":188,"lodash.foreach":527,"lodash.uniq":677}],137:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Cache = Class.create({
@@ -10788,7 +10837,7 @@ var ListService = require('./ListService');
 /**
  * A list service that transforms the input concept to another
  * which gets passed to the underlying list service
- * 
+ *
  */
 var ListServiceTransformItem = Class.create(ListService, {
     initialize: function(listService, fnTransformItem) {
@@ -10800,6 +10849,10 @@ var ListServiceTransformItem = Class.create(ListService, {
 
         var self = this;
         var result = this.listService.fetchItems(concept, limit, offset).then(function(items) {
+            if(items == null) {
+                throw new Error('Should not happen');
+            }
+
             var r = items.map(self.fnTransformItem);
             return r;
         });
@@ -10807,7 +10860,7 @@ var ListServiceTransformItem = Class.create(ListService, {
         return result;
     },
 
-    fetchCount: function(concept, itemLimit, rowLimit) { 
+    fetchCount: function(concept, itemLimit, rowLimit) {
         var result = this.listService.fetchCount(concept, itemLimit, rowLimit);
         return result;
     },
@@ -10834,7 +10887,7 @@ var ListServiceTransformItems = Class.create(ListService, {
         this.fnTransformItems = fnTransformItems;
     },
 
-    fetchItems: Promise.method(function(concept, limit, offset) {
+    fetchItems: function(concept, limit, offset) {
 
         var self = this;
         var result = this.listService.fetchItems(concept, limit, offset).then(function(items) {
@@ -10843,7 +10896,7 @@ var ListServiceTransformItems = Class.create(ListService, {
         });
 
         return result;
-    }),
+    },
 
     fetchCount: function(concept, itemLimit, rowLimit) {
         var result = this.listService.fetchCount(concept, itemLimit, rowLimit);
@@ -10973,8 +11026,8 @@ var LookupServiceCache = Class.create(LookupServiceDelegateBase, {
             waitForPromises.push(p);
         }
 
-        var result = PromiseUtils.all(waitForPromises).then(function() {
-            var maps = arguments;
+        var result = PromiseUtils.all(waitForPromises).then(function(maps) {
+            //var maps = arguments;
             waitForIds.forEach(function(id) {
 
                 var data = null;
@@ -11070,10 +11123,11 @@ var LookupServiceChunker = Class.create(LookupServiceDelegateBase, {
             return r;
         });
 
-        var result = PromiseUtils.all(promises).then(function() {
+        var result = PromiseUtils.all(promises).then(function(args) {
             var r = new HashMap();
-            arguments.forEach(function(map) {
-                r.putAll(map);
+            //var args = Array.prototype.slice.call(arguments);
+            args.forEach(function(map) {
+                r.putMap(map);
             });
 
             return r;
@@ -12144,6 +12198,7 @@ var QueryExecutionCache = Class.create(QueryExecution, {
 
         return result;
     },
+
 });
 
 module.exports = QueryExecutionCache;
@@ -22654,6 +22709,12 @@ var ArrayUtils = {
         return result;
     },
 
+    firstIndexOf: function(arr, item, equalsFn) {
+        var indexes = ArrayUtils.indexesOf(arr, item, equalsFn);
+        var result = (indexes.length > 0) ? indexes[0] : -1;
+        return result;
+    },
+
     contains: function(arr, item, equalsFn) {
         var indexes = ArrayUtils.indexesOf(arr, item, equalsFn);
         var result = indexes.length > 0;
@@ -22778,7 +22839,16 @@ var ArrayUtils = {
     removeByGrep: function(arr, fnPredicate) {
         var indexes = this.grep(arr, fnPredicate);
         this.removeIndexes(arr, indexes);
-    }
+    },
+
+
+    removeItem: function(arr, item, equalsFn) {
+        var index = ArrayUtils.firstIndexOf(arr, item, equalsFn);
+        if (index >= 0) {
+            arr.splice(index, 1);
+        }
+    },
+
 };
 
 module.exports = ArrayUtils;
@@ -24058,8 +24128,7 @@ var ArrayList = Class.create({
     },
 
     firstIndexOf: function(item) {
-        var indexes = this.indexesOf(item);
-        var result = (indexes.length > 0) ? indexes[0] : -1;
+        var result = ArrayUtils.firstIndexOf(this.items, item, this.fnEquals);
         return result;
     },
 
@@ -24073,15 +24142,12 @@ var ArrayList = Class.create({
      * Removes the first occurrence of the item from the list
      */
     remove: function(item) {
-        var index = this.firstIndexOf(item);
-        if (index >= 0) {
-            this.removeByIndex(index);
-        }
+        ArrayUtils.removeItem(this.items, item, this.fnEquals);
     },
 
-    removeByIndex: function(index) {
-        this.items.splice(index, 1);
-    },
+//    removeByIndex: function(index) {
+//        this.items.splice(index, 1);
+//    },
 
     size: function() {
         return this.items.length;
