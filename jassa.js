@@ -19466,7 +19466,7 @@ var Context = Class.create({
                 // Allocate a new name and source for this anonymous mapped concept
                 var i = 0;
                 var name;
-                while(self.getSource(name = (baseName + '_' + i))) {
+                while(self.getSource(name = (baseName + '_fn_' + i))) {
                     ++i;
                 }
 
@@ -19553,7 +19553,7 @@ var Engine = {
             state[sourceName] = map;
         }
 
-        map.putAll(nodeToAcc);
+        map.putMap(nodeToAcc);
     },
 
     mergeRefs : function(open, refs) {
@@ -19715,8 +19715,10 @@ var Engine = {
         var self = this;
 
         var result = new ListServiceTransformItems(listServiceAcc, function(accEntries) {
-            var r = Promise
-                .resolve(self.collectState(decls, sourceName, accEntries))
+            //var collectedState = self.collectState(decls, sourceName, accEntries);
+
+            var r =
+                self.collectState(decls, sourceName, accEntries)
                 .spread(function(rootIds, state, p) {
                     var s = self.postProcess(state, sourceName, rootIds);
                     return s;
@@ -19748,7 +19750,7 @@ var Engine = {
             // Note: We expect instances of AccMap here!
             var state = acc.getState();
 
-            map.putAll(state);
+            map.putMap(state);
 
             var refs = AccUtils.getRefs(acc);
 
@@ -19758,8 +19760,12 @@ var Engine = {
         // console.log('OPEN: ' + JSON.stringify(open, null, 4));
 
         state[sourceName] = map;
-        var p = this.resolveRefs(decls, open, state);
-        return [ rootIds, state, p ];
+        var result = this.resolveRefs(decls, open, state).then(function(p) {
+            var r = [ rootIds, state, p ];
+            return r;
+        });
+
+        return result;
     },
 
     postProcess : function(state, sourceName, rootIds) {
@@ -19843,7 +19849,7 @@ var Engine = {
         return result;
     },
 
-    exec : function(decls, query) {
+    exec: function(decls, query) {
         var sourceName = query.getSourceName();
         var listService = this.createListService(decls, sourceName, query
                 .isLeftJoin());
@@ -19861,7 +19867,7 @@ var Engine = {
      * open is a Map<SourceName, Set<ObjectId>> state is a Map<SourceName,
      * Map<ObjectId, Document>>
      */
-    resolveRefs : Promise.method(function(decls, open, state) {
+    resolveRefs: function(decls, open, state) {
 
         var self = this;
         var sourceNames = Object.keys(open);
@@ -19877,26 +19883,26 @@ var Engine = {
             var lookupService = self.createLookupService(decls, sourceName);
             var nodes = set.entries();
 
-            var subPromise = lookupService.lookup(nodes).then(
-                    function(nodeToAcc) {
-                        var accs = nodeToAcc.values();
-                        // console.log('accs: ' + JSON.stringify(accs));
-                        // if(true) { throw new Error('foo'); }
+            var subPromise = lookupService.lookup(nodes).then(function(nodeToAcc) {
+                var accs = nodeToAcc.values();
+                // console.log('accs: ' + JSON.stringify(accs));
+                // if(true) { throw new Error('foo'); }
 
-                        Engine.indexAccMap(state, sourceName, nodeToAcc);
-                        var refs = AccUtils.getRefs(accs);
-                        var openRefs = Engine.filterRefs(state, refs);
-                        var next = {};
-                        Engine.mergeRefs(next, openRefs);
+                Engine.indexAccMap(state, sourceName, nodeToAcc);
+                var refs = AccUtils.getRefs(accs);
+                var openRefs = Engine.filterRefs(state, refs);
+                var next = {};
+                Engine.mergeRefs(next, openRefs);
 
-                        return self.resolveRefs(decls, next, state);
-                    });
+                var r = self.resolveRefs(decls, next, state);
+                return r;
+            });
 
             return subPromise;
         });
 
         return PromiseUtils.all(subPromises);
-    }),
+    },
 
 };
 
@@ -24937,7 +24943,7 @@ module.exports = shared;
  * http://www.w3.org/2011/rdfa-context/rdfa-1.1
  *
  */
-var initialContext = {
+var InitialContext = {
     dcat: 'http://www.w3.org/ns/dcat#',
     qb: 'http://purl.org/linked-data/cube#',
     grddl: 'http://www.w3.org/2003/g/data-view#',
@@ -24982,7 +24988,7 @@ var initialContext = {
     schema: 'http://schema.org/'
 };
 
-module.exports = initialContext;
+module.exports = InitialContext;
 
 },{}],382:[function(require,module,exports){
 'use strict';
