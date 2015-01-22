@@ -24253,12 +24253,15 @@ var HashMap = Class.create({
             return r;
         };
 
-        Object.defineProperty(this, 'length', {
-            get: function() {
-                var r = self.entries().length;
-                return r;
-            }
-        });
+// NOTE: Defining a .length property will cause lodash.forEach and probably some other
+// JS stuff out there mistake this object for an array and cause unexpected behavior.
+// For this reason, use .size()
+//        Object.defineProperty(this, 'length', {
+//            get: function() {
+//                var r = self.entries().length;
+//                return r;
+//            }
+//        });
     },
 
     hashCode: function() {
@@ -24467,7 +24470,13 @@ var HashMap = Class.create({
      */
     asFn: function() {
         return this.fnGet;
-    }
+    },
+
+    size: function() {
+        var entries = this.entries();
+        var result = entries.length;
+        return result;
+    },
 });
 
 module.exports = HashMap;
@@ -24481,11 +24490,11 @@ var HashSet = Class.create({
         this._map = new HashMap(fnEquals, fnHash);
 
         var self = this;
-        Object.defineProperty(this, 'length', {
-            get: function() {
-                return self._map.length;
-            }
-        });
+//        Object.defineProperty(this, 'length', {
+//            get: function() {
+//                return self._map.length;
+//            }
+//        });
     },
 
     add: function(item) {
@@ -24573,6 +24582,11 @@ var HashSet = Class.create({
     toString: function() {
         var entries = this.entries();
         var result = '{' + entries.join(', ') + '}';
+        return result;
+    },
+
+    size: function() {
+        var result = this._map.size();
         return result;
     }
 });
