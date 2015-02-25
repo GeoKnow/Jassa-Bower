@@ -6250,7 +6250,7 @@ var GeoMapUtils = {
         name: 'lonlat',
         template: [{
             id: '' + GeoConceptUtils.conceptGeoVocab.getVar(),
-            wkt: VarUtils.w
+            wkt: '' + VarUtils.w
         }],
         from: GeoConceptUtils.conceptGeoVocab.getElement()
     })
