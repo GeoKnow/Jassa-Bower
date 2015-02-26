@@ -6156,8 +6156,8 @@ var xsd = require('../vocab/xsd');
 //var TemplateParser = require('../sponate/TemplateParser');
 var SponateUtils = require('../sponate/SponateUtils');
 
-var defaultIntersectsFnName = '<bif:st_intersects>';
-var defaultGeomFromTextFnName = '<bif:st_geomFromText>';
+var defaultIntersectsFnName = 'bif:st_intersects';
+var defaultGeomFromTextFnName = 'bif:st_geomFromText';
 
 //var mapParser = new TemplateParser();
 
@@ -6249,7 +6249,7 @@ var GeoMapUtils = {
     ogcGeoView: SponateUtils.parseSpec({
         name: 'lonlat',
         template: [{
-            id: '' + GeoConceptUtils.conceptGeoVocab.getVar(),
+            id: GeoConceptUtils.conceptGeoVocab.getVar(),
             wkt: '' + VarUtils.w
         }],
         from: GeoConceptUtils.conceptGeoVocab.getElement()
@@ -7187,11 +7187,11 @@ var GraphImpl = Class.create({
         this.triples = triplesSet || new HashSet();
 
         var self = this;
-        Object.defineProperty(this, 'length', {
-            get: function() {
-                return self.triples.length;
-            }
-        });
+//        Object.defineProperty(this, 'length', {
+//            get: function() {
+//                return self.triples.length;
+//            }
+//        });
     },
 
     equals: function() {
@@ -7246,6 +7246,11 @@ var GraphImpl = Class.create({
 
     toArray: function() {
         var result = this.triples.entries();
+        return result;
+    },
+
+    size: function() {
+        var result = this.triples.size();
         return result;
     }
 
