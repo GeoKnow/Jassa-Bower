@@ -14143,7 +14143,6 @@ var Query = require('./Query');
 var Concept = require('./Concept');
 
 
-var RelationUtils = require('./RelationUtils');
 /**
  * Combines the elements of two concepts, yielding a new concept.
  * The new concept used the variable of the second argument.
@@ -14189,7 +14188,7 @@ var ConceptUtils = {
         var targetVar = relation.getTargetVar();
 
         if(sourceConcept.isSubjectConcept()) {
-            if(RelationUtils.isEmpty(relation)) {
+            if(relation.isEmpty()) {
                 result = sourceConcept;
             } else {
                 result = new Concept(relationElement, targetVar);
@@ -14668,7 +14667,7 @@ Select ?p (Count(*) As ?c) {
 module.exports = ConceptUtils;
 
 
-},{"../rdf/NodeFactory":97,"../rdf/Triple":100,"../rdf/node/Node":110,"../util/collection/HashMap":377,"./../vocab/rdf":390,"./Concept":219,"./ElementUtils":223,"./NodeValueUtils":232,"./Query":236,"./QueryUtils":238,"./RelationUtils":240,"./VarUtils":245,"./agg/AggCount":246,"./element/ElementFilter":250,"./element/ElementGroup":251,"./element/ElementOptional":253,"./element/ElementSubQuery":255,"./element/ElementTriplesBlock":256,"./expr/E_Equals":268,"./expr/ExprAggregator":284,"./expr/ExprVar":292}],221:[function(require,module,exports){
+},{"../rdf/NodeFactory":97,"../rdf/Triple":100,"../rdf/node/Node":110,"../util/collection/HashMap":377,"./../vocab/rdf":390,"./Concept":219,"./ElementUtils":223,"./NodeValueUtils":232,"./Query":236,"./QueryUtils":238,"./VarUtils":245,"./agg/AggCount":246,"./element/ElementFilter":250,"./element/ElementGroup":251,"./element/ElementOptional":253,"./element/ElementSubQuery":255,"./element/ElementTriplesBlock":256,"./expr/E_Equals":268,"./expr/ExprAggregator":284,"./expr/ExprVar":292}],221:[function(require,module,exports){
 //
 //var DiffUtils = {
 //    getState: function(isExpected, isActual) {
@@ -16277,7 +16276,7 @@ var RelationUtils = {
      * If no rowLimit is provided, the subselect is omitted
      */
     createQueryValueCount: function(relation, sourceValue, countVar, rowLimit) {
-        var wrapped = this.createRelationWithLimit(relation, rowLimit);
+        //var wrapped = this.createRelationWithLimit(relation, rowLimit);
 
         var result = new Query();
 
