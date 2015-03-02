@@ -7004,6 +7004,10 @@ var NodeUtils = require('../rdf/NodeUtils');
 
 var TalisRdfJsonUtils = {
 
+    containsTriple: function(talisRdfJson, triple) {
+
+    },
+
     triplesToTalisRdfJson: function(triples, result) {
         result = result || {};
 
@@ -7025,6 +7029,9 @@ var TalisRdfJsonUtils = {
         var p = triple.getPredicate().getUri();
 
         var os = pos[p] = pos[p] || [];
+
+        // TODO Convert the os to nodes, and check whether _o is already contained
+        // jassa.rdf.NodeFactory.createFromTalisRdfJson
 
         var _o = triple.getObject();
         var o = NodeUtils.toTalisRdfJson(_o);
@@ -7220,6 +7227,11 @@ var GraphImpl = Class.create({
 //                return self.triples.length;
 //            }
 //        });
+    },
+
+    isEmpty: function() {
+        var result = this.triples.isEmpty();
+        return result;
     },
 
     equals: function() {
@@ -24894,6 +24906,12 @@ var HashMap = Class.create({
         var result = entries.length;
         return result;
     },
+
+    isEmpty: function() {
+        var s = this.size();
+        var result = s !== 0;
+        return result;
+    }
 });
 
 module.exports = HashMap;
@@ -24906,12 +24924,17 @@ var HashSet = Class.create({
     initialize: function(fnEquals, fnHash) {
         this._map = new HashMap(fnEquals, fnHash);
 
-        var self = this;
+//        var self = this;
 //        Object.defineProperty(this, 'length', {
 //            get: function() {
 //                return self._map.length;
 //            }
 //        });
+    },
+
+    isEmpty: function() {
+        var result = this._map.isEmpty();
+        return result;
     },
 
     add: function(item) {
