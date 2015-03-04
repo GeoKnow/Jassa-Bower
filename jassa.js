@@ -7217,6 +7217,13 @@ var Class = require('../ext/Class');
 
 var HashSet = require('../util/collection/HashSet');
 
+var Triple = require('./Triple');
+var TripleUtils = require('./TripleUtils');
+
+/**
+ * Simple set based graph implementation with O(n) complexity for lookups
+ *
+ */
 var GraphImpl = Class.create({
     initialize: function(triplesSet) {
         this.triples = triplesSet || new HashSet();
@@ -7251,6 +7258,24 @@ var GraphImpl = Class.create({
     remove: function(triple) {
         var result = this.triples.remove(triple);
         return result;
+    },
+
+    removeAll: function(triples) {
+        this.triples.removeAll(triples);
+    },
+
+    removeMatch: function(pattern) {
+        //var pattern = new Triple(s, p, o);
+
+        var removals = [];
+        this.triples.forEach(function(triple) {
+            var isMatch = TripleUtils.matches(pattern, triple);
+            if(isMatch) {
+                removals.push(triple);
+            }
+        });
+        //console.log('removals: ', removals);
+        this.removeAll(removals);
     },
 
     forEach: function(callback) {
@@ -7299,7 +7324,7 @@ var GraphImpl = Class.create({
 module.exports = GraphImpl;
 
 
-},{"../ext/Class":2,"../util/collection/HashSet":378}],95:[function(require,module,exports){
+},{"../ext/Class":2,"../util/collection/HashSet":378,"./Triple":100,"./TripleUtils":101}],95:[function(require,module,exports){
 var HashSet = require('../util/collection/HashSet');
 
 var GraphUtils = {
@@ -7600,6 +7625,12 @@ var UriUtils = require('../util/UriUtils');
 var TypedValue = require('./rdf_datatype/TypedValue');
 
 var NodeUtils = {
+
+    matches: function(pattern, candidate) {
+        var result = candidate && (pattern == null || candidate.equals(pattern));
+        //console.log('NodeUtils.matches: ' + pattern + ' with ' + candidate + ' > ' + result);
+        return result;
+    },
 
     getSubstitute: function(node, fnNodeMap) {
         var result = fnNodeMap(node);
@@ -8008,12 +8039,32 @@ module.exports = Triple;
 },{"../ext/Class":2,"./NodeUtils":98}],101:[function(require,module,exports){
 var uniq = require('lodash.uniq');
 
+var NodeUtils = require('./NodeUtils');
 
 var TripleUtils = {
     uniqTriples: function(triples) {
         var result =  uniq(triples, false, function(x) {
             return x.toString();
         });
+        return result;
+    },
+
+    matches: function(tripleMatch, triple) {
+        var ps = tripleMatch.toArray();
+        var cs = triple.toArray();
+
+        var result = true;
+        for(var i = 0; i < 3; ++i) {
+            var p = ps[i];
+            var c = cs[i];
+
+            var t = NodeUtils.matches(p, c);
+            if(!t) {
+                result = false;
+                break;
+            }
+        }
+
         return result;
     },
 
@@ -8037,7 +8088,7 @@ var TripleUtils = {
 
 module.exports = TripleUtils;
 
-},{"lodash.uniq":683}],102:[function(require,module,exports){
+},{"./NodeUtils":98,"lodash.uniq":683}],102:[function(require,module,exports){
 var Class = require('../ext/Class');
 var DefaultRdfDatatypes = require('./rdf_datatype/DefaultRdfDatatypes');
 var BaseDatatype = require('./rdf_datatype/BaseDatatype');
