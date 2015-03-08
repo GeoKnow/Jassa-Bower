@@ -14329,6 +14329,16 @@ var ConceptUtils = {
         if(!filterVar.equals(attrVar)) {
             var varMap = new HashMap();
             varMap.put(filterVar, attrVar);
+
+            // If the attrVar appears in the filterConcept, rename it to a new variable
+            var distinctAttrVar = NodeFactory.createVar('cc_' + attrVar.getName());
+            varMap.put(attrVar, distinctAttrVar);
+
+            // TODO Ensure uniqueness
+            //filterConcept.getVarsMentioned();
+            //attrConcept.getVarsMentioned();
+            // VarUtils.freshVar('cv', );  //
+
             filterConcept = this.renameVars(filterConcept, varMap);
         }
 
@@ -16740,6 +16750,8 @@ var VarUtils = {
         var result = varGen.next();
         return result;
     },
+
+    // TODO Maybe add a freshVarName method
 
     fnSubst: function(varMap) {
         var result = function(v) {
