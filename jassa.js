@@ -9191,7 +9191,7 @@ module.exports = LookupServiceUtils;
  */
 var PageExpandUtils = {
     computeRange: function(limit, offset, pageSize) {
-        // Example: If pageSize=100 and offset = 130, then we will adjust the offset to 100, and use a subOffset of 30  
+        // Example: If pageSize=100 and offset = 130, then we will adjust the offset to 100, and use a subOffset of 30
         var o = offset || 0;
         var subOffset = o % pageSize;
         o -= subOffset;
@@ -9199,12 +9199,16 @@ var PageExpandUtils = {
         // And we will extend the new limit to the page boundary again.
         // Example: If pageSize=100 and limit = 130, then we adjust the new limit to 200
         var l = limit;
-        var subLimit;
+        var subLimit = null;
         if(l) {
             subLimit = l;
 
-            var tmp = l % pageSize;
-            l += pageSize - tmp;
+            var mod = l % pageSize;
+
+            //console.log('l = ' + l + ' pageSize = ' + pageSize + ' tmp = ' + tmp);
+            // If the mod is 0 (i.e. no remainder), we do not increase the limit.
+            var extra = mod ? pageSize - mod : 0;
+            l += extra;
         }
 
         var result = {
@@ -9214,6 +9218,7 @@ var PageExpandUtils = {
             subOffset:subOffset
         };
 
+        //console.log(JSON.stringify(result));
         return result;
     }
 };
@@ -9728,6 +9733,7 @@ var SparqlServicePageExpand = require('./sparql_service/SparqlServicePageExpand'
 var SparqlServiceCache = require('./sparql_service/SparqlServiceCache');
 var SparqlServiceVirtFix = require('./sparql_service/SparqlServiceVirtFix');
 var SparqlServiceLimit = require('./sparql_service/SparqlServiceLimit');
+var SparqlServiceConsoleLog = require('./sparql_service/SparqlServiceConsoleLog');
 
 
 var SparqlServiceBuilder = Class.create({
@@ -9737,6 +9743,11 @@ var SparqlServiceBuilder = Class.create({
 
     create: function() {
         return this.sparqlService;
+    },
+
+    log: function() {
+        this.sparqlService = new SparqlServiceConsoleLog(this.sparqlService);
+        return this;
     },
 
     paginate: function(pageSize) {
@@ -9783,7 +9794,7 @@ SparqlServiceBuilder.http = function(serviceUri, defaultGraphUris, ajaxOptions, 
 
 module.exports = SparqlServiceBuilder;
 
-},{"../ext/Class":2,"./sparql_service/SparqlServiceCache":196,"./sparql_service/SparqlServiceHttp":202,"./sparql_service/SparqlServiceLimit":203,"./sparql_service/SparqlServicePageExpand":204,"./sparql_service/SparqlServicePaginate":205,"./sparql_service/SparqlServiceVirtFix":207}],137:[function(require,module,exports){
+},{"../ext/Class":2,"./sparql_service/SparqlServiceCache":196,"./sparql_service/SparqlServiceConsoleLog":197,"./sparql_service/SparqlServiceHttp":202,"./sparql_service/SparqlServiceLimit":203,"./sparql_service/SparqlServicePageExpand":204,"./sparql_service/SparqlServicePaginate":205,"./sparql_service/SparqlServiceVirtFix":207}],137:[function(require,module,exports){
 var uniq = require('lodash.uniq');
 var forEach = require('lodash.foreach');
 var VarUtils = require('../sparql/VarUtils');
@@ -12690,6 +12701,7 @@ var QueryExecutionPaginate = Class.create(QueryExecution, {
 
                 // ... and concatenate them
                 var nextArr = oldArr.concat(newArr);
+                //console.log('Concatting arrays to length ' + nextArr.length);
 
                 //                    if(totalLimit) {
                 //                        nextArr.splice(0, totalLimit);
@@ -12708,7 +12720,7 @@ var QueryExecutionPaginate = Class.create(QueryExecution, {
             // limit reached
             var hasReachedEnd = rsSize === 0 || rsSize < pageSize;
             if (!hasReachedEnd) {
-                r = self.executeSelectRec(queryPaginator, rs);
+                r = self.executeSelectRec(queryPaginator, r);
             }
 
             return r;
