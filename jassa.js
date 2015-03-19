@@ -1608,7 +1608,7 @@ var FacetServiceUtils = require('./FacetServiceUtils');
 var FacetServiceFn = require('./facet_service/FacetServiceFn');
 var FacetServiceClientIndex = require('./facet_service/FacetServiceClientIndex');
 
-var BestLabelConfig = require('../sparql/BestLabelConfig');
+var LiteralPreference = require('../sparql/LiteralPreference');
 var LookupServiceUtils = require('../sponate/LookupServiceUtils');
 var FacetServiceTransformConcept = require('./facet_service/FacetServiceTransformConcept');
 
@@ -1631,11 +1631,11 @@ var FacetServiceBuilder = Class.create({
        return this.facetService;
    },
 
-   labelConfig: function(bestLiteralConfig) {
-       bestLiteralConfig = bestLiteralConfig || new BestLabelConfig();
+   labelConfig: function(literalPreference) {
+       literalPreference = literalPreference || new LiteralPreference();
 
-       this._labelConfigLabels(bestLiteralConfig);
-       this._labelConfigFilter(bestLiteralConfig);
+       this._labelConfigLabels(literalPreference);
+       this._labelConfigFilter(literalPreference);
 
        return this;
    },
@@ -1676,13 +1676,13 @@ var FacetServiceBuilder = Class.create({
        return this;
    },
 
-   _labelConfigFilter: function(bestLiteralConfig) {
+   _labelConfigFilter: function(literalPreference) {
        // TODO: Make the search function configurable
        var fnTransformSearch = function(searchString) {
            var r;
            if(searchString) {
 
-               var relation = LabelUtils.createRelationPrefLabels(bestLiteralConfig);
+               var relation = LabelUtils.createRelationLiteralPreference(literalPreference);
                // TODO Make it configurable to whether scan URIs too (the true argument)
                r = KeywordSearchUtils.createConceptRegex(relation, searchString, true);
                //var result = sparql.KeywordSearchUtils.createConceptBifContains(relation, searchString);
@@ -1697,7 +1697,7 @@ var FacetServiceBuilder = Class.create({
        return this;
    },
 
-   _labelConfigLabels: function(bestLiteralConfig, labelAttrName) {
+   _labelConfigLabels: function(literalPreference, labelAttrName) {
        labelAttrName = labelAttrName || 'labelInfo';
        var self = this;
 
@@ -1705,7 +1705,7 @@ var FacetServiceBuilder = Class.create({
 
            var r = new ListServiceTransformItems(listService, function(entries) {
 
-               var mappedConcept = MappedConceptUtils.createMappedConceptBestLabel(bestLiteralConfig);
+               var mappedConcept = MappedConceptUtils.createMappedConceptLiteralPreference(literalPreference);
                var lookupServiceNodeLabels = LookupServiceUtils.createLookupServiceMappedConcept(self.defaultSparqlService, mappedConcept);
 
                var properties = entries.map(function(entry) {
@@ -1773,7 +1773,7 @@ FacetServiceBuilder.core = function(sparqlService, facetConfig) {
 
 module.exports = FacetServiceBuilder;
 
-},{"../ext/Class":2,"../service/list_service/ListServiceTransformItem":162,"../service/list_service/ListServiceTransformItems":163,"../sparql/BestLabelConfig":218,"../sparql/LabelUtils":235,"../sparql/search/KeywordSearchUtils":308,"../sponate/LookupServiceUtils":320,"../sponate/MappedConceptUtils":323,"../util/collection/HashMap":382,"./FacetServiceUtils":15,"./facet_service/FacetServiceClientIndex":45,"./facet_service/FacetServiceFn":46,"./facet_service/FacetServiceTransformConcept":51}],15:[function(require,module,exports){
+},{"../ext/Class":2,"../service/list_service/ListServiceTransformItem":162,"../service/list_service/ListServiceTransformItems":163,"../sparql/LabelUtils":235,"../sparql/LiteralPreference":236,"../sparql/search/KeywordSearchUtils":308,"../sponate/LookupServiceUtils":320,"../sponate/MappedConceptUtils":323,"../util/collection/HashMap":382,"./FacetServiceUtils":15,"./facet_service/FacetServiceClientIndex":45,"./facet_service/FacetServiceFn":46,"./facet_service/FacetServiceTransformConcept":51}],15:[function(require,module,exports){
 //var Class = require('../ext/Class');
 
 var ConceptUtils = require('../sparql/ConceptUtils');
@@ -2720,7 +2720,10 @@ var FacetValueServiceBuilder = Class.create({
         var listServiceWrapperFn = function(ls) {
             var lookupServiceNodeLabels = LookupServiceUtils.createLookupServiceNodeLabels(self.sparqlService, literalPreference);
 
-            var r = new ListServiceConceptKeyLookup(ls, lookupServiceNodeLabels);
+            var r = new ListServiceConceptKeyLookup(ls, lookupServiceNodeLabels, null, function(entry, lookup) {
+                entry.val.labelInfo = lookup;
+                return entry;
+            });
             return r;
         };
 
