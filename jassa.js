@@ -2675,6 +2675,12 @@ var FacetValueServiceBuilder = Class.create({
         return this;
     },
 
+    wrapListService: function(listServiceWrapperFn) {
+        this.facetValueService = new FacetValueServiceWrapListService(this.facetValueService, listServiceWrapperFn);
+
+        return this;
+    },
+
     _labelConfigFilter: function(literalPreference) {
         // TODO: Make the search function configurable
 
