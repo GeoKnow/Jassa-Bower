@@ -1634,8 +1634,8 @@ var FacetServiceBuilder = Class.create({
    labelConfig: function(literalPreference) {
        literalPreference = literalPreference || new LiteralPreference();
 
-       this._labelConfigLabels(literalPreference);
-       this._labelConfigFilter(literalPreference);
+       this.labelConfigLabels(literalPreference);
+       this.labelConfigFilter(literalPreference);
 
        return this;
    },
@@ -1676,7 +1676,11 @@ var FacetServiceBuilder = Class.create({
        return this;
    },
 
-   _labelConfigFilter: function(literalPreference) {
+//   labelLookupService: function(lookupServiceNodeLabel) {
+//
+//   },
+
+   labelConfigFilter: function(literalPreference) {
        // TODO: Make the search function configurable
        var fnTransformSearch = function(searchString) {
            var r;
@@ -1697,7 +1701,7 @@ var FacetServiceBuilder = Class.create({
        return this;
    },
 
-   _labelConfigLabels: function(literalPreference, labelAttrName) {
+   labelConfigLabels: function(literalPreference, labelAttrName) {
        labelAttrName = labelAttrName || 'labelInfo';
        var self = this;
 
@@ -1979,7 +1983,8 @@ module.exports = FacetServiceUtils;
 },{"../service/lookup_service/LookupServiceConst":168,"../service/lookup_service/LookupServiceFn":171,"../service/lookup_service/LookupServiceKeyMap":174,"../service/lookup_service/LookupServiceMulti":177,"../service/lookup_service/LookupServiceTransformKey":181,"../sparql/BestLabelConfig":218,"../sparql/ConceptUtils":223,"../sparql/LabelUtils":235,"../sparql/search/KeywordSearchUtils":308,"../sponate/LookupServiceUtils":320,"../sponate/MappedConceptUtils":323,"./ConstraintManager":5,"./FacetConfig":10,"./FacetNode":11,"./FacetUtils":20,"./Path":22,"./Step":27,"./facet_concept_supplier/FacetConceptSupplierDeclared":41,"./facet_concept_supplier/FacetConceptSupplierExact":42,"./facet_service/FacetServiceClientIndex":45,"./facet_service/FacetServiceLookup":47,"./facet_service/FacetServiceSparql":49,"./facet_service/FacetServiceTransformConcept":51,"./lookup_service/LookupServiceFacetCount":60,"./lookup_service/LookupServiceFacetExactCount":61,"./lookup_service/LookupServiceFacetPreCount":62}],16:[function(require,module,exports){
 var Class = require('../ext/Class');
 
-var BestLabelConfig = require('../sparql/BestLabelConfig');
+//var BestLabelConfig = require('../sparql/BestLabelConfig');
+var LiteralPreference = require('../sparql/LiteralPreference');
 var FacetConfig = require('./FacetConfig');
 var HashMap = require('../util/collection/HashMap');
 //var FacetNodeState = require('./FacetNodeState');
@@ -1987,9 +1992,9 @@ var FacetTreeState = require('./FacetTreeState');
 var ListFilter = require('../service/ListFilter');
 
 var FacetTreeConfig = Class.create({
-    initialize: function(facetConfig, bestLiteralConfig, facetTreeState, pathToTags, pathHeadToTags, tagFn) {
+    initialize: function(facetConfig, literalPreference, facetTreeState, pathToTags, pathHeadToTags, tagFn) {
         this.facetConfig = facetConfig || new FacetConfig();
-        this.bestLiteralConfig = bestLiteralConfig || new BestLabelConfig();
+        this.literalPreference = literalPreference || new LiteralPreference();
 
         this.facetTreeState = facetTreeState || new FacetTreeState();
 
@@ -2006,8 +2011,8 @@ var FacetTreeConfig = Class.create({
         return this.facetTreeState;
     },
 
-    getBestLiteralConfig: function() {
-        return this.bestLiteralConfig;
+    getLiteralPreference: function() {
+        return this.literalPreference;
     },
 
     getPathToTags: function() {
@@ -2050,7 +2055,7 @@ var FacetTreeConfig = Class.create({
 
 module.exports = FacetTreeConfig;
 
-},{"../ext/Class":2,"../service/ListFilter":128,"../sparql/BestLabelConfig":218,"../util/collection/HashMap":382,"./FacetConfig":10,"./FacetTreeState":19}],17:[function(require,module,exports){
+},{"../ext/Class":2,"../service/ListFilter":128,"../sparql/LiteralPreference":236,"../util/collection/HashMap":382,"./FacetConfig":10,"./FacetTreeState":19}],17:[function(require,module,exports){
 var Step = require('./Step');
 var Path = require('./Path');
 var PathHead = require('./PathHead');
@@ -2649,6 +2654,7 @@ var Class = require('../ext/Class');
 
 var ListServiceTransformConcept = require('../service/list_service/ListServiceTransformConcept');
 var ListServiceConceptKeyLookup = require('../service/list_service/ListServiceConceptKeyLookup');
+var ListServiceTransformItems   = require('../service/list_service/ListServiceTransformItems');
 
 var LookupServiceUtils = require('../sponate/LookupServiceUtils');
 
@@ -2661,9 +2667,10 @@ var LabelUtils = require('../sparql/LabelUtils');
 
 
 var FacetValueServiceBuilder = Class.create({
-    initialize: function(facetValueService, sparqlService) {
+    initialize: function(facetValueService, sparqlService, facetConfig) {
         this.facetValueService = facetValueService;
         this.sparqlService = sparqlService;
+        this.facetConfig = facetConfig;
     },
 
     labelConfig: function(literalPreference) {
@@ -2680,6 +2687,38 @@ var FacetValueServiceBuilder = Class.create({
 
         return this;
     },
+
+    constraintTagging: function() {
+        var constraintManager = this.facetConfig.getConstraintManager();
+
+        var listServiceWrapperFn = function(listService, path) {
+            var r = new ListServiceTransformItems(listService, function(entries) {
+
+                var cs = constraintManager.getConstraintsByPath(path);
+                var values = {};
+                cs.forEach(function(c) {
+                    if(c.getName() === 'equals') {
+                        values[c.getValue()] = true;
+                    }
+                });
+
+                entries.forEach(function(entry) {
+                    var item = entry.val;
+
+                    var isConstrained = values['' + item.node];
+                    item.isConstrainedEqual = isConstrained;
+                });
+                //$scope.facetValues = items;
+                return entries;
+            });
+
+            return r;
+        };
+
+        this.wrapListService(listServiceWrapperFn);
+        return this;
+    },
+
 
     _labelConfigFilter: function(literalPreference) {
         // TODO: Make the search function configurable
@@ -2705,9 +2744,7 @@ var FacetValueServiceBuilder = Class.create({
           return r;
         };
 
-        this.facetValueService = new FacetValueServiceWrapListService(this.facetValueService, listServiceWrapperFn);
-
-        //this.facetService = new FacetServiceTransformConcept(this.facetService, listServiceWrapperFn);
+        this.wrapListService(listServiceWrapperFn);
         return this;
     },
 
@@ -2727,8 +2764,7 @@ var FacetValueServiceBuilder = Class.create({
             return r;
         };
 
-        this.facetValueService = new FacetValueServiceWrapListService(this.facetValueService, listServiceWrapperFn);
-
+        this.wrapListService(listServiceWrapperFn);
         return this;
     },
 
@@ -2741,13 +2777,13 @@ var FacetValueServiceBuilder = Class.create({
 FacetValueServiceBuilder.core = function(sparqlService, facetConfig, rowLimit) {
     var facetValueService = new FacetValueService(sparqlService, facetConfig, rowLimit);
 
-    var result = new FacetValueServiceBuilder(facetValueService, sparqlService);
+    var result = new FacetValueServiceBuilder(facetValueService, sparqlService, facetConfig);
     return result;
 };
 
 module.exports = FacetValueServiceBuilder;
 
-},{"../ext/Class":2,"../service/list_service/ListServiceConceptKeyLookup":155,"../service/list_service/ListServiceTransformConcept":160,"../sparql/LabelUtils":235,"../sparql/LiteralPreference":236,"../sparql/search/KeywordSearchUtils":308,"../sponate/LookupServiceUtils":320,"./facet_value_service/FacetValueService":56,"./facet_value_service/FacetValueServiceWrapListService":57}],22:[function(require,module,exports){
+},{"../ext/Class":2,"../service/list_service/ListServiceConceptKeyLookup":155,"../service/list_service/ListServiceTransformConcept":160,"../service/list_service/ListServiceTransformItems":163,"../sparql/LabelUtils":235,"../sparql/LiteralPreference":236,"../sparql/search/KeywordSearchUtils":308,"../sponate/LookupServiceUtils":320,"./facet_value_service/FacetValueService":56,"./facet_value_service/FacetValueServiceWrapListService":57}],22:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var Step = require('./Step');
@@ -2785,6 +2821,9 @@ var Path = Class.create({
 
     toString: function() {
         var result = this.steps.join(' ');
+
+        //var result = this.steps.map(function(item) { return '' + item; }).join(' ');
+
         return result;
     },
 
@@ -4744,7 +4783,7 @@ var FacetValueServiceWrapListService = Class.create({
         var self = this;
 
         var result = this.facetValueService.prepareTableService(path, excludeSelfConstraints).then(function(ls) {
-            var r = self.listServiceWrapperFn(ls);
+            var r = self.listServiceWrapperFn(ls, path, excludeSelfConstraints);
             return r;
         });
 
