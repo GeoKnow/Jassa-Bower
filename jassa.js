@@ -543,6 +543,8 @@ var Class = require('../ext/Class');
 var ExprUtils = require('../sparql/ExprUtils');
 var ElementsAndExprs = require('./ElementsAndExprs');
 
+var ArrayUtils = require('../util/ArrayUtils');
+
 /**
  * TODO Possibly rename to constraint list
  *
@@ -556,6 +558,10 @@ var ConstraintManager = Class.create({
 
     initialize: function(constraints) {
         this.constraints = constraints || [];
+    },
+
+    clear: function() {
+        ArrayUtils.clear(this.constraints);
     },
 
     isEmpty: function() {
@@ -759,7 +765,7 @@ var ConstraintManager = Class.create({
 
 module.exports = ConstraintManager;
 
-},{"../ext/Class":2,"../sparql/ExprUtils":231,"./ElementsAndExprs":9,"lodash.foreach":538,"lodash.uniq":688}],6:[function(require,module,exports){
+},{"../ext/Class":2,"../sparql/ExprUtils":231,"../util/ArrayUtils":361,"./ElementsAndExprs":9,"lodash.foreach":538,"lodash.uniq":688}],6:[function(require,module,exports){
 var ElementUtils = require('../sparql/ElementUtils');
 
 var ExprVar = require('../sparql/expr/ExprVar');
