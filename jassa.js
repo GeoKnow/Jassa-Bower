@@ -4444,7 +4444,7 @@ var FacetServiceSparql = Class.create(FacetService, {
 
             var query = ConceptUtils.createQueryList(concept);
 
-            listService = new ListServiceSparqlQuery(this.sparqlService, query, concept.getVar(), false);
+            listService = new ListServiceSparqlQuery(this.sparqlService, query, concept.getVar(), false, true);
             listService = new ListServiceTransformItem(listService, function(entry) {
 
                 // Replace the keys with the appropriate paths
@@ -4718,12 +4718,12 @@ var FacetValueService = Class.create({
                 query.getOrderBy().push(new SortCondition(query.getProject().getExpr(countVar), 'desc'));
 
 
-                r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar());
+                r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar(), null, true);
 
             } else {
                 countVar = null;
                 query = ConceptUtils.createQueryList(concept);
-                r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar());
+                r = new ListServiceSparqlQuery(self.sparqlService, query, concept.getVar(), null, true);
 
                 // No support of ordering by count
                 // TODO: We may be able to fetch all resources at once if there are not too many
@@ -10426,7 +10426,7 @@ var Class = require('../../ext/Class');
  * The key can be an arbitrary object that identifies a collection (e.g. a tag), a sparql concept, etc...
  */
 var DataService = Class.create({
-    fetchData: function() { // thing) {
+    fetchData: function(thing) {
         throw new Error('Not implemented');
     },
 
@@ -11112,6 +11112,8 @@ var ServiceUtils = require('../ServiceUtils');
 var ResultSetUtils = require('../ResultSetUtils');
 var ListService = require('./ListService');
 
+var ElementSubQuery = require('../../sparql/element/ElementSubQuery');
+
 /**
  * A list service that is configured with a query + var,
  * and which can filter the result set according to the provided concept in fetchItems.
@@ -11133,7 +11135,7 @@ var ListService = require('./ListService');
  * @param isLeftJoin true indidcates that the attributes are optional
  */
 var ListServiceSparqlQuery = Class.create(ListService, {
-    initialize: function(sparqlService, attrQuery, attrVar, isLeftJoin) {
+    initialize: function(sparqlService, attrQuery, attrVar, isLeftJoin, forceSubQuery) {
         if(attrQuery.getLimit() || attrQuery.getOffset()) {
             throw new Error('Limit and offset in attribute queries not yet supported');
         }
@@ -11142,6 +11144,7 @@ var ListServiceSparqlQuery = Class.create(ListService, {
         this.attrQuery = attrQuery;
         this.attrVar = attrVar;
         this.isLeftJoin = isLeftJoin; //isLeftJoin == null ? true : isLeftJoin;
+        this.forceSubQuery = forceSubQuery; // force a sub query, even if attrVar is unique for each result set row
     },
 
 
@@ -11167,7 +11170,7 @@ var ListServiceSparqlQuery = Class.create(ListService, {
             filterConcept = ConceptUtils.createSubjectConcept();
         }
 
-        var query = ConceptUtils.createAttrQuery(this.attrQuery, attrVar, this.isLeftJoin, filterConcept, limit, offset);
+        var query = ConceptUtils.createAttrQuery(this.attrQuery, attrVar, this.isLeftJoin, filterConcept, limit, offset, this.forceSubQuery);
 
         var qe = this.sparqlService.createQueryExecution(query);
 
@@ -11189,13 +11192,24 @@ var ListServiceSparqlQuery = Class.create(ListService, {
             filterConcept = ConceptUtils.createSubjectConcept();
         }
 
+
+        /*
+        var makeDistinct = function(query) {
+
+        };
+        */
+
         var countConcept;
         if(this.isLeftJoin) {
-            var query = ConceptUtils.createAttrQuery(this.attrQuery, this.attrVar, this.isLeftJoin, filterConcept, itemLimit, null);
+            var query = ConceptUtils.createAttrQuery(this.attrQuery, this.attrVar, this.isLeftJoin, filterConcept, itemLimit, null, this.forceSubQuery);
 
             countConcept = new Concept(query.getQueryPattern(), this.attrVar);
         } else {
-            var attrConcept = new Concept(this.attrQuery.getQueryPattern(), this.attrVar);
+            var attrConcept = ( this.forceSubQuery
+                ? new Concept(new ElementSubQuery(this.attrQuery), this.attrVar)
+                : new Concept(this.attrQuery.getQueryPattern(), this.attrVar) )
+                ;
+
             countConcept = ConceptUtils.createCombinedConcept(attrConcept, filterConcept, true, false, false);
 //            console.log('FILTER ' + filterConcept);
 //            console.log('ATTR ' + attrConcept);
@@ -11211,7 +11225,7 @@ var ListServiceSparqlQuery = Class.create(ListService, {
 
 module.exports = ListServiceSparqlQuery;
 
-},{"../../ext/Class":2,"../../sparql/Concept":222,"../../sparql/ConceptUtils":223,"../../util/shared":391,"../ResultSetUtils":136,"../ServiceUtils":137,"./ListService":151,"lodash.values":743}],160:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":222,"../../sparql/ConceptUtils":223,"../../sparql/element/ElementSubQuery":260,"../../util/shared":391,"../ResultSetUtils":136,"../ServiceUtils":137,"./ListService":151,"lodash.values":743}],160:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ListService = require('./ListService');
 
@@ -11388,7 +11402,7 @@ var LookupService = Class.create({
     /**
      * This method must return a promise for a Map<Id, Data>
      */
-    lookup: function(key) {
+    lookup: function(keys) {
         throw new Error('Not overridden');
     },
 });
@@ -14911,7 +14925,7 @@ Select ?p (Count(*) As ?c) {
 
     // TODO This method sucks, as it tries to handle too many cases, figure out how to improve it
     /*jshint maxdepth:10 */
-    createAttrQuery: function(attrQuery, attrVar, isLeftJoin, filterConcept, limit, offset) {
+    createAttrQuery: function(attrQuery, attrVar, isLeftJoin, filterConcept, limit, offset, forceSubQuery) {
 
         var attrConcept = new Concept(new ElementSubQuery(attrQuery), attrVar);
 
@@ -14925,6 +14939,7 @@ Select ?p (Count(*) As ?c) {
         // Whether each value for attrVar uniquely identifies a row in the result set
         // In this case, we just join the filterConcept into the original query
         var isAttrVarPrimaryKey = this.isConceptQuery(attrQuery, attrVar);
+        //isAttrVarPrimaryKey = false;
 
         var result;
         if(isAttrVarPrimaryKey) {
@@ -14933,8 +14948,32 @@ Select ?p (Count(*) As ?c) {
 
             result = attrQuery.clone();
 
+            var se;
+            if(forceSubQuery) {
+
+                // Select ?s { attrElement(?s, ?x) filterElement(?s) }
+                var sq = new Query();
+                sq.setQuerySelectType();
+                sq.setDistinct(true);
+                sq.getProject().add(attrConcept.getVar());
+                sq.setQueryPattern(attrQuery.getQueryPattern());
+
+                var tmp = new ElementSubQuery(sq);
+
+                var refVars = attrQuery.getProject().getRefVars();
+                if(refVars.length === 1 && attrVar.equals(refVars[0])) {
+                    se = tmp;
+                } else {
+                    se = new ElementGroup([attrQuery.getQueryPattern(), tmp]);
+                }
+
+            } else {
+                se = attrQuery.getQueryPattern();
+            }
+
+
             if(!renamedFilterConcept.isSubjectConcept()) {
-                var newElement = new ElementGroup([attrQuery.getQueryPattern(), renamedFilterConcept.getElement()]);
+                var newElement = new ElementGroup([se, renamedFilterConcept.getElement()]);
                 newElement = newElement.flatten();
                 result.setQueryPattern(newElement);
             }
@@ -16895,6 +16934,7 @@ module.exports = SparqlString;
 },{"../ext/Class":2,"../rdf/NodeFactory":99,"./VarUtils":250}],248:[function(require,module,exports){
 var Class = require('../ext/Class');
 var HashMap = require('../util/collection/HashMap');
+var HashSet = require('../util/collection/HashSet');
 
 var VarExprList = Class.create({
     initialize: function() {
@@ -16985,11 +17025,34 @@ var VarExprList = Class.create({
         var result = arr.join(' ');
         return result;
     },
+
+    // Get the references variables
+    getRefVars: function() {
+        var set = new HashSet();
+
+        var entries = this.entries();
+        entries.forEach(function(entry) {
+            if(entry.expr == null) {
+                set.add(entry.v);
+            } else {
+                var vs = entry.expr.getVarsMentioned();
+                vs.forEach(function(v) {
+                    set.add(v);
+                });
+            }
+        });
+
+        var result = set.map(function(v) {
+            return v;
+        });
+
+        return result;
+    }
 });
 
 module.exports = VarExprList;
 
-},{"../ext/Class":2,"../util/collection/HashMap":382}],249:[function(require,module,exports){
+},{"../ext/Class":2,"../util/collection/HashMap":382,"../util/collection/HashSet":383}],249:[function(require,module,exports){
 var Class = require('../ext/Class'); 
 
 var NodeFactory = require('../rdf/NodeFactory');
