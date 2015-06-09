@@ -7560,7 +7560,8 @@ var GraphImpl = Class.create({
     },
 
     map: function(callback) {
-        this.triples.map(callback);
+        var result = this.triples.map(callback);
+        return result;
     },
 
     contains: function(triple) {
