@@ -8570,6 +8570,7 @@ var ns = {
     AnonId: require('./AnonId'),
     AnonIdStr: require('./AnonIdStr'),
     GraphImpl: require('./GraphImpl'),
+    GraphUtils: require('./GraphUtils'),
     LiteralLabel: require('./LiteralLabel'),
     NodeFactory: require('./NodeFactory'),
     NodeUtils: require('./NodeUtils'),
@@ -8606,7 +8607,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"./AnonId":94,"./AnonIdStr":95,"./GraphImpl":96,"./LiteralLabel":98,"./NodeFactory":99,"./NodeUtils":100,"./PrefixMappingImpl":101,"./Triple":102,"./TripleUtils":103,"./TypeMapper":104,"./datatype/DatatypeLabel":105,"./datatype/DatatypeLabelDate":106,"./datatype/DatatypeLabelFloat":107,"./datatype/DatatypeLabelInteger":108,"./datatype/DatatypeLabelString":109,"./datatype/DefaultDatatypeLabels":110,"./node/Node":112,"./node/Node_Blank":113,"./node/Node_Concrete":114,"./node/Node_Fluid":115,"./node/Node_Literal":116,"./node/Node_Uri":117,"./node/Node_Variable":118,"./node/Var":119,"./rdf_datatype/BaseDatatype":120,"./rdf_datatype/DefaultRdfDatatypes":121,"./rdf_datatype/RdfDatatype":122,"./rdf_datatype/RdfDatatypeBase":123,"./rdf_datatype/RdfDatatypeLabel":124,"./rdf_datatype/TypedValue":125,"./talis/Coordinate":126,"./talis/GraphTalis":127,"./talis/TalisRdfJsonUtils":128}],112:[function(require,module,exports){
+},{"./AnonId":94,"./AnonIdStr":95,"./GraphImpl":96,"./GraphUtils":97,"./LiteralLabel":98,"./NodeFactory":99,"./NodeUtils":100,"./PrefixMappingImpl":101,"./Triple":102,"./TripleUtils":103,"./TypeMapper":104,"./datatype/DatatypeLabel":105,"./datatype/DatatypeLabelDate":106,"./datatype/DatatypeLabelFloat":107,"./datatype/DatatypeLabelInteger":108,"./datatype/DatatypeLabelString":109,"./datatype/DefaultDatatypeLabels":110,"./node/Node":112,"./node/Node_Blank":113,"./node/Node_Concrete":114,"./node/Node_Fluid":115,"./node/Node_Literal":116,"./node/Node_Uri":117,"./node/Node_Variable":118,"./node/Var":119,"./rdf_datatype/BaseDatatype":120,"./rdf_datatype/DefaultRdfDatatypes":121,"./rdf_datatype/RdfDatatype":122,"./rdf_datatype/RdfDatatypeBase":123,"./rdf_datatype/RdfDatatypeLabel":124,"./rdf_datatype/TypedValue":125,"./talis/Coordinate":126,"./talis/GraphTalis":127,"./talis/TalisRdfJsonUtils":128}],112:[function(require,module,exports){
 var Class = require('../../ext/Class');
 /**
  * The node base class similar to that of Apache Jena.
