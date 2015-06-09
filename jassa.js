@@ -7603,6 +7603,9 @@ module.exports = GraphImpl;
 
 },{"../ext/Class":2,"../util/collection/HashSet":389,"./Triple":102,"./TripleUtils":103}],97:[function(require,module,exports){
 var HashSet = require('../util/collection/HashSet');
+var HashMap = require('../util/collection/HashMap');
+
+var GraphImpl = require('./GraphImpl');
 
 var GraphUtils = {
     /**
@@ -7625,11 +7628,28 @@ var GraphUtils = {
         return result;
     },
 
+    indexBySubject: function(graph, result) {
+        result = result || new HashMap();
+
+        // Partition the graph returned by the request by the subjects
+        graph.forEach(function(triple) {
+            var s = triple.getSubject();
+            var subGraph = result.get(s);
+            if(!subGraph) {
+                subGraph = new GraphImpl();
+                result.put(s, subGraph);
+            }
+
+            subGraph.add(triple);
+        });
+
+        return result;
+    }
 };
 
 module.exports = GraphUtils;
 
-},{"../util/collection/HashSet":389}],98:[function(require,module,exports){
+},{"../util/collection/HashMap":388,"../util/collection/HashSet":389,"./GraphImpl":96}],98:[function(require,module,exports){
 var Class = require('../ext/Class');
 var Node_Concrete = require('./node/Node_Concrete');
 
@@ -12134,6 +12154,8 @@ var ServiceUtils = require('../ServiceUtils');
 var HashMap = require('../../util/collection/HashMap');
 var GraphImpl = require('../../rdf/GraphImpl');
 
+var GraphUtils = require('../../rdf/GraphUtils');
+
 /**
  * Looks up RDF Graphs based on given subject URIs via a SPARQL service
  */
@@ -12148,21 +12170,12 @@ var LookupServiceGraphSparql = Class.create(LookupServiceBase, {
         var result = promise.then(function(graph) {
             var r = new HashMap();
 
-            // Allocate a fresh graph for each subject
+            // Allocate a fresh graph for each subject, so that each requested subject gets a graph
             subjects.forEach(function(subject) {
                 r.put(subject, new GraphImpl());
             });
 
-            // Partition the graph returned by the request by the subjects
-            graph.forEach(function(triple) {
-                var s = triple.getSubject();
-                var subGraph = r.get(s);
-                if(!subGraph) {
-                    console.log('Should not happen');
-                } else {
-                    subGraph.add(triple);
-                }
-            });
+            GraphUtils.indexBySubject(graph, r);
 
             return r;
         });
@@ -12176,7 +12189,7 @@ var LookupServiceGraphSparql = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceGraphSparql;
 
-},{"../../ext/Class":2,"../../rdf/GraphImpl":96,"../../util/collection/HashMap":388,"../ServiceUtils":140,"./LookupServiceBase":171}],179:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/GraphImpl":96,"../../rdf/GraphUtils":97,"../../util/collection/HashMap":388,"../ServiceUtils":140,"./LookupServiceBase":171}],179:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceDelegateBase = require('./LookupServiceDelegateBase');
 
