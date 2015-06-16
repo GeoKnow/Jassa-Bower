@@ -13333,6 +13333,7 @@ var shared = require('../../util/shared');
 var ajax = shared.ajax;
 var Promise = shared.Promise;
 
+
 var UpdateExecutionHttp = Class.create({
     /**
      *
@@ -13737,7 +13738,7 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
     // @param graphs: An array of default graphs or a dataset description object or null
     // @param http: An function which acts as a http client
     // ajaxOptions, httpOptions
-    initialize: function(serviceUri, graphs, httpArgs, ajaxOptions, httpClient) {
+    initialize: function(serviceUri, graphs, ajaxOptions, httpArgs, httpClient) {
         // Some handling for legacy
         var datasetDescription = graphs == null
             ? new DatasetDescription()
@@ -13755,11 +13756,11 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
         */
 
 
-        this.initializeCore(serviceUri, datasetDescription, httpArgs, ajaxOptions, httpClient);
+        this.initializeCore(serviceUri, datasetDescription, ajaxOptions, httpArgs, httpClient);
     },
 
 
-    initializeCore: function(serviceUri, datasetDescription, httpArgs, ajaxOptions, httpClient) {
+    initializeCore: function(serviceUri, datasetDescription, ajaxOptions, httpArgs, httpClient) {
         this.serviceUri = serviceUri;
         this.datasetDescription = datasetDescription; // || new DatasetDescription();
         // this.setDefaultGraphs(defaultGraphUris);
