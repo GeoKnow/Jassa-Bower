@@ -9370,18 +9370,19 @@ module.exports = TalisRdfJsonUtils;
 },{"../../util/ArrayUtils":367,"../NodeUtils":100,"./Coordinate":126}],129:[function(require,module,exports){
 var defaults = require('lodash.defaults');
 
-var unwrapSingleItem = function(arr) {
-    var result = arr ? (arr.length > 1 ? arr : (arr[0] || null)) : null;
-    return result;
-};
 
 var AjaxUtils = {
+    unwrapSingleItem: function(arr) {
+        var result = arr ? (arr.length > 1 ? arr : (arr[0] || null)) : null;
+        return result;
+    },
 
     createSparqlUpdateAjaxSpec: function(queryString, baseUrl, usingGraphUris, usingNamedGraphUris, dataDefaults, ajaxDefaults) {
+        // TODO Get rid of the HACK with unwrapping
         var data = {
             update: queryString,
-            'using-graph-uri': unwrapSingleItem(usingGraphUris),
-            'using-named-graph-uri': unwrapSingleItem(usingNamedGraphUris)
+            'using-graph-uri': AjaxUtils.unwrapSingleItem(usingGraphUris),
+            'using-named-graph-uri': AjaxUtils.unwrapSingleItem(usingNamedGraphUris)
         };
 
         var result = {
@@ -9399,13 +9400,16 @@ var AjaxUtils = {
         return result;
     },
 
-    createSparqlRequestAjaxSpec: function(baseUrl, defaultGraphIris, queryString, dataDefaults, ajaxDefaults) {
+    //defaultGraphIris,
+    createSparqlRequestAjaxSpec: function(baseUrl, datasetDescription, queryString, dataDefaults, ajaxDefaults) {
         // ISSUE #13 - Added HACK to make it work for at least one defaultGraph...
-        var hack = unwrapSingleItem(defaultGraphIris);
+        var dgus = AjaxUtils.unwrapSingleItem(datasetDescription.getDefaultGraphUris());
+        var ngus = AjaxUtils.unwrapSingleItem(datasetDescription.getNamedGraphUris());
 
         var data = {
             query: queryString,
-            'default-graph-uri': hack
+            'default-graph-uri': dgus,
+            'named-graph-uri': ngus
         };
 
         var result = {
@@ -13109,13 +13113,14 @@ var ajax = shared.ajax;
 var Promise = shared.Promise;
 
 var QueryExecutionHttp = Class.create(QueryExecution, {
-    initialize: function(queryString, serviceUri, defaultGraphUris, ajaxOptions, httpArgs) {
+    initialize: function(queryString, serviceUri, defaultGraphUris, ajaxOptions, httpArgs, httpClient) {
         this.queryString = queryString;
         this.serviceUri = serviceUri;
         this.defaultGraphUris = defaultGraphUris;
 
         this.ajaxOptions = ajaxOptions || {};
         this.httpArgs = httpArgs;
+        this.httpClient = httpClient || ajax;
     },
 
     /**
@@ -13166,7 +13171,7 @@ var QueryExecutionHttp = Class.create(QueryExecution, {
 
     execAny: function() {
         var ajaxSpec = AjaxUtils.createSparqlRequestAjaxSpec(this.serviceUri, this.defaultGraphUris, this.queryString, this.httpArgs, this.ajaxOptions);
-        var result = ajax(ajaxSpec);
+        var result = this.httpClient(ajaxSpec);
         return result;
     },
 });
@@ -13319,7 +13324,7 @@ var QueryExecutionPaginate = Class.create(QueryExecution, {
 module.exports = QueryExecutionPaginate;
 
 },{"../../ext/Class":2,"../../util/collection/IteratorArray":392,"../../util/shared":397,"../QueryPaginator":136,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],198:[function(require,module,exports){
-/* jshint maxparams: 6 */
+/* jshint maxparams: 7 */
 var Class = require('../../ext/Class');
 //var UpdateExecution = require('./UpdateExecution');
 var AjaxUtils = require('../AjaxUtils');
@@ -13329,7 +13334,11 @@ var ajax = shared.ajax;
 var Promise = shared.Promise;
 
 var UpdateExecutionHttp = Class.create({
-    initialize: function(queryString, serviceUri, usingGraphUris, usingNamedGraphUris, ajaxOptions, httpArgs) {
+    /**
+     *
+     * @param httpClient a function that takes a request specification and returns a corresponding promise
+     */
+    initialize: function(queryString, serviceUri, usingGraphUris, usingNamedGraphUris, ajaxOptions, httpArgs, httpClient) {
         this.queryString = queryString;
         this.serviceUri = serviceUri;
         this.usingGraphUris = usingGraphUris;
@@ -13337,6 +13346,7 @@ var UpdateExecutionHttp = Class.create({
 
         this.ajaxOptions = ajaxOptions || {};
         this.httpArgs = httpArgs;
+        this.httpClient = httpClient || ajax;
     },
 
     /**
@@ -13359,7 +13369,7 @@ var UpdateExecutionHttp = Class.create({
     execAny: function() {
         var ajaxSpec = AjaxUtils.createSparqlUpdateAjaxSpec(this.queryString, this.serviceUri, this.usingGraphUris, this.usingNamedGraphUris, this.httpArgs, this.ajaxOptions);
         //console.log('Update spec: ', JSON.stringify(ajaxSpec, null, 4));
-        var result = ajax(ajaxSpec);
+        var result = this.httpClient(ajaxSpec);
         return result;
     },
 });
@@ -13717,15 +13727,46 @@ var defaults = require('lodash.defaults');
 var SparqlServiceBaseString = require('./SparqlServiceBaseString');
 var QueryExecutionHttp = require('../query_execution/QueryExecutionHttp');
 var JSONCanonical = require('../../ext/JSONCanonical');
+var DatasetDescription = require('../../sparql/DatasetDescription');
+//var ObjectUtils = require('../../util/ObjectUtils');
+
+var _ = require('lodash');
 
 var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
-    initialize: function(serviceUri, defaultGraphUris, ajaxOptions, httpArgs) {
+
+    // @param graphs: An array of default graphs or a dataset description object or null
+    // @param http: An function which acts as a http client
+    // ajaxOptions, httpOptions
+    initialize: function(serviceUri, graphs, httpArgs, ajaxOptions, httpClient) {
+        // Some handling for legacy
+        var datasetDescription = graphs == null
+            ? new DatasetDescription()
+            : _.isArray(graphs)
+                ? new DatasetDescription(graphs)
+                : graphs
+                ;
+
+        /*
+        var httpClient = ObjectUtils.isFunction(http)
+            ? http
+            : function(ajaxSpec) {
+
+            };
+        */
+
+
+        this.initializeCore(serviceUri, datasetDescription, httpArgs, ajaxOptions, httpClient);
+    },
+
+
+    initializeCore: function(serviceUri, datasetDescription, httpArgs, ajaxOptions, httpClient) {
         this.serviceUri = serviceUri;
-        this.defaultGraphUris = defaultGraphUris;
+        this.datasetDescription = datasetDescription; // || new DatasetDescription();
         // this.setDefaultGraphs(defaultGraphUris);
 
         this.ajaxOptions = ajaxOptions;
         this.httpArgs = httpArgs;
+        this.httpClient = httpClient;
     },
 
     getServiceId: function() {
@@ -13742,8 +13783,9 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
      *
      */
     getStateHash: function() {
-        var result = JSONCanonical.stringify(this.defaultGraphUris);
-        result += JSONCanonical.stringify(this.httpArgs);
+        var result
+            = '' + this.datasetDescription//JSONCanonical.stringify(this.defaultGraphUris);
+            + JSONCanonical.stringify(this.httpArgs);
         return result;
     },
 
@@ -13751,6 +13793,11 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
         return this.getServiceId() + '/' + this.getStateHash();
     },
 
+    getDatasetDescription: function() {
+        return this.datasetDescription;
+    },
+
+    /*
     setDefaultGraphs: function(uriStrs) {
         this.defaultGraphUris = uriStrs; // ? uriStrs : [];
     },
@@ -13758,11 +13805,12 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
     getDefaultGraphs: function() {
         return this.defaultGraphUris;
     },
+    */
 
     createQueryExecutionStr: function(queryStr) {
         var ajaxOptions = defaults({}, this.ajaxOptions);
 
-        var result = new QueryExecutionHttp(queryStr, this.serviceUri, this.defaultGraphUris, ajaxOptions, this.httpArgs);
+        var result = new QueryExecutionHttp(queryStr, this.serviceUri, this.datasetDescription, ajaxOptions, this.httpArgs, this.httpClient);
         return result;
     },
 
@@ -13781,7 +13829,7 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
 
 module.exports = SparqlServiceHttp;
 
-},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../query_execution/QueryExecutionHttp":195,"./SparqlServiceBaseString":203,"lodash.defaults":405}],211:[function(require,module,exports){
+},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../../sparql/DatasetDescription":230,"../query_execution/QueryExecutionHttp":195,"./SparqlServiceBaseString":203,"lodash":748,"lodash.defaults":405}],211:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var SparqlService = require('./SparqlService');
@@ -15451,22 +15499,22 @@ var uniq = require('lodash.uniq');
  * http://www.w3.org/TR/sparql11-query/#rdfDataset
  *
  */
-var DatasetSpec = {
-    initialize: function(defaultGraphIris, namedGraphIris) {
-        this.defaultGraphIris = defaultGraphIris || [];
-        this.namedGraphIris = namedGraphIris || [];
+var DatasetDescription = Class.create({
+    initialize: function(defaultGraphUris, namedGraphUris) {
+        this.defaultGraphUris = defaultGraphUris || [];
+        this.namedGraphUris = namedGraphUris || [];
     },
 
-    getDefaultGraphIris: function() {
-        return this.defaultGraphIris;
+    getDefaultGraphUris: function() {
+        return this.defaultGraphUris;
     },
 
-    getNamedGraphIris: function() {
-        return this.namedGraphIris;
+    getNamedGraphUris: function() {
+        return this.namedGraphUris;
     },
 
-    getIrisMentioned: function() {
-        var raw = this.defaultGraphIris.concat(this.namedGraphIris);
+    getUrisMentioned: function() {
+        var raw = this.defaultGraphUris.concat(this.namedGraphUris);
         var result = uniq(raw);
         return result;
     },
@@ -15485,12 +15533,12 @@ var DatasetSpec = {
     },
 
     toString: function() {
-        return 'DatasetSpec: ' + JSON.stringify(this);
+        return 'DatasetDescription: ' + JSON.stringify(this);
     }
-};
+});
 
 
-module.exports = DatasetSpec;
+module.exports = DatasetDescription;
 
 },{"../ext/Class":2,"../util/ObjectUtils":375,"lodash.uniq":687}],231:[function(require,module,exports){
 //
@@ -19532,7 +19580,7 @@ var ns = {
     Concept: require('./Concept'),
     ConceptUtils: require('./ConceptUtils'),
     DiffUtils: require('./DiffUtils'),
-    DatasetSpec: require('./DatasetSpec'),
+    DatasetDescription: require('./DatasetDescription'),
     ElementHelpers: require('./ElementHelpers'),
     ElementUtils: require('./ElementUtils'),
     ExprEvaluator: require('./ExprEvaluator'),
@@ -19626,7 +19674,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"./BestLabelConfig":224,"./Binding":225,"./BindingUtils":226,"./CannedConceptUtils":227,"./Concept":228,"./ConceptUtils":229,"./DatasetSpec":230,"./DiffUtils":231,"./ElementHelpers":232,"./ElementUtils":233,"./ExprEvaluator":234,"./ExprEvaluatorImpl":235,"./ExprHelpers":236,"./ExprUtils":237,"./GenSym":238,"./Generator":239,"./GeneratorBlacklist":240,"./LabelUtils":241,"./LiteralPreference":242,"./NodeValueUtils":243,"./PatternUtils":244,"./Quad":245,"./QuadUtils":246,"./Query":247,"./QueryType":248,"./QueryUtils":249,"./Relation":250,"./RelationUtils":251,"./SortCondition":252,"./SparqlString":253,"./VarExprList":254,"./VarGen":255,"./VarUtils":256,"./agg/AggCount":257,"./agg/AggCountVarDistinct":258,"./element/Element":259,"./element/ElementBind":260,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementNamedGraph":263,"./element/ElementOptional":264,"./element/ElementString":265,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./element/ElementUnion":268,"./element_factory/ElementFactory":269,"./element_factory/ElementFactoryCombine":270,"./element_factory/ElementFactoryConst":271,"./element_factory/ElementFactoryJoin":272,"./element_factory/ElementFactoryJoinConcept":273,"./element_supplier/ElementSupplier":274,"./element_supplier/ElementSupplierConst":275,"./element_supplier/ElementSupplierFn":276,"./expr/E_Bound":277,"./expr/E_Cast":278,"./expr/E_Equals":279,"./expr/E_Function":280,"./expr/E_GreaterThan":281,"./expr/E_IsIri":282,"./expr/E_Lang":283,"./expr/E_LangMatches":284,"./expr/E_LessThan":285,"./expr/E_Like":286,"./expr/E_LogicalAnd":287,"./expr/E_LogicalNot":288,"./expr/E_LogicalOr":289,"./expr/E_NotExists":290,"./expr/E_OneOf":291,"./expr/E_Regex":292,"./expr/E_Str":293,"./expr/Expr":294,"./expr/ExprAggregator":295,"./expr/ExprFunction":296,"./expr/ExprFunction0":297,"./expr/ExprFunction1":298,"./expr/ExprFunction2":299,"./expr/ExprFunctionBase":300,"./expr/ExprFunctionN":301,"./expr/ExprString":302,"./expr/ExprVar":303,"./expr/NodeValue":304,"./expr/NodeValueNode":305,"./join/JoinBuilder":307,"./join/JoinBuilderUtils":308,"./join/JoinInfo":309,"./join/JoinNode":310,"./join/JoinNodeInfo":311,"./join/JoinTargetState":312,"./join/JoinType":313,"./search/KeywordSearchUtils":314,"./update/UpdateData":315,"./update/UpdateDataDelete":316,"./update/UpdateDataInsert":317,"./update/UpdateModify":318,"./update/UpdateWithUsing":319}],307:[function(require,module,exports){
+},{"./BestLabelConfig":224,"./Binding":225,"./BindingUtils":226,"./CannedConceptUtils":227,"./Concept":228,"./ConceptUtils":229,"./DatasetDescription":230,"./DiffUtils":231,"./ElementHelpers":232,"./ElementUtils":233,"./ExprEvaluator":234,"./ExprEvaluatorImpl":235,"./ExprHelpers":236,"./ExprUtils":237,"./GenSym":238,"./Generator":239,"./GeneratorBlacklist":240,"./LabelUtils":241,"./LiteralPreference":242,"./NodeValueUtils":243,"./PatternUtils":244,"./Quad":245,"./QuadUtils":246,"./Query":247,"./QueryType":248,"./QueryUtils":249,"./Relation":250,"./RelationUtils":251,"./SortCondition":252,"./SparqlString":253,"./VarExprList":254,"./VarGen":255,"./VarUtils":256,"./agg/AggCount":257,"./agg/AggCountVarDistinct":258,"./element/Element":259,"./element/ElementBind":260,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementNamedGraph":263,"./element/ElementOptional":264,"./element/ElementString":265,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./element/ElementUnion":268,"./element_factory/ElementFactory":269,"./element_factory/ElementFactoryCombine":270,"./element_factory/ElementFactoryConst":271,"./element_factory/ElementFactoryJoin":272,"./element_factory/ElementFactoryJoinConcept":273,"./element_supplier/ElementSupplier":274,"./element_supplier/ElementSupplierConst":275,"./element_supplier/ElementSupplierFn":276,"./expr/E_Bound":277,"./expr/E_Cast":278,"./expr/E_Equals":279,"./expr/E_Function":280,"./expr/E_GreaterThan":281,"./expr/E_IsIri":282,"./expr/E_Lang":283,"./expr/E_LangMatches":284,"./expr/E_LessThan":285,"./expr/E_Like":286,"./expr/E_LogicalAnd":287,"./expr/E_LogicalNot":288,"./expr/E_LogicalOr":289,"./expr/E_NotExists":290,"./expr/E_OneOf":291,"./expr/E_Regex":292,"./expr/E_Str":293,"./expr/Expr":294,"./expr/ExprAggregator":295,"./expr/ExprFunction":296,"./expr/ExprFunction0":297,"./expr/ExprFunction1":298,"./expr/ExprFunction2":299,"./expr/ExprFunctionBase":300,"./expr/ExprFunctionN":301,"./expr/ExprString":302,"./expr/ExprVar":303,"./expr/NodeValue":304,"./expr/NodeValueNode":305,"./join/JoinBuilder":307,"./join/JoinBuilderUtils":308,"./join/JoinInfo":309,"./join/JoinNode":310,"./join/JoinNodeInfo":311,"./join/JoinTargetState":312,"./join/JoinType":313,"./search/KeywordSearchUtils":314,"./update/UpdateData":315,"./update/UpdateDataDelete":316,"./update/UpdateDataInsert":317,"./update/UpdateModify":318,"./update/UpdateWithUsing":319}],307:[function(require,module,exports){
 /* jshint maxparams: 6 */
 var Class = require('../../ext/Class');
 var HashBidiMap = require('../../util/collection/HashBidiMap');
