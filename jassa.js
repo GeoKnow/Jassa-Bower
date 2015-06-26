@@ -10277,9 +10277,14 @@ var SparqlServiceBuilder = Class.create({
 });
 
 // var sparqlService = SparqlServiceBuilder.http().limit(100000).virtFix().cache().paginate(1000).pageExpand(100).create();
+SparqlServiceBuilder.from = function(sparqlService) {
+    var result = new SparqlServiceBuilder(sparqlService);
+    return result;
+};
+
 SparqlServiceBuilder.http = function(serviceUri, defaultGraphUris, ajaxOptions, httpArgs) {
     var sparqlService = new SparqlServiceHttp(serviceUri, defaultGraphUris, ajaxOptions, httpArgs);
-    var result = new SparqlServiceBuilder(sparqlService);
+    var result = SparqlServiceBuilder.from(sparqlService);
     return result;
 };
 
@@ -24656,6 +24661,7 @@ var PrefixUtils = {
      * Parses a prefix string and returns an object with a mapping
      * from prefix to namespace
      *
+     * ns1: <http://ns1> ns2: <http://ns2>
      * @param str
      */
     parsePrefixDecls: function(str) {
