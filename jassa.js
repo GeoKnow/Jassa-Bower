@@ -6222,7 +6222,8 @@ var VarUtils = require('../sparql/VarUtils');
 
 var GeoConceptUtils = {
     conceptWgs84: new Concept(ElementString.create('?s <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?x ;  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?y'), VarUtils.s),
-    conceptGeoVocab:  new Concept(ElementString.create('?s <http://www.opengis.net/ont/geosparql#asWKT> ?w'), VarUtils.s)
+    conceptGeoVocab:  new Concept(ElementString.create('?s <http://www.opengis.net/ont/geosparql#asWKT> ?w'), VarUtils.s),
+    conceptSchemaOrgGeoCoordinate: new Concept(ElementString.create('?s <http://schema.org/longitude> ?x ;  <http://schema.org/latitude> ?y'), VarUtils.s)
 };
 
 module.exports = GeoConceptUtils;
@@ -6444,6 +6445,7 @@ var GeoMapUtils = require('./GeoMapUtils');
 var GeoMapFactory = require('./GeoMapFactory');
 var VarUtils = require('../sparql/VarUtils');
 var Concept = require('../sparql/Concept');
+var ElementString = require('../sparql/element/ElementString');
 var ElementTriplesBlock = require('../sparql/element/ElementTriplesBlock');
 var NodeFactory = require('../rdf/NodeFactory');
 var Triple = require('../rdf/Triple');
@@ -6461,6 +6463,19 @@ var defaultGeomFromTextFnName = 'bif:st_geomFromText';
 
 
 var GeoMapFactoryUtils = {
+
+    createXyMapFactory: function(xPredicateName, yPredicateName, doCast) {
+        var elementStr = '?s <' + xPredicateName + '> ?x ; <' + yPredicateName + '> ?y';
+        var concept = new Concept(ElementString.create(elementStr), VarUtils.s);
+
+        var cast = doCast ? xsd.xdouble : null;
+
+        var result = new GeoMapFactory(
+                GeoMapUtils.createXyView(concept),
+                new BboxExprFactoryWgs84(VarUtils.x, VarUtils.y, cast));
+
+        return result;
+    },
 
     wgs84MapFactory: new GeoMapFactory(
             GeoMapUtils.wgs84GeoView,
@@ -6480,6 +6495,7 @@ var GeoMapFactoryUtils = {
             GeoMapUtils.ogcGeoView,
             new BboxExprFactoryWkt(VarUtils.w, defaultIntersectsFnName, defaultGeomFromTextFnName)
     ),
+
 
     // TODO Replace defaults with geosparql rather than virtuoso bifs
     createWktMapFactory: function(wktPredicateName, intersectsFnName, geomFromTextFnName) {
@@ -6516,7 +6532,7 @@ var GeoMapFactoryUtils = {
 
 module.exports = GeoMapFactoryUtils;
 
-},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/VarUtils":256,"../sparql/element/ElementTriplesBlock":267,"../sponate/SponateUtils":335,"../vocab/rdf":401,"../vocab/xsd":404,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./GeoMapFactory":80,"./GeoMapUtils":82}],82:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/VarUtils":256,"../sparql/element/ElementString":265,"../sparql/element/ElementTriplesBlock":267,"../sponate/SponateUtils":335,"../vocab/rdf":401,"../vocab/xsd":404,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./GeoMapFactory":80,"./GeoMapUtils":82}],82:[function(require,module,exports){
 var VarUtils = require('../sparql/VarUtils');
 var NodeFactory = require('../rdf/NodeFactory');
 var Concept = require('../sparql/Concept');
@@ -6527,7 +6543,32 @@ var SponateUtils = require('../sponate/SponateUtils');
 
 
 var GeoMapUtils = {
+    createXyView: function(xyConcept, vx, vy) {
+        vx = vx || VarUtils.x;
+        vy = vy || VarUtils.y;
+
+        var result = SponateUtils.parseSpec({
+            name: 'lonlat',
+            template: [{
+                id: xyConcept.getVar(), // TODO Get rid of the '' + //'?s',
+                lon: '' + vx,
+                lat: '' + vy,
+                wkt: ['' + vx, '' + vy, function(x, y) {
+                    var r = 'POINT(' + x + ' ' + y + ')';
+                    return r;
+                }]
+            }],
+            from: xyConcept.getElement()
+        });
+
+        return result;
+    },
+
+    wgs84GeoView: GeoMapUtils.createXyView(GeoConceptUtils.conceptWgs84),
+    schemaOrgGeoCoordinateView: GeoMapUtils.createXyView(GeoConceptUtils.conceptSchemaOrgGeoCoordinate),
+
     // Note: String attributes become JSON values; variables become RDF values
+/*
     wgs84GeoView: SponateUtils.parseSpec({
         name: 'lonlat',
         template: [{
@@ -6543,7 +6584,7 @@ var GeoMapUtils = {
         }],
         from: GeoConceptUtils.conceptWgs84.getElement()
     }),
-
+*/
     ogcGeoView: SponateUtils.parseSpec({
         name: 'lonlat',
         template: [{
