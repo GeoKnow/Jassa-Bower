@@ -15156,6 +15156,7 @@ var ConceptUtils = {
 //        }
 
         var result = new Query();
+        result.setQuerySelectType();
         result.setDistinct(true);
 
         result.setLimit(limit);
@@ -17460,7 +17461,7 @@ var VarExprList = Class.create({
         return result;
     },
 
-    // Get the references variables
+    // Get the referenced variables
     getRefVars: function() {
         var set = new HashSet();
 
