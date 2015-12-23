@@ -765,7 +765,7 @@ var ConstraintManager = Class.create({
 
 module.exports = ConstraintManager;
 
-},{"../ext/Class":2,"../sparql/ExprUtils":237,"../util/ArrayUtils":367,"./ElementsAndExprs":9,"lodash.foreach":540,"lodash.uniq":687}],6:[function(require,module,exports){
+},{"../ext/Class":2,"../sparql/ExprUtils":237,"../util/ArrayUtils":368,"./ElementsAndExprs":9,"lodash.foreach":577,"lodash.uniq":724}],6:[function(require,module,exports){
 var ElementUtils = require('../sparql/ElementUtils');
 
 var ExprVar = require('../sparql/expr/ExprVar');
@@ -1031,7 +1031,7 @@ var CountUtils = {
 
 module.exports = CountUtils;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../service/list_service/ListServiceSparqlQuery":165,"../service/lookup_service/LookupService":170,"../sparql/Concept":228,"../sparql/ConceptUtils":229,"../sparql/NodeValueUtils":243,"../sparql/Query":247,"../sparql/QueryUtils":249,"../sparql/Relation":250,"../sparql/RelationUtils":251,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementSubQuery":266,"../sparql/element/ElementUnion":268,"../sparql/expr/E_Equals":279,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../sponate/LookupServiceUtils":326,"../sponate/ServiceUtils":334,"../sponate/agg/AggLiteral":352,"../sponate/agg/AggMap":353,"../sponate/agg/AggTransform":357,"../sponate/binding_mapper/BindingMapperExpr":360,"../util/collection/HashMap":388,"../util/shared":397,"./FacetUtils":20}],8:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../service/list_service/ListServiceSparqlQuery":165,"../service/lookup_service/LookupService":170,"../sparql/Concept":228,"../sparql/ConceptUtils":229,"../sparql/NodeValueUtils":243,"../sparql/Query":247,"../sparql/QueryUtils":249,"../sparql/Relation":250,"../sparql/RelationUtils":251,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementSubQuery":266,"../sparql/element/ElementUnion":268,"../sparql/expr/E_Equals":279,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../sponate/LookupServiceUtils":326,"../sponate/ServiceUtils":334,"../sponate/agg/AggLiteral":352,"../sponate/agg/AggMap":353,"../sponate/agg/AggTransform":357,"../sponate/binding_mapper/BindingMapperExpr":360,"../util/collection/HashMap":389,"../util/shared":398,"./FacetUtils":20}],8:[function(require,module,exports){
 var FacetUtils = require('./FacetUtils');
 var ElementGroup = require('../sparql/element/ElementGroup');
 var ElementOptional = require('../sparql/element/ElementOptional');
@@ -1540,7 +1540,7 @@ FacetNode.createRoot = function(v, generator) {
 
 module.exports = FacetNode;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":99,"../sparql/GenSym":238,"../sparql/VarUtils":256,"../sparql/element/ElementTriplesBlock":267,"../util/collection/HashMap":388,"./Path":22,"./Step":27,"./VarNode":30}],12:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":99,"../sparql/GenSym":238,"../sparql/VarUtils":256,"../sparql/element/ElementTriplesBlock":267,"../util/collection/HashMap":389,"./Path":22,"./Step":27,"./VarNode":30}],12:[function(require,module,exports){
 var Class = require('../ext/Class');
 var ListFilter = require('../service/ListFilter');
 
@@ -1783,7 +1783,7 @@ FacetServiceBuilder.core = function(sparqlService, facetConfig) {
 
 module.exports = FacetServiceBuilder;
 
-},{"../ext/Class":2,"../service/list_service/ListServiceTransformItem":168,"../service/list_service/ListServiceTransformItems":169,"../sparql/LabelUtils":241,"../sparql/LiteralPreference":242,"../sparql/search/KeywordSearchUtils":314,"../sponate/LookupServiceUtils":326,"../sponate/MappedConceptUtils":329,"../util/collection/HashMap":388,"./FacetServiceUtils":15,"./facet_service/FacetServiceClientIndex":45,"./facet_service/FacetServiceFn":46,"./facet_service/FacetServiceTransformConcept":51}],15:[function(require,module,exports){
+},{"../ext/Class":2,"../service/list_service/ListServiceTransformItem":168,"../service/list_service/ListServiceTransformItems":169,"../sparql/LabelUtils":241,"../sparql/LiteralPreference":242,"../sparql/search/KeywordSearchUtils":314,"../sponate/LookupServiceUtils":326,"../sponate/MappedConceptUtils":329,"../util/collection/HashMap":389,"./FacetServiceUtils":15,"./facet_service/FacetServiceClientIndex":45,"./facet_service/FacetServiceFn":46,"./facet_service/FacetServiceTransformConcept":51}],15:[function(require,module,exports){
 //var Class = require('../ext/Class');
 
 var ConceptUtils = require('../sparql/ConceptUtils');
@@ -2061,7 +2061,7 @@ var FacetTreeConfig = Class.create({
 
 module.exports = FacetTreeConfig;
 
-},{"../ext/Class":2,"../service/ListFilter":131,"../sparql/LiteralPreference":242,"../util/collection/HashMap":388,"./FacetConfig":10,"./FacetTreeState":19}],17:[function(require,module,exports){
+},{"../ext/Class":2,"../service/ListFilter":131,"../sparql/LiteralPreference":242,"../util/collection/HashMap":389,"./FacetConfig":10,"./FacetTreeState":19}],17:[function(require,module,exports){
 var Step = require('./Step');
 var Path = require('./Path');
 var PathHead = require('./PathHead');
@@ -2208,7 +2208,7 @@ var FacetTreeServiceHelpers = {//Class.create({
 
 module.exports = FacetTreeServiceHelpers;
 
-},{"../service/ListFilter":131,"../util/ObjectUtils":375,"../util/PromiseUtils":377,"../util/shared":397,"./FacetNodeState":12,"./Path":22,"./PathHead":23,"./Step":27}],18:[function(require,module,exports){
+},{"../service/ListFilter":131,"../util/ObjectUtils":376,"../util/PromiseUtils":378,"../util/shared":398,"./FacetNodeState":12,"./Path":22,"./PathHead":23,"./Step":27}],18:[function(require,module,exports){
 var FacetTreeService = require('./facet_tree_service/FacetTreeService');
 var HashMap = require('../util/collection/HashMap');
 var FacetServiceBuilder = require('./FacetServiceBuilder');
@@ -2263,7 +2263,7 @@ var FacetTreeServiceUtils = {
 
 module.exports = FacetTreeServiceUtils;
 
-},{"../util/collection/HashMap":388,"./FacetNodeState":12,"./FacetServiceBuilder":14,"./facet_tree_service/FacetTreeService":53}],19:[function(require,module,exports){
+},{"../util/collection/HashMap":389,"./FacetNodeState":12,"./FacetServiceBuilder":14,"./facet_tree_service/FacetTreeService":53}],19:[function(require,module,exports){
 var Class = require('../ext/Class');
 var ListFilter = require('../service/ListFilter');
 
@@ -2306,7 +2306,7 @@ var FacetTreeState = Class.create({
 
 
 module.exports = FacetTreeState;
-},{"../ext/Class":2,"../service/ListFilter":131,"../util/collection/HashMap":388,"../util/collection/HashSet":389}],20:[function(require,module,exports){
+},{"../ext/Class":2,"../service/ListFilter":131,"../util/collection/HashMap":389,"../util/collection/HashSet":390}],20:[function(require,module,exports){
 var Concept = require('../sparql/Concept');
 var Relation = require('../sparql/Relation');
 
@@ -2655,7 +2655,7 @@ var FacetUtils = {
 
 module.exports = FacetUtils;
 
-},{"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/ElementUtils":233,"../sparql/NodeValueUtils":243,"../sparql/PatternUtils":244,"../sparql/Relation":250,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementTriplesBlock":267,"../sparql/expr/E_Equals":279,"../sparql/expr/E_LogicalNot":288,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../sparql/expr/NodeValue":304,"../util/collection/HashMap":388,"./FacetRelationIndex":13,"./PathHead":23,"./Step":27,"./StepRelation":28,"./StepUtils":29}],21:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/ElementUtils":233,"../sparql/NodeValueUtils":243,"../sparql/PatternUtils":244,"../sparql/Relation":250,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementTriplesBlock":267,"../sparql/expr/E_Equals":279,"../sparql/expr/E_LogicalNot":288,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../sparql/expr/NodeValue":304,"../util/collection/HashMap":389,"./FacetRelationIndex":13,"./PathHead":23,"./Step":27,"./StepRelation":28,"./StepUtils":29}],21:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ListServiceTransformConcept = require('../service/list_service/ListServiceTransformConcept');
@@ -3059,7 +3059,7 @@ PathHead.parse = function(pathStr, isInverse) {
 
 module.exports = PathHead;
 
-},{"../ext/Class":2,"../util/ObjectUtils":375,"./Path":22}],24:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":376,"./Path":22}],24:[function(require,module,exports){
 var _ = require('lodash');
 //var uniq = require('lodash.uniq');
 
@@ -3225,7 +3225,7 @@ var PathUtils = {
 
 module.exports = PathUtils;
 
-},{"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../sparql/ElementUtils":233,"../sparql/Relation":250,"../sparql/VarUtils":256,"../util/StringUtils":382,"./FacetNode":11,"lodash":748}],25:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../sparql/ElementUtils":233,"../sparql/Relation":250,"../sparql/VarUtils":256,"../util/StringUtils":383,"./FacetNode":11,"lodash":785}],25:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var Query = require('../sparql/Query');
 
@@ -3571,7 +3571,7 @@ Step.parse = function(str) {
 
 module.exports = Step;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/element/ElementTriplesBlock":267,"../util/ObjectUtils":375,"lodash.isequal":570}],28:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/element/ElementTriplesBlock":267,"../util/ObjectUtils":376,"lodash.isequal":607}],28:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 /**
@@ -3787,7 +3787,7 @@ var VarNode = Class.create({
 
 module.exports = VarNode;
 
-},{"../ext/Class":2,"../util/ObjectUtils":375,"../util/collection/HashMap":388,"./Step":27,"./VarNode":30,"lodash.foreach":540}],31:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":376,"../util/collection/HashMap":389,"./Step":27,"./VarNode":30,"lodash.foreach":577}],31:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -3874,7 +3874,7 @@ var ConstraintBasePathValue = Class.create(ConstraintBasePath, {
     },
     
     equals: function(that) {
-        if(!that instanceof ConstraintBasePath) {
+        if(!(that instanceof ConstraintBasePath)) {
             return false;
         }
         
@@ -3894,7 +3894,8 @@ var ConstraintBasePathValue = Class.create(ConstraintBasePath, {
 
 module.exports = ConstraintBasePathValue;
     
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./ConstraintBasePath":32}],34:[function(require,module,exports){
+
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./ConstraintBasePath":32}],34:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var ConstraintUtils = require('../ConstraintUtils');
@@ -3928,7 +3929,7 @@ var ConstraintConcept = Class.create(ConstraintBasePath, {
 });
 
 module.exports = ConstraintConcept;
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"../ConstraintUtils":6,"./ConstraintBasePath":32}],35:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"../ConstraintUtils":6,"./ConstraintBasePath":32}],35:[function(require,module,exports){
 /*
     ns.ConstraintElementFactoryBBoxRange = Class.create(ns.ConstraintElementFactory, {
         initialize: function() {
@@ -4165,7 +4166,7 @@ var FacetConceptSupplierMeta = Class.create({
 
 module.exports = FacetConceptSupplierMeta;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../FacetUtils":20,"./FacetConceptSupplier":40}],44:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../FacetUtils":20,"./FacetConceptSupplier":40}],44:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -4367,7 +4368,7 @@ var FacetServiceClientIndex = Class.create({
 
 module.exports = FacetServiceClientIndex;
 
-},{"../../ext/Class":2,"../../service/list_service/ListServiceArray":158,"../../service/list_service/ListServiceTransformItem":168,"../../util/shared":397}],46:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/list_service/ListServiceArray":158,"../../service/list_service/ListServiceTransformItem":168,"../../util/shared":398}],46:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var FacetService = require('./FacetService');
@@ -4452,7 +4453,7 @@ var FacetServiceLookup = Class.create(FacetService, {
 
 module.exports = FacetServiceLookup;
 
-},{"../../ext/Class":2,"../../service/list_service/ListServiceConceptKeyLookup":161,"../../service/list_service/ListServiceTransformItem":168,"../../util/collection/HashMap":388,"./FacetService":44}],48:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/list_service/ListServiceConceptKeyLookup":161,"../../service/list_service/ListServiceTransformItem":168,"../../util/collection/HashMap":389,"./FacetService":44}],48:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var FacetService = require('./FacetService');
@@ -4487,7 +4488,7 @@ var FacetServiceMeta = Class.create(FacetService, {
 
 module.exports = FacetServiceMeta;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"./FacetService":44}],49:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"./FacetService":44}],49:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var NodeFactory = require('../../rdf/NodeFactory');
@@ -4604,7 +4605,7 @@ var FacetServiceSparql = Class.create(FacetService, {
 
 module.exports = FacetServiceSparql;
 
-},{"../../ext/Class":2,"../../rdf/NodeFactory":99,"../../service/list_service/ListServiceArray":158,"../../service/list_service/ListServiceSparqlQuery":165,"../../service/list_service/ListServiceTransformItem":168,"../../sparql/Concept":228,"../../sparql/ConceptUtils":229,"../../sparql/RelationUtils":251,"../../sparql/VarUtils":256,"../../util/shared":397,"../FacetUtils":20,"../Path":22,"../Step":27,"./FacetService":44}],50:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeFactory":99,"../../service/list_service/ListServiceArray":158,"../../service/list_service/ListServiceSparqlQuery":165,"../../service/list_service/ListServiceTransformItem":168,"../../sparql/Concept":228,"../../sparql/ConceptUtils":229,"../../sparql/RelationUtils":251,"../../sparql/VarUtils":256,"../../util/shared":398,"../FacetUtils":20,"../Path":22,"../Step":27,"./FacetService":44}],50:[function(require,module,exports){
 //var Class = require('../../ext/Class');
 //
 //var FacetService = require('./FacetService');
@@ -4767,7 +4768,7 @@ var FacetValueConceptServiceExact = Class.create({
 
 module.exports = FacetValueConceptServiceExact;
 
-},{"../../ext/Class":2,"../../util/shared":397,"../FacetUtils":20,"./FacetValueConceptService":54}],56:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"../FacetUtils":20,"./FacetValueConceptService":54}],56:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var NodeUtils = require('../../rdf/NodeUtils');
@@ -5065,7 +5066,7 @@ var LookupServiceConstraintLabels = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceConstraintLabels;
 
-},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"../../service/lookup_service/LookupServiceBase":171,"../../util/PromiseUtils":377,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServicePathLabels":63}],60:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"../../service/lookup_service/LookupServiceBase":171,"../../util/PromiseUtils":378,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServicePathLabels":63}],60:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var HashMap = require('../../util/collection/HashMap');
@@ -5111,7 +5112,7 @@ var LookupServiceFacetCount = Class.create(LookupService, {
                     var countInfo = exactMap.get(property);
                     countInfo = countInfo || preMap.get(property);
                     if(!countInfo) {
-                        throw new Error('Should not happen');
+                        throw new Error('Should not happen: No facet count obtained for property: ' + property + ' ; entries were: ' + properties);// + ' with pre mappings ' + preMap + ' and exact mappings: ' + exactMap);
                     }
 
                     r.put(property, countInfo);
@@ -5127,7 +5128,7 @@ var LookupServiceFacetCount = Class.create(LookupService, {
 
 module.exports = LookupServiceFacetCount;
 
-},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":388,"../../util/shared":397,"../CountUtils":7}],61:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":389,"../../util/shared":398,"../CountUtils":7}],61:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var VarUtils = require('../../sparql/VarUtils');
@@ -5172,7 +5173,7 @@ var LookupServiceFacetExactCount = Class.create(LookupService, {
 
 module.exports = LookupServiceFacetExactCount;
 
-},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":388,"../CountUtils":7}],62:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":389,"../CountUtils":7}],62:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var VarUtils = require('../../sparql/VarUtils');
@@ -5226,7 +5227,7 @@ var LookupServiceFacetPreCount = Class.create(LookupService, {
 
 module.exports = LookupServiceFacetPreCount;
 
-},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":388,"../CountUtils":7}],63:[function(require,module,exports){
+},{"../../ext/Class":2,"../../service/lookup_service/LookupService":170,"../../sparql/VarUtils":256,"../../util/collection/HashMap":389,"../CountUtils":7}],63:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceBase = require('../../service/lookup_service/LookupServiceBase');
 var HashMap = require('../../util/collection/HashMap');
@@ -5275,7 +5276,7 @@ var LookupServicePathLabels = Class.create(LookupServiceBase, {
 
 module.exports = LookupServicePathLabels;
 
-},{"../../ext/Class":2,"../../facete/PathUtils":24,"../../service/lookup_service/LookupServiceBase":171,"../../util/collection/HashMap":388}],64:[function(require,module,exports){
+},{"../../ext/Class":2,"../../facete/PathUtils":24,"../../service/lookup_service/LookupServiceBase":171,"../../util/collection/HashMap":389}],64:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Aggregator = Class.create({
@@ -5543,7 +5544,7 @@ var TableConfigFacet = Class.create({
 module.exports = TableConfigFacet;
 
 
-},{"../../ext/Class":2,"../../sparql/Concept":228,"../../util/ArrayUtils":367,"../../util/CollectionUtils":370,"../../util/collection/ArrayList":385,"../ElementUtils":8,"../Path":22,"./TableMod":70}],70:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":228,"../../util/ArrayUtils":368,"../../util/CollectionUtils":371,"../../util/collection/ArrayList":386,"../ElementUtils":8,"../Path":22,"./TableMod":70}],70:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var ArrayUtils = require('../../util/ArrayUtils');
@@ -5695,7 +5696,7 @@ var TableMod = Class.create({
 
 module.exports = TableMod;
 
-},{"../../ext/Class":2,"../../util/ArrayUtils":367,"../../util/collection/HashMap":388,"./ColumnView":65}],71:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ArrayUtils":368,"../../util/collection/HashMap":389,"./ColumnView":65}],71:[function(require,module,exports){
 
 var TableUtils = {
     /**
@@ -6215,7 +6216,7 @@ fetchCount: function(bounds, threshold) {
 
 module.exports = DataServiceBboxCache;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":99,"../service/data_service/DataService":151,"../util/PromiseUtils":377,"../util/shared":397,"../vocab/wgs84":403,"./Bounds":75,"./GeoExprUtils":79,"./QuadTree":87,"lodash.flatten":473,"lodash.uniq":687}],77:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":99,"../service/data_service/DataService":151,"../util/PromiseUtils":378,"../util/shared":398,"../vocab/wgs84":404,"./Bounds":75,"./GeoExprUtils":79,"./QuadTree":87,"lodash.flatten":510,"lodash.uniq":724}],77:[function(require,module,exports){
 var Concept = require('../sparql/Concept');
 var ElementString = require('../sparql/element/ElementString');
 var VarUtils = require('../sparql/VarUtils');
@@ -6532,7 +6533,7 @@ var GeoMapFactoryUtils = {
 
 module.exports = GeoMapFactoryUtils;
 
-},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/VarUtils":256,"../sparql/element/ElementString":265,"../sparql/element/ElementTriplesBlock":267,"../sponate/SponateUtils":335,"../vocab/rdf":401,"../vocab/xsd":404,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./GeoMapFactory":80,"./GeoMapUtils":82}],82:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/VarUtils":256,"../sparql/element/ElementString":265,"../sparql/element/ElementTriplesBlock":267,"../sponate/SponateUtils":335,"../vocab/rdf":402,"../vocab/xsd":405,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./GeoMapFactory":80,"./GeoMapUtils":82}],82:[function(require,module,exports){
 var VarUtils = require('../sparql/VarUtils');
 var NodeFactory = require('../rdf/NodeFactory');
 var Concept = require('../sparql/Concept');
@@ -7214,7 +7215,7 @@ QuadTreeNode.BOTTOM_RIGHT = 3;
 
 module.exports = QuadTreeNode;
 
-},{"../ext/Class":2,"./Bounds":75,"./Point":85,"lodash.reduce":602}],89:[function(require,module,exports){
+},{"../ext/Class":2,"./Bounds":75,"./Point":85,"lodash.reduce":639}],89:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var Range = Class.create({
@@ -7264,6 +7265,8 @@ module.exports = ns;
 
 },{"./BboxExprFactory":72,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./Bounds":75,"./DataServiceBboxCache":76,"./GeoConceptUtils":77,"./GeoDataSourceUtils":78,"./GeoExprUtils":79,"./GeoMapFactory":80,"./GeoMapFactoryUtils":81,"./GeoMapUtils":82,"./GeoUtils":83,"./ListServiceBbox":84,"./Point":85,"./PointUtils":86,"./QuadTree":87,"./QuadTreeNode":88,"./Range":89}],91:[function(require,module,exports){
 var shared = require('./util/shared');
+var Promise = require('bluebird');
+var AjaxUtils = require('./util/AjaxUtils');
 
 /**
  * Defines the global variable into which the modules
@@ -7276,10 +7279,27 @@ var shared = require('./util/shared');
  *
  */
 
-var Jassa = function(Promise, ajaxRequest) {
+/**
+ * @Deprecated
+ *
+ * The global jassa object was originally intended to support
+ * customizing the promise and ajax library.
+ * However, mixing libraries makes things more complicated than its worth.
+ * So we default to bluebird and jQuery.
+ */
+var Jassa = function(promise, ajaxRequest) {
+    //console.log('length is: ' + arguments.length);
+    //console.log('promise is: ', promise);
+
+    // If there is just a single argument, then we interpret it as the ajax function
+    if(arguments.length === 1) {
+        ajaxRequest = arguments[0];
+        promise = null;
+    }
+
     // store promise and ajax function
-    shared.Promise = Promise;
-    shared.ajax = ajaxRequest;
+    shared.Promise = promise || Promise;
+    shared.ajax = AjaxUtils.createAjaxWrapperFn(ajaxRequest);
 
     // return jassa object
     return {
@@ -7296,9 +7316,12 @@ var Jassa = function(Promise, ajaxRequest) {
     };
 };
 
-Jassa.ext = require('./ext');
+
+//jassa = new Jassa(Promise, ajaxWrapper);
+
 
 /*
+Jassa.ext = require('./ext');
 Jassa.util = require('./util');
 Jassa.rdf = require('./rdf');
 Jassa.vocab = require('./vocab');
@@ -7312,7 +7335,7 @@ Jassa.facete = require('./facete');
 module.exports = Jassa;
 
 
-},{"./ext":4,"./facete":58,"./geo":90,"./io":93,"./rdf":111,"./service":155,"./sparql":306,"./sponate":366,"./util":396,"./util/shared":397,"./vocab":399}],92:[function(require,module,exports){
+},{"./ext":4,"./facete":58,"./geo":90,"./io":93,"./rdf":111,"./service":155,"./sparql":306,"./sponate":366,"./util":397,"./util/AjaxUtils":367,"./util/shared":398,"./vocab":400,"bluebird":408}],92:[function(require,module,exports){
 var Triple = require('../rdf/Triple');
 var GraphImpl = require('../rdf/GraphImpl');
 var NodeFactory = require('../rdf/NodeFactory');
@@ -7643,7 +7666,7 @@ var GraphImpl = Class.create({
 module.exports = GraphImpl;
 
 
-},{"../ext/Class":2,"../util/collection/HashSet":389,"./Triple":102,"./TripleUtils":103}],97:[function(require,module,exports){
+},{"../ext/Class":2,"../util/collection/HashSet":390,"./Triple":102,"./TripleUtils":103}],97:[function(require,module,exports){
 var HashSet = require('../util/collection/HashSet');
 var HashMap = require('../util/collection/HashMap');
 
@@ -7691,7 +7714,7 @@ var GraphUtils = {
 
 module.exports = GraphUtils;
 
-},{"../util/collection/HashMap":388,"../util/collection/HashSet":389,"./GraphImpl":96}],98:[function(require,module,exports){
+},{"../util/collection/HashMap":389,"../util/collection/HashSet":390,"./GraphImpl":96}],98:[function(require,module,exports){
 var Class = require('../ext/Class');
 var Node_Concrete = require('./node/Node_Concrete');
 
@@ -7958,7 +7981,7 @@ var NodeFactory = {
 
 module.exports = NodeFactory;
 
-},{"../util/ObjectUtils":375,"./AnonIdStr":95,"./LiteralLabel":98,"./TypeMapper":104,"./node/Node":112,"./node/Node_Blank":113,"./node/Node_Literal":116,"./node/Node_Uri":117,"./node/Var":119,"./rdf_datatype/DefaultRdfDatatypes":121}],100:[function(require,module,exports){
+},{"../util/ObjectUtils":376,"./AnonIdStr":95,"./LiteralLabel":98,"./TypeMapper":104,"./node/Node":112,"./node/Node_Blank":113,"./node/Node_Literal":116,"./node/Node_Uri":117,"./node/Var":119,"./rdf_datatype/DefaultRdfDatatypes":121}],100:[function(require,module,exports){
 var _ = require('lodash');
 var UriUtils = require('../util/UriUtils');
 
@@ -8109,7 +8132,7 @@ var NodeUtils = {
 };
 
 module.exports = NodeUtils;
-},{"../util/UriUtils":384,"./rdf_datatype/TypedValue":125,"lodash":748}],101:[function(require,module,exports){
+},{"../util/UriUtils":385,"./rdf_datatype/TypedValue":125,"lodash":785}],101:[function(require,module,exports){
 var forEach = require('lodash.foreach');
 
 var Class = require('../ext/Class');
@@ -8316,7 +8339,7 @@ var PrefixMappingImpl = Class.create({
 
 module.exports = PrefixMappingImpl;
 
-},{"../ext/Class":2,"../util/CurieUtils":371,"../util/PrefixUtils":376,"./GraphUtils":97,"lodash.foreach":540}],102:[function(require,module,exports){
+},{"../ext/Class":2,"../util/CurieUtils":372,"../util/PrefixUtils":377,"./GraphUtils":97,"lodash.foreach":577}],102:[function(require,module,exports){
 var Class = require('../ext/Class');
 var NodeUtils = require('./NodeUtils');
 
@@ -8436,7 +8459,7 @@ var TripleUtils = {
 
 module.exports = TripleUtils;
 
-},{"./NodeUtils":100,"lodash.uniq":687}],104:[function(require,module,exports){
+},{"./NodeUtils":100,"lodash.uniq":724}],104:[function(require,module,exports){
 var Class = require('../ext/Class');
 var DefaultRdfDatatypes = require('./rdf_datatype/DefaultRdfDatatypes');
 var BaseDatatype = require('./rdf_datatype/BaseDatatype');
@@ -8819,7 +8842,7 @@ var Node_Blank = Class.create(Node_Concrete, {
 
 module.exports = Node_Blank;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Node_Concrete":114}],114:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Node_Concrete":114}],114:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node = require('./Node');
 
@@ -8907,7 +8930,7 @@ var Node_Literal = Class.create(Node_Concrete, {
 
 module.exports = Node_Literal;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Node_Concrete":114}],117:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Node_Concrete":114}],117:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node_Concrete = require('./Node_Concrete');
 
@@ -8948,7 +8971,7 @@ var Node_Uri = Class.create(Node_Concrete, {
 
 module.exports = Node_Uri;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Node_Concrete":114}],118:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Node_Concrete":114}],118:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Node_Fluid = require('./Node_Fluid');
 
@@ -9000,7 +9023,7 @@ var Var = Class.create(Node_Variable, {
 
 module.exports = Var;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Node_Variable":118}],120:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Node_Variable":118}],120:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var RdfDatatype = require('./RdfDatatype');
 var TypedValue = require('./TypedValue');
@@ -9062,7 +9085,7 @@ registerRdfDatype(xsd.dateTime, DatatypeLabels.dateTime);
 
 module.exports = DefaultRdfDatatypes;
 
-},{"../../vocab/xsd":404,"../datatype/DefaultDatatypeLabels":110,"./RdfDatatypeLabel":124}],122:[function(require,module,exports){
+},{"../../vocab/xsd":405,"../datatype/DefaultDatatypeLabels":110,"./RdfDatatypeLabel":124}],122:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 // constructor
@@ -9181,7 +9204,7 @@ var Coordinate = Class.create({
 
 module.exports = Coordinate;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375}],127:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376}],127:[function(require,module,exports){
 /**
  * Implementation of the graph interface based on Talis RDF Json
  */
@@ -9293,7 +9316,7 @@ var GraphTalis = Class.create({
 module.exports = GraphTalis;
 
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"../../util/collection/HashSet":389,"../Triple":102,"../TripleUtils":103}],128:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"../../util/collection/HashSet":390,"../Triple":102,"../TripleUtils":103}],128:[function(require,module,exports){
 var Coordinate = require('./Coordinate');
 var NodeUtils = require('../NodeUtils');
 var ArrayUtils = require('../../util/ArrayUtils');
@@ -9408,7 +9431,7 @@ var TalisRdfJsonUtils = {
 module.exports = TalisRdfJsonUtils;
 
 
-},{"../../util/ArrayUtils":367,"../NodeUtils":100,"./Coordinate":126}],129:[function(require,module,exports){
+},{"../../util/ArrayUtils":368,"../NodeUtils":100,"./Coordinate":126}],129:[function(require,module,exports){
 var defaults = require('lodash.defaults');
 
 
@@ -9471,7 +9494,7 @@ var AjaxUtils = {
 
 module.exports = AjaxUtils;
 
-},{"lodash.defaults":405}],130:[function(require,module,exports){
+},{"lodash.defaults":442}],130:[function(require,module,exports){
 var Class = require('../ext/Class');
 var ExprUtils = require('../sparql/ExprUtils');
 // var ElementFilter = require('../sparql/element/element-filter');
@@ -9710,7 +9733,7 @@ var LookupServiceUtils = {
 
 module.exports = LookupServiceUtils;
 
-},{"../util/PromiseUtils":377,"../util/collection/HashMap":388,"../util/shared":397}],135:[function(require,module,exports){
+},{"../util/PromiseUtils":378,"../util/collection/HashMap":389,"../util/shared":398}],135:[function(require,module,exports){
 /**
  * Returns an object:
  * {
@@ -9941,7 +9964,7 @@ var ResultSetUtils = {
 };
 
 module.exports = ResultSetUtils;
-},{"../rdf/GraphImpl":96,"../rdf/Triple":102,"../sparql/Binding":225,"../sparql/VarUtils":256,"../util/collection/HashMap":388,"../util/collection/IteratorArray":392,"./ResultSetPart":138,"./result_set/ResultSetArrayIteratorBinding":200}],140:[function(require,module,exports){
+},{"../rdf/GraphImpl":96,"../rdf/Triple":102,"../sparql/Binding":225,"../sparql/VarUtils":256,"../util/collection/HashMap":389,"../util/collection/IteratorArray":393,"./ResultSetPart":138,"./result_set/ResultSetArrayIteratorBinding":200}],140:[function(require,module,exports){
 var union = require('lodash.union');
 var shared = require('../util/shared');
 var Promise = shared.Promise;
@@ -10255,7 +10278,7 @@ var ServiceUtils = {
 
 module.exports = ServiceUtils;
 
-},{"../sparql/Binding":225,"../sparql/ConceptUtils":229,"../sparql/ElementUtils":233,"../sparql/QueryUtils":249,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementSubQuery":266,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../util/ArrayUtils":367,"../util/PromiseUtils":377,"../util/collection/IteratorArray":392,"../util/shared":397,"./ResultSetUtils":139,"./result_set/ResultSetArrayIteratorBinding":200,"lodash.union":664}],141:[function(require,module,exports){
+},{"../sparql/Binding":225,"../sparql/ConceptUtils":229,"../sparql/ElementUtils":233,"../sparql/QueryUtils":249,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementSubQuery":266,"../sparql/expr/E_OneOf":291,"../sparql/expr/ExprVar":303,"../util/ArrayUtils":368,"../util/PromiseUtils":378,"../util/collection/IteratorArray":393,"../util/shared":398,"./ResultSetUtils":139,"./result_set/ResultSetArrayIteratorBinding":200,"lodash.union":701}],141:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 
@@ -10508,7 +10531,7 @@ var TableServiceUtils = {
 
 module.exports = TableServiceUtils;
 
-},{"../sparql/VarUtils":256,"../util/collection/IteratorArray":392,"../util/shared":397,"./ServiceUtils":140,"./result_set/ResultSetArrayIteratorBinding":200,"lodash.foreach":540,"lodash.uniq":687}],143:[function(require,module,exports){
+},{"../sparql/VarUtils":256,"../util/collection/IteratorArray":393,"../util/shared":398,"./ServiceUtils":140,"./result_set/ResultSetArrayIteratorBinding":200,"lodash.foreach":577,"lodash.uniq":724}],143:[function(require,module,exports){
 var QuadUtils = require('../sparql/QuadUtils');
 var UpdateDataInsert = require('../sparql/update/UpdateDataInsert');
 var UpdateDataDelete = require('../sparql/update/UpdateDataDelete');
@@ -10564,7 +10587,7 @@ var UpdateUtils = {
 module.exports = UpdateUtils;
 
 
-},{"../sparql/QuadUtils":246,"../sparql/update/UpdateDataDelete":316,"../sparql/update/UpdateDataInsert":317,"../util/PromiseUtils":377}],144:[function(require,module,exports){
+},{"../sparql/QuadUtils":246,"../sparql/update/UpdateDataDelete":316,"../sparql/update/UpdateDataInsert":317,"../util/PromiseUtils":378}],144:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Cache = Class.create({
@@ -10610,7 +10633,7 @@ var CacheSimple = Class.create(Cache, {
 
 module.exports = CacheSimple;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Cache":144}],146:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Cache":144}],146:[function(require,module,exports){
 var forEach = require('lodash.foreach');
 
 var Class = require('../../ext/Class');
@@ -10694,7 +10717,7 @@ var SparqlCacheSupplier = Class.create({
 
 module.exports = SparqlCacheSupplier;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"../../util/collection/HashMap":388,"./CacheSimple":145,"lodash.foreach":540}],147:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"../../util/collection/HashMap":389,"./CacheSimple":145,"lodash.foreach":577}],147:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Criteria = Class.create({
@@ -10820,7 +10843,7 @@ var DataServiceArray = Class.create(DataService, {
 
 module.exports = DataServiceArray;
 
-},{"../../ext/Class":2,"../../util/shared":397,"./DataService":151}],153:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"./DataService":151}],153:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var DataService = require('./DataService');
@@ -11017,7 +11040,7 @@ var AugmenterLookup = Class.create({
 
 module.exports = AugmenterLookup;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375}],157:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376}],157:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -11092,7 +11115,7 @@ var ListServiceArray = Class.create(ListService, {
 
 module.exports = ListServiceArray;
 
-},{"../../ext/Class":2,"../../util/shared":397,"../ServiceUtils":140,"./ListService":157}],159:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"../ServiceUtils":140,"./ListService":157}],159:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ListService = require('./ListService');
 
@@ -11240,7 +11263,7 @@ var ListServiceConceptKeyLookup = Class.create(ListService, {
 
 module.exports = ListServiceConceptKeyLookup;
 
-},{"../../ext/Class":2,"../../sparql/ConceptUtils":229,"../../util/ObjectUtils":375,"../../util/shared":397,"../ServiceUtils":140,"./ListService":157,"lodash.values":741}],162:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/ConceptUtils":229,"../../util/ObjectUtils":376,"../../util/shared":398,"../ServiceUtils":140,"./ListService":157,"lodash.values":778}],162:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ListService = require('./ListService');
 
@@ -11660,7 +11683,7 @@ var ListServiceSparqlQuery = Class.create(ListService, {
 
 module.exports = ListServiceSparqlQuery;
 
-},{"../../ext/Class":2,"../../sparql/Concept":228,"../../sparql/ConceptUtils":229,"../../sparql/element/ElementSubQuery":266,"../../util/shared":397,"../ResultSetUtils":139,"../ServiceUtils":140,"./ListService":157,"lodash.values":741}],166:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":228,"../../sparql/ConceptUtils":229,"../../sparql/element/ElementSubQuery":266,"../../util/shared":398,"../ResultSetUtils":139,"../ServiceUtils":140,"./ListService":157,"lodash.values":778}],166:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ListService = require('./ListService');
 
@@ -11826,7 +11849,7 @@ var ListServiceTransformItems = Class.create(ListService, {
 
 module.exports = ListServiceTransformItems;
 
-},{"../../ext/Class":2,"../../util/shared":397,"./ListService":157}],170:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"./ListService":157}],170:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var LookupService = Class.create({
@@ -12009,7 +12032,7 @@ var LookupServiceCache = Class.create(LookupServiceDelegateBase, {
 
 module.exports = LookupServiceCache;
 
-},{"../../ext/Class":2,"../../util/PromiseUtils":377,"../../util/collection/HashMap":388,"../RequestCache":137,"./LookupServiceDelegateBase":175,"lodash.find":411,"lodash.uniq":687}],173:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/PromiseUtils":378,"../../util/collection/HashMap":389,"../RequestCache":137,"./LookupServiceDelegateBase":175,"lodash.find":448,"lodash.uniq":724}],173:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var uniq = require('lodash.uniq');
 var ArrayUtils = require('../../util/ArrayUtils');
@@ -12058,7 +12081,7 @@ var LookupServiceChunker = Class.create(LookupServiceDelegateBase, {
 
 module.exports = LookupServiceChunker;
 
-},{"../../ext/Class":2,"../../util/ArrayUtils":367,"../../util/PromiseUtils":377,"../../util/collection/HashMap":388,"./LookupServiceDelegateBase":175,"lodash.uniq":687}],174:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ArrayUtils":368,"../../util/PromiseUtils":378,"../../util/collection/HashMap":389,"./LookupServiceDelegateBase":175,"lodash.uniq":724}],174:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceBase = require('./LookupServiceBase');
 var HashMap = require('../../util/collection/HashMap');
@@ -12084,7 +12107,7 @@ var LookupServiceConst = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceConst;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceBase":171}],175:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceBase":171}],175:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupService = require('./LookupService');
 
@@ -12162,7 +12185,7 @@ var LookupServiceFallback = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceFallback;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceBase":171}],177:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceBase":171}],177:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceBase = require('./LookupServiceBase');
 
@@ -12199,7 +12222,7 @@ var LookupServiceFn = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceFn;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceBase":171}],178:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceBase":171}],178:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceBase = require('./LookupServiceBase');
 var ServiceUtils = require('../ServiceUtils');
@@ -12241,7 +12264,7 @@ var LookupServiceGraphSparql = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceGraphSparql;
 
-},{"../../ext/Class":2,"../../rdf/GraphImpl":96,"../../rdf/GraphUtils":97,"../../util/collection/HashMap":388,"../ServiceUtils":140,"./LookupServiceBase":171}],179:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/GraphImpl":96,"../../rdf/GraphUtils":97,"../../util/collection/HashMap":389,"../ServiceUtils":140,"./LookupServiceBase":171}],179:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceDelegateBase = require('./LookupServiceDelegateBase');
 
@@ -12336,7 +12359,7 @@ var LookupServiceKeyMap = Class.create(LookupService, {
 
 module.exports = LookupServiceKeyMap;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupService":170}],181:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupService":170}],181:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var shared = require('../../util/shared');
@@ -12382,7 +12405,7 @@ var LookupServiceListServiceSparql = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceListServiceSparql;
 
-},{"../../ext/Class":2,"../../sparql/Concept":228,"../../sparql/VarUtils":256,"../../sparql/element/ElementFilter":261,"../../sparql/expr/E_OneOf":291,"../../sparql/expr/ExprVar":303,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceBase":171}],182:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/Concept":228,"../../sparql/VarUtils":256,"../../sparql/element/ElementFilter":261,"../../sparql/expr/E_OneOf":291,"../../sparql/expr/ExprVar":303,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceBase":171}],182:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceBase = require('./LookupServiceBase');
 
@@ -12416,7 +12439,7 @@ var LookupServiceMap = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceMap;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceBase":171}],183:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceBase":171}],183:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupService = require('./LookupService');
 
@@ -12487,7 +12510,7 @@ var LookupServiceMulti = Class.create(LookupService, {
 
 module.exports = LookupServiceMulti;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupService":170}],184:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupService":170}],184:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var shared = require('../../util/shared');
@@ -12553,7 +12576,7 @@ var LookupServiceSparqlQuery = Class.create(LookupServiceBase, {
 
 module.exports = LookupServiceSparqlQuery;
 
-},{"../../ext/Class":2,"../../sparql/element/ElementFilter":261,"../../sparql/element/ElementGroup":262,"../../sparql/expr/E_OneOf":291,"../../sparql/expr/ExprVar":303,"../../util/collection/HashMap":388,"../../util/shared":397,"../ResultSetUtils":139,"./LookupServiceBase":171}],185:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/element/ElementFilter":261,"../../sparql/element/ElementGroup":262,"../../sparql/expr/E_OneOf":291,"../../sparql/expr/ExprVar":303,"../../util/collection/HashMap":389,"../../util/shared":398,"../ResultSetUtils":139,"./LookupServiceBase":171}],185:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceDelegateBase = require('./LookupServiceDelegateBase');
 var HashMap = require('../../util/collection/HashMap');
@@ -12664,7 +12687,7 @@ var LookupServiceTimeout = Class.create(LookupServiceDelegateBase, {
 
 module.exports = LookupServiceTimeout;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"../../util/shared":397,"./LookupServiceDelegateBase":175}],186:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"../../util/shared":398,"./LookupServiceDelegateBase":175}],186:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var LookupServiceDelegateBase = require('./LookupServiceDelegateBase');
 
@@ -12752,7 +12775,7 @@ var LookupServiceTransformKey = Class.create(LookupServiceDelegateBase, {
 
 module.exports = LookupServiceTransformKey;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"./LookupServiceDelegateBase":175}],188:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"./LookupServiceDelegateBase":175}],188:[function(require,module,exports){
 /* jshint evil: true */
 var Class = require('../../ext/Class');
 var ExprEvaluatorImpl = require('../../sparql/ExprEvaluatorImpl');
@@ -12910,7 +12933,7 @@ var QueryCacheBindingHashSingle = Class.create({
 
 module.exports = QueryCacheBindingHashSingle;
 
-},{"../../ext/Class":2,"../../sparql/ExprEvaluatorImpl":235,"../../sparql/element/ElementFilter":261,"../../sparql/expr/E_OneOf":291,"../../util/PromiseUtils":377,"../../util/collection/IteratorArray":392,"../../util/shared":397,"../result_set/ResultSetArrayIteratorBinding":200}],189:[function(require,module,exports){
+},{"../../ext/Class":2,"../../sparql/ExprEvaluatorImpl":235,"../../sparql/element/ElementFilter":261,"../../sparql/expr/E_OneOf":291,"../../util/PromiseUtils":378,"../../util/collection/IteratorArray":393,"../../util/shared":398,"../result_set/ResultSetArrayIteratorBinding":200}],189:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var QueryCacheNodeFactory = Class.create({
@@ -13052,7 +13075,7 @@ var QueryExecutionCache = Class.create(QueryExecution, {
 
 module.exports = QueryExecutionCache;
 
-},{"../../ext/Class":2,"../../util/CacheUtils":368,"../../util/collection/IteratorArray":392,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],193:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/CacheUtils":369,"../../util/collection/IteratorArray":393,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],193:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var QueryExecution = require('./QueryExecution');
 
@@ -13147,7 +13170,7 @@ var QueryExecutionFailover = Class.create(QueryExecution, {
 
 module.exports = QueryExecutionFailover;
 
-},{"../../ext/Class":2,"../../util/collection/IteratorArray":392,"../../util/shared":397,"../QueryPaginator":136,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],195:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/IteratorArray":393,"../../util/shared":398,"../QueryPaginator":136,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],195:[function(require,module,exports){
 /* jshint maxparams: 6 */
 var Class = require('../../ext/Class');
 var QueryExecution = require('./QueryExecution');
@@ -13224,7 +13247,7 @@ var QueryExecutionHttp = Class.create(QueryExecution, {
 
 module.exports = QueryExecutionHttp;
 
-},{"../../ext/Class":2,"../../util/shared":397,"../AjaxUtils":129,"../ResultSetUtils":139,"./QueryExecution":191}],196:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"../AjaxUtils":129,"../ResultSetUtils":139,"./QueryExecution":191}],196:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var QueryExecutionDelegate = require('./QueryExecutionDelegate');
 var PageExpandUtils = require('../PageExpandUtils');
@@ -13269,7 +13292,7 @@ var QueryExecutionPageExpand = Class.create(QueryExecutionDelegate, {
 
 module.exports = QueryExecutionPageExpand;
 
-},{"../../ext/Class":2,"../../util/collection/IteratorArray":392,"../PageExpandUtils":135,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecutionDelegate":193}],197:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/IteratorArray":393,"../PageExpandUtils":135,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecutionDelegate":193}],197:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var QueryExecution = require('./QueryExecution');
 var QueryPaginator = require('../QueryPaginator');
@@ -13369,7 +13392,7 @@ var QueryExecutionPaginate = Class.create(QueryExecution, {
 
 module.exports = QueryExecutionPaginate;
 
-},{"../../ext/Class":2,"../../util/collection/IteratorArray":392,"../../util/shared":397,"../QueryPaginator":136,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],198:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/IteratorArray":393,"../../util/shared":398,"../QueryPaginator":136,"../result_set/ResultSetArrayIteratorBinding":200,"./QueryExecution":191}],198:[function(require,module,exports){
 /* jshint maxparams: 7 */
 var Class = require('../../ext/Class');
 //var UpdateExecution = require('./UpdateExecution');
@@ -13423,7 +13446,7 @@ var UpdateExecutionHttp = Class.create({
 
 module.exports = UpdateExecutionHttp;
 
-},{"../../ext/Class":2,"../../util/shared":397,"../AjaxUtils":129}],199:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"../AjaxUtils":129}],199:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Iterator = require('../../util/collection/Iterator');
 
@@ -13439,7 +13462,7 @@ var ResultSet = Class.create(Iterator, {
 
 module.exports = ResultSet;
 
-},{"../../ext/Class":2,"../../util/collection/Iterator":390}],200:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/Iterator":391}],200:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ResultSet = require('./ResultSet');
 
@@ -13526,7 +13549,7 @@ var ResultSetHashJoin = Class.create(IteratorAbstract, {
 
 module.exports = ResultSetHashJoin;
 
-},{"../../ext/Class":2,"../../util/collection/IteratorAbstract":391}],202:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/IteratorAbstract":392}],202:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var SparqlService = Class.create({
@@ -13876,7 +13899,7 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
 
 module.exports = SparqlServiceHttp;
 
-},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../../sparql/DatasetDescription":230,"../query_execution/QueryExecutionHttp":195,"./SparqlServiceBaseString":203,"lodash":748,"lodash.defaults":405}],211:[function(require,module,exports){
+},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../../sparql/DatasetDescription":230,"../query_execution/QueryExecutionHttp":195,"./SparqlServiceBaseString":203,"lodash":785,"lodash.defaults":442}],211:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var SparqlService = require('./SparqlService');
@@ -14245,7 +14268,7 @@ var SparqlUpdateHttp = Class.create(SparqlUpdateBaseString, {
 
 module.exports = SparqlUpdateHttp;
 
-},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../query_execution/UpdateExecutionHttp":198,"./SparqlUpdateBaseString":216,"lodash.defaults":405}],218:[function(require,module,exports){
+},{"../../ext/Class":2,"../../ext/JSONCanonical":3,"../query_execution/UpdateExecutionHttp":198,"./SparqlUpdateBaseString":216,"lodash.defaults":442}],218:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var TableService = Class.create({
@@ -14434,7 +14457,7 @@ var TableServiceQuery = Class.create(TableService, {
 
 module.exports = TableServiceQuery;
 
-},{"../../ext/Class":2,"../../util/shared":397,"../TableServiceUtils":142,"./TableService":218}],224:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/shared":398,"../TableServiceUtils":142,"./TableService":218}],224:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var VarUtils = require('./VarUtils');
@@ -14682,7 +14705,7 @@ var BindingUtils = {
 
 module.exports = BindingUtils;
 
-},{"../rdf/NodeFactory":99,"../vocab/xsd":404,"./Binding":225}],227:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../vocab/xsd":405,"./Binding":225}],227:[function(require,module,exports){
 var rdf = require('../vocab/rdf');
 var owl = require('../vocab/owl');
 
@@ -14778,7 +14801,7 @@ var CannedConceptUtils = {
 
 module.exports = CannedConceptUtils;
 
-},{"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/NodeValueUtils":243,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementTriplesBlock":267,"../sparql/expr/E_Equals":279,"../sparql/expr/E_LogicalOr":289,"../sparql/expr/ExprVar":303,"../vocab/owl":400,"../vocab/rdf":401}],228:[function(require,module,exports){
+},{"../rdf/Triple":102,"../sparql/Concept":228,"../sparql/NodeValueUtils":243,"../sparql/VarUtils":256,"../sparql/element/ElementFilter":261,"../sparql/element/ElementGroup":262,"../sparql/element/ElementTriplesBlock":267,"../sparql/expr/E_Equals":279,"../sparql/expr/E_LogicalOr":289,"../sparql/expr/ExprVar":303,"../vocab/owl":401,"../vocab/rdf":402}],228:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ElementUtils = require('./ElementUtils');
@@ -15533,7 +15556,7 @@ Select ?p (Count(*) As ?c) {
 module.exports = ConceptUtils;
 
 
-},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../rdf/node/Node":112,"../util/collection/HashMap":388,"./../vocab/rdf":401,"./Concept":228,"./ElementUtils":233,"./NodeValueUtils":243,"./Query":247,"./QueryUtils":249,"./VarUtils":256,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementOptional":264,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./expr/E_Equals":279,"./expr/ExprAggregator":295,"./expr/ExprVar":303}],230:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../rdf/Triple":102,"../rdf/node/Node":112,"../util/collection/HashMap":389,"./../vocab/rdf":402,"./Concept":228,"./ElementUtils":233,"./NodeValueUtils":243,"./Query":247,"./QueryUtils":249,"./VarUtils":256,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementOptional":264,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./expr/E_Equals":279,"./expr/ExprAggregator":295,"./expr/ExprVar":303}],230:[function(require,module,exports){
 var Class = require('../ext/Class');
 var ObjectUtils = require('../util/ObjectUtils');
 
@@ -15588,7 +15611,7 @@ var DatasetDescription = Class.create({
 
 module.exports = DatasetDescription;
 
-},{"../ext/Class":2,"../util/ObjectUtils":375,"lodash.uniq":687}],231:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":376,"lodash.uniq":724}],231:[function(require,module,exports){
 //
 //var DiffUtils = {
 //    getState: function(isExpected, isActual) {
@@ -16044,7 +16067,7 @@ var ElementUtils = {
 
 module.exports = ElementUtils;
 
-},{"../rdf/NodeFactory":99,"../util/collection/HashBidiMap":387,"./../rdf/TripleUtils":103,"./GenSym":238,"./GeneratorBlacklist":240,"./Query":247,"./VarUtils":256,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./expr/ExprAggregator":295,"lodash.uniq":687}],234:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../util/collection/HashBidiMap":388,"./../rdf/TripleUtils":103,"./GenSym":238,"./GeneratorBlacklist":240,"./Query":247,"./VarUtils":256,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./expr/ExprAggregator":295,"lodash.uniq":724}],234:[function(require,module,exports){
 /* jshint evil: true */
 var Class = require('../ext/Class');
 
@@ -16457,7 +16480,7 @@ var LiteralPreference = Class.create({
 module.exports = LiteralPreference;
 
 
-},{"../ext/Class":2,"../vocab/rdfs":402}],243:[function(require,module,exports){
+},{"../ext/Class":2,"../vocab/rdfs":403}],243:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var NodeValue = require('./expr/NodeValue');
 var NodeValueNode = require('./expr/NodeValueNode');
@@ -16500,7 +16523,7 @@ var NodeValueUtils = {
 
 module.exports = NodeValueUtils;
 
-},{"../rdf/AnonIdStr":95,"../rdf/NodeFactory":99,"../vocab/xsd":404,"./expr/NodeValue":304,"./expr/NodeValueNode":305}],244:[function(require,module,exports){
+},{"../rdf/AnonIdStr":95,"../rdf/NodeFactory":99,"../vocab/xsd":405,"./expr/NodeValue":304,"./expr/NodeValueNode":305}],244:[function(require,module,exports){
 var union = require('lodash.union');
 
 var isFunction = function(obj) {
@@ -16528,7 +16551,7 @@ var PatternUtils = {
 
 module.exports = PatternUtils;
 
-},{"lodash.union":664}],245:[function(require,module,exports){
+},{"lodash.union":701}],245:[function(require,module,exports){
 var Class = require('../ext/Class');
 var NodeUtils = require('../rdf/NodeUtils');
 var NodeFactory = require('../rdf/NodeFactory');
@@ -16682,7 +16705,7 @@ var QuadUtils = {
 
 module.exports = QuadUtils;
 
-},{"../rdf/Triple":102,"../util/collection/HashMap":388,"./ElementUtils":233,"./Quad":245,"./element/ElementGroup":262,"./element/ElementNamedGraph":263,"./element/ElementTriplesBlock":267}],247:[function(require,module,exports){
+},{"../rdf/Triple":102,"../util/collection/HashMap":389,"./ElementUtils":233,"./Quad":245,"./element/ElementGroup":262,"./element/ElementNamedGraph":263,"./element/ElementTriplesBlock":267}],247:[function(require,module,exports){
 var Class = require('../ext/Class');
 var union = require('lodash.union');
 var ObjectUtils = require('../util/ObjectUtils');
@@ -16988,7 +17011,7 @@ var Query = Class.create({
 
 module.exports = Query;
 
-},{"../ext/Class":2,"../util/ArrayUtils":367,"../util/ObjectUtils":375,"./ElementHelpers":232,"./ElementUtils":233,"./QueryType":248,"./VarExprList":254,"./expr/ExprAggregator":295,"lodash.union":664}],248:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ArrayUtils":368,"../util/ObjectUtils":376,"./ElementHelpers":232,"./ElementUtils":233,"./QueryType":248,"./VarExprList":254,"./expr/ExprAggregator":295,"lodash.union":701}],248:[function(require,module,exports){
 var QueryType = {};
 QueryType.Unknown = -1;
 QueryType.Select = 0;
@@ -17528,7 +17551,7 @@ var VarExprList = Class.create({
 
 module.exports = VarExprList;
 
-},{"../ext/Class":2,"../util/collection/HashMap":388,"../util/collection/HashSet":389}],255:[function(require,module,exports){
+},{"../ext/Class":2,"../util/collection/HashMap":389,"../util/collection/HashSet":390}],255:[function(require,module,exports){
 var Class = require('../ext/Class'); 
 
 var NodeFactory = require('../rdf/NodeFactory');
@@ -17682,7 +17705,7 @@ var VarUtils = {
 
 module.exports = VarUtils;
 
-},{"../rdf/NodeFactory":99,"../util/StringUtils":382,"./GenSym":238,"./GeneratorBlacklist":240,"./VarGen":255}],257:[function(require,module,exports){
+},{"../rdf/NodeFactory":99,"../util/StringUtils":383,"./GenSym":238,"./GeneratorBlacklist":240,"./VarGen":255}],257:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -17800,7 +17823,7 @@ var ElementBind = Class.create(Element, {
 
 module.exports = ElementBind;
 
-},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"./Element":259,"lodash.union":664}],261:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"./Element":259,"lodash.union":701}],261:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ExprUtils = require('../ExprUtils');
 var Element = require('./Element');
@@ -17958,7 +17981,7 @@ var ElementGroup = Class.create(Element, {
 
 module.exports = ElementGroup;
 
-},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"../PatternUtils":244,"./../ElementHelpers":232,"./Element":259,"./ElementFilter":261,"./ElementTriplesBlock":267,"lodash.uniq":687}],263:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"../PatternUtils":244,"./../ElementHelpers":232,"./Element":259,"./ElementFilter":261,"./ElementTriplesBlock":267,"lodash.uniq":724}],263:[function(require,module,exports){
 var union = require('lodash.union');
 
 var NodeUtils = require('../../rdf/NodeUtils');
@@ -18016,7 +18039,7 @@ var ElementNamedGraph = Class.create(Element, {
 
 module.exports = ElementNamedGraph;
 
-},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"./Element":259,"lodash.union":664}],264:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeUtils":100,"./Element":259,"lodash.union":701}],264:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Element = require('./Element');
 
@@ -18246,7 +18269,7 @@ var ElementTriplesBlock = Class.create(Element, {
 
 module.exports = ElementTriplesBlock;
 
-},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"./Element":259,"lodash.union":664}],268:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"./Element":259,"lodash.union":701}],268:[function(require,module,exports){
 var uniq = require('lodash.uniq');
 
 var Class = require('../../ext/Class');
@@ -18317,7 +18340,7 @@ var ElementUnion = Class.create(Element, {
 
 module.exports = ElementUnion;
 
-},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"../PatternUtils":244,"./../ElementHelpers":232,"./Element":259,"./ElementFilter":261,"./ElementTriplesBlock":267,"lodash.uniq":687}],269:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/TripleUtils":103,"../PatternUtils":244,"./../ElementHelpers":232,"./Element":259,"./ElementFilter":261,"./ElementTriplesBlock":267,"lodash.uniq":724}],269:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var ElementFactory = Class.create({
@@ -19581,7 +19604,7 @@ var NodeValue = Class.create(Expr, {
 
 module.exports = NodeValue;
 
-},{"../../ext/Class":2,"../../rdf/NodeFactory":99,"../../vocab/xsd":404,"./Expr":294}],305:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/NodeFactory":99,"../../vocab/xsd":405,"./Expr":294}],305:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var xsd = require('../../vocab/xsd');
 var NodeValue = require('./NodeValue');
@@ -19617,7 +19640,7 @@ var NodeValueNode = Class.create(NodeValue, {
 
 module.exports = NodeValueNode;
 
-},{"../../ext/Class":2,"../../vocab/xsd":404,"./NodeValue":304}],306:[function(require,module,exports){
+},{"../../ext/Class":2,"../../vocab/xsd":405,"./NodeValue":304}],306:[function(require,module,exports){
 'use strict';
 
 var ns = {
@@ -19928,7 +19951,7 @@ var JoinBuilder = Class.create({
 
 module.exports = JoinBuilder;
 
-},{"../../ext/Class":2,"../../util/collection/HashBidiMap":387,"../ElementUtils":233,"../GenSym":238,"../GeneratorBlacklist":240,"../VarUtils":256,"../element/ElementGroup":262,"../element/ElementOptional":264,"./JoinInfo":309,"./JoinNode":310,"./JoinTargetState":312,"./JoinType":313}],308:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashBidiMap":388,"../ElementUtils":233,"../GenSym":238,"../GeneratorBlacklist":240,"../VarUtils":256,"../element/ElementGroup":262,"../element/ElementOptional":264,"./JoinInfo":309,"./JoinNode":310,"./JoinTargetState":312,"./JoinType":313}],308:[function(require,module,exports){
 var JoinBuilderUtils = {
     getChildren: function(node) {
         // FIXME: getJoinNodes not defined
@@ -20574,7 +20597,7 @@ AttrPath.parse = function(str) {
 
 module.exports = AttrPath;
 
-},{"../ext/Class":2,"../util/ObjectUtils":375}],323:[function(require,module,exports){
+},{"../ext/Class":2,"../util/ObjectUtils":376}],323:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var MappedConceptSource = require('./MappedConceptSource');
@@ -20737,7 +20760,7 @@ var Context = Class.create({
 
 module.exports = Context;
 
-},{"../ext/Class":2,"../sparql/expr/ExprVar":303,"../util/ObjectUtils":375,"./AggUtils":321,"./MappedConcept":327,"./MappedConceptSource":328,"./RefSpec":332,"./agg/AggMap":353,"./binding_mapper/BindingMapperExpr":360,"lodash.foreach":540}],324:[function(require,module,exports){
+},{"../ext/Class":2,"../sparql/expr/ExprVar":303,"../util/ObjectUtils":376,"./AggUtils":321,"./MappedConcept":327,"./MappedConceptSource":328,"./RefSpec":332,"./agg/AggMap":353,"./binding_mapper/BindingMapperExpr":360,"lodash.foreach":577}],324:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ListServiceUtils = require('./ListServiceUtils');
@@ -21127,7 +21150,7 @@ var Engine = {
 
 module.exports = Engine;
 
-},{"../ext/Class":2,"../service/list_service/ListServiceTransformItems":169,"../util/ObjectUtils":375,"../util/PromiseUtils":377,"../util/Slot":381,"../util/collection/HashMap":388,"../util/collection/HashSet":389,"../util/shared":397,"./AccUtils":320,"./ListServiceUtils":325,"./LookupServiceUtils":326,"lodash.foreach":540}],325:[function(require,module,exports){
+},{"../ext/Class":2,"../service/list_service/ListServiceTransformItems":169,"../util/ObjectUtils":376,"../util/PromiseUtils":378,"../util/Slot":382,"../util/collection/HashMap":389,"../util/collection/HashSet":390,"../util/shared":398,"./AccUtils":320,"./ListServiceUtils":325,"./LookupServiceUtils":326,"lodash.foreach":577}],325:[function(require,module,exports){
 var Concept = require('../sparql/Concept');
 var ConceptUtils = require('../sparql/ConceptUtils');
 var ServiceUtils = require('./ServiceUtils');
@@ -21407,7 +21430,7 @@ var LookupServiceUtils = {
 
 module.exports = LookupServiceUtils;
 
-},{"../rdf/NodeUtils":100,"../service/lookup_service/LookupServiceChunker":173,"../service/lookup_service/LookupServiceFallback":176,"../service/lookup_service/LookupServiceFn":177,"../service/lookup_service/LookupServiceIdFilter":179,"../service/lookup_service/LookupServiceSparqlQuery":184,"../service/lookup_service/LookupServiceTransform":186,"../sparql/BestLabelConfig":224,"../sparql/ConceptUtils":229,"../sparql/LiteralPreference":242,"../util/ObjectUtils":375,"../util/UriUtils":384,"../util/collection/HashMap":388,"./AccUtils":320,"./MappedConceptUtils":329}],327:[function(require,module,exports){
+},{"../rdf/NodeUtils":100,"../service/lookup_service/LookupServiceChunker":173,"../service/lookup_service/LookupServiceFallback":176,"../service/lookup_service/LookupServiceFn":177,"../service/lookup_service/LookupServiceIdFilter":179,"../service/lookup_service/LookupServiceSparqlQuery":184,"../service/lookup_service/LookupServiceTransform":186,"../sparql/BestLabelConfig":224,"../sparql/ConceptUtils":229,"../sparql/LiteralPreference":242,"../util/ObjectUtils":376,"../util/UriUtils":385,"../util/collection/HashMap":389,"./AccUtils":320,"./MappedConceptUtils":329}],327:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 /**
@@ -21852,7 +21875,7 @@ var RexUtils = {
 
 module.exports = RexUtils;
 
-},{"../rdf/NodeUtils":100,"../service/lookup_service/LookupServiceListServiceSparql":181,"../sparql/BestLabelConfig":224,"../util/collection/HashMap":388,"./MappedConceptUtils":329,"./facade/StoreFacade":365}],334:[function(require,module,exports){
+},{"../rdf/NodeUtils":100,"../service/lookup_service/LookupServiceListServiceSparql":181,"../sparql/BestLabelConfig":224,"../util/collection/HashMap":389,"./MappedConceptUtils":329,"./facade/StoreFacade":365}],334:[function(require,module,exports){
 
 var ServiceUtils = {
     processResultSet: function(rs, acc) {
@@ -22009,7 +22032,7 @@ var SponateUtils = {
 
 module.exports = SponateUtils;
 
-},{"../sparql/Concept":228,"../sparql/element/Element":259,"../sparql/element/ElementString":265,"../sparql/expr/ExprVar":303,"../util/ObjectUtils":375,"../util/PrefixUtils":376,"./AggUtils":321,"./ListServiceUtils":325,"./MappedConcept":327,"./TemplateParser":336,"./agg/AggMap":353}],336:[function(require,module,exports){
+},{"../sparql/Concept":228,"../sparql/element/Element":259,"../sparql/element/ElementString":265,"../sparql/expr/ExprVar":303,"../util/ObjectUtils":376,"../util/PrefixUtils":377,"./AggUtils":321,"./ListServiceUtils":325,"./MappedConcept":327,"./TemplateParser":336,"./agg/AggMap":353}],336:[function(require,module,exports){
 var uniq = require('lodash.uniq');
 
 var Class = require('../ext/Class');
@@ -22440,7 +22463,7 @@ var TemplateParser = Class.create({
 
 module.exports = TemplateParser;
 
-},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../rdf/node/Node":112,"../rdf/node/Var":119,"../sparql/NodeValueUtils":243,"../sparql/expr/Expr":294,"../sparql/expr/ExprVar":303,"../sparql/expr/NodeValue":304,"../util/ObjectUtils":375,"./AggUtils":321,"./RefSpec":332,"./agg/AggArray":348,"./agg/AggArrayStatic":349,"./agg/AggLiteral":352,"./agg/AggMap":353,"./agg/AggObjectCustom":355,"./agg/AggRef":356,"./agg/AggTransform":357,"./agg/AggTransformLazy":358,"./binding_mapper/BindingMapperExpr":360,"lodash.uniq":687}],337:[function(require,module,exports){
+},{"../ext/Class":2,"../rdf/NodeFactory":99,"../rdf/NodeUtils":100,"../rdf/node/Node":112,"../rdf/node/Var":119,"../sparql/NodeValueUtils":243,"../sparql/expr/Expr":294,"../sparql/expr/ExprVar":303,"../sparql/expr/NodeValue":304,"../util/ObjectUtils":376,"./AggUtils":321,"./RefSpec":332,"./agg/AggArray":348,"./agg/AggArrayStatic":349,"./agg/AggLiteral":352,"./agg/AggMap":353,"./agg/AggObjectCustom":355,"./agg/AggRef":356,"./agg/AggTransform":357,"./agg/AggTransformLazy":358,"./binding_mapper/BindingMapperExpr":360,"lodash.uniq":724}],337:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 /**
@@ -22732,7 +22755,7 @@ var AccLiteral = Class.create(Acc, {
 
 module.exports = AccLiteral;
 
-},{"../../ext/Class":2,"../../util/ObjectUtils":375,"./Acc":337}],342:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/ObjectUtils":376,"./Acc":337}],342:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var HashMap = require('../../util/collection/HashMap');
@@ -22795,7 +22818,7 @@ var AccMap = Class.create(Acc, {
 
 module.exports = AccMap;
 
-},{"../../ext/Class":2,"../../util/collection/HashMap":388,"./Acc":337}],343:[function(require,module,exports){
+},{"../../ext/Class":2,"../../util/collection/HashMap":389,"./Acc":337}],343:[function(require,module,exports){
 var forEach = require('lodash.foreach');
 var Class = require('../../ext/Class');
 
@@ -22844,7 +22867,7 @@ var AccObject = Class.create(Acc, {
 
 module.exports = AccObject;
 
-},{"../../ext/Class":2,"./Acc":337,"lodash.foreach":540}],344:[function(require,module,exports){
+},{"../../ext/Class":2,"./Acc":337,"lodash.foreach":577}],344:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Acc = require('./Acc');
@@ -23144,7 +23167,7 @@ var AggBestLabel = Class.create(Agg, {
 module.exports = AggBestLabel;
 
 
-},{"../../ext/Class":2,"../acc/AccBestLabel":340,"./Agg":347,"lodash.union":664}],351:[function(require,module,exports){
+},{"../../ext/Class":2,"../acc/AccBestLabel":340,"./Agg":347,"lodash.union":701}],351:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Agg = require('./Agg');
@@ -23351,7 +23374,7 @@ var AggObject = Class.create(Agg, {
 
 module.exports = AggObject;
 
-},{"../../ext/Class":2,"../acc/AccObject":343,"./Agg":347,"lodash.foreach":540}],355:[function(require,module,exports){
+},{"../../ext/Class":2,"../acc/AccObject":343,"./Agg":347,"lodash.foreach":577}],355:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var AggObject = require('./AggObject');
 
@@ -23870,7 +23893,7 @@ var StoreFacade = Class.create({
 
 module.exports = StoreFacade;
 
-},{"../../ext/Class":2,"../../rdf/PrefixMappingImpl":101,"../../service/list_service/ListServiceFn":162,"../../util/ObjectUtils":375,"../Context":323,"../Engine":324,"../MappedConcept":327,"../MappedConceptSource":328,"../SponateUtils":335,"./CollectionFacade":363,"lodash.foreach":540}],366:[function(require,module,exports){
+},{"../../ext/Class":2,"../../rdf/PrefixMappingImpl":101,"../../service/list_service/ListServiceFn":162,"../../util/ObjectUtils":376,"../Context":323,"../Engine":324,"../MappedConcept":327,"../MappedConceptSource":328,"../SponateUtils":335,"./CollectionFacade":363,"lodash.foreach":577}],366:[function(require,module,exports){
 'use strict';
 
 var ns = {
@@ -23928,6 +23951,64 @@ module.exports = ns;
 
 
 },{"./AccUtils":320,"./AggUtils":321,"./AttrPath":322,"./Context":323,"./Engine":324,"./ListServiceUtils":325,"./LookupServiceUtils":326,"./MappedConcept":327,"./MappedConceptSource":328,"./MappedConceptUtils":329,"./MappingRef":330,"./Query":331,"./RefSpec":332,"./RexUtils":333,"./ServiceUtils":334,"./SponateUtils":335,"./TemplateParser":336,"./acc/Acc":337,"./acc/AccArray":338,"./acc/AccArrayStatic":339,"./acc/AccBestLabel":340,"./acc/AccLiteral":341,"./acc/AccMap":342,"./acc/AccObject":343,"./acc/AccRef":344,"./acc/AccTransform":345,"./acc/AccTransformLazy":346,"./agg/Agg":347,"./agg/AggArray":348,"./agg/AggArrayStatic":349,"./agg/AggBestLabel":350,"./agg/AggCustomAcc":351,"./agg/AggLiteral":352,"./agg/AggMap":353,"./agg/AggObject":354,"./agg/AggObjectCustom":355,"./agg/AggRef":356,"./agg/AggTransform":357,"./agg/AggTransformLazy":358,"./binding_mapper/BindingMapper":359,"./binding_mapper/BindingMapperExpr":360,"./binding_mapper/BindingMapperIndex":361,"./binding_mapper/BindingMapperTransform":362,"./facade/CollectionFacade":363,"./facade/QueryFlow":364,"./facade/StoreFacade":365}],367:[function(require,module,exports){
+var shared = require('./shared');
+var forEach = require('lodash.foreach');
+
+//var ajax = shared.ajax;
+//var Promise = shared.Promise;
+
+var AjaxUtils = {
+    /**
+     * In place transform.
+     * Creates a beforeSend jquery ajax callback, that sets headers
+     * based on a headers attribute of the ajaxSpec
+     *
+     */
+    transformHttpRequestHeadersAngularToJquery: function(ajaxSpec) {
+        if(ajaxSpec && ajaxSpec.headers) {
+            var delegate = ajaxSpec.beforeSend;
+            ajaxSpec.beforeSend = function(xhr) {
+
+                forEach(ajaxSpec.headers, function(v, k) {
+                    xhr.setRequestHeader(k, v);
+                });
+
+                // Call any prior beforeSend method
+                if(delegate) {
+                    delegate(xhr);
+                }
+            };
+        }
+    },
+
+
+    createAjaxWrapperFn: function(ajaxFn) {
+        var result = function() {
+            var Promise = shared.Promise;
+
+            var ajaxSpec = arguments[0];
+            AjaxUtils.transformHttpRequestHeadersAngularToJquery(ajaxSpec);
+
+            var jqXHR = ajaxFn.apply(this, arguments);
+
+            var r = Promise.resolve(jqXHR)
+                .cancellable()
+                .catch(Promise.TimeoutError, Promise.CancellationError, function(e) {
+                    //console.log('CANCELLED REQUEST');
+                    jqXHR.abort();
+                    throw e;
+                });
+            return r;
+        };
+
+        return result;
+    }
+};
+
+module.exports = AjaxUtils;
+
+
+},{"./shared":398,"lodash.foreach":577}],368:[function(require,module,exports){
 var ObjectUtils = require('./ObjectUtils');
 
 var ArrayUtils = {
@@ -24098,7 +24179,7 @@ var ArrayUtils = {
 
 module.exports = ArrayUtils;
 
-},{"./ObjectUtils":375}],368:[function(require,module,exports){
+},{"./ObjectUtils":376}],369:[function(require,module,exports){
 var shared = require('./shared');
 var Promise = shared.Promise;
 
@@ -24251,7 +24332,7 @@ var CacheUtils = {
 module.exports = CacheUtils;
 
 
-},{"./shared":397}],369:[function(require,module,exports){
+},{"./shared":398}],370:[function(require,module,exports){
 
 var ClusterUtils = {
 
@@ -24344,7 +24425,7 @@ var ClusterUtils = {
 
 module.exports = ClusterUtils;
 
-},{}],370:[function(require,module,exports){
+},{}],371:[function(require,module,exports){
 var CollectionUtils = {
     /**
      * Toggle the membership of an item in a collection and
@@ -24372,7 +24453,7 @@ var CollectionUtils = {
 
 module.exports = CollectionUtils;
 
-},{}],371:[function(require,module,exports){
+},{}],372:[function(require,module,exports){
 
 var CurieUtils = {
 // http://www.w3.org/TR/sparql11-query/#rPN_LOCAL
@@ -24389,7 +24470,7 @@ var CurieUtils = {
 
 module.exports = CurieUtils;
 
-},{}],372:[function(require,module,exports){
+},{}],373:[function(require,module,exports){
 
 var ExceptionUtils = {
     /**
@@ -24413,7 +24494,7 @@ var ExceptionUtils = {
 
 module.exports = ExceptionUtils;
 
-},{}],373:[function(require,module,exports){
+},{}],374:[function(require,module,exports){
 var JSONCanonical = require('../ext/JSONCanonical');
 
 var isObject = function(obj) {
@@ -24445,7 +24526,7 @@ var JsonUtils = {
 
 module.exports = JsonUtils;
 
-},{"../ext/JSONCanonical":3}],374:[function(require,module,exports){
+},{"../ext/JSONCanonical":3}],375:[function(require,module,exports){
 var HashMap = require('./collection/HashMap');
 var ObjectUtils = require('./ObjectUtils');
 
@@ -24485,7 +24566,7 @@ var MapUtils = {
 
 module.exports = MapUtils;
 
-},{"./ObjectUtils":375,"./collection/HashMap":388}],375:[function(require,module,exports){
+},{"./ObjectUtils":376,"./collection/HashMap":389}],376:[function(require,module,exports){
 var isEqual = require('lodash.isequal');
 
 var JsonUtils = require('./JsonUtils');
@@ -24652,7 +24733,7 @@ ObjectUtils.defaultHashFnNames = [
 
 module.exports = ObjectUtils;
 
-},{"./JsonUtils":373,"lodash.isequal":570}],376:[function(require,module,exports){
+},{"./JsonUtils":374,"lodash.isequal":607}],377:[function(require,module,exports){
 var StringUtils = require('./StringUtils');
 
 var PrefixUtils = {
@@ -24722,7 +24803,7 @@ var PrefixUtils = {
 
 module.exports = PrefixUtils;
 
-},{"./StringUtils":382}],377:[function(require,module,exports){
+},{"./StringUtils":383}],378:[function(require,module,exports){
 var shared = require('./shared');
 var Promise = shared.Promise;
 
@@ -24947,7 +25028,7 @@ var PromiseUtils = {
 
 module.exports = PromiseUtils;
 
-},{"./ObjectUtils":375,"./shared":397}],378:[function(require,module,exports){
+},{"./ObjectUtils":376,"./shared":398}],379:[function(require,module,exports){
 var Class = require('../ext/Class');
 var HashMap = require('./collection/HashMap');
 var ObjectUtils = require('./ObjectUtils');
@@ -24989,7 +25070,7 @@ var SerializationContext = Class.create({
 
 module.exports = SerializationContext;
 
-},{"../ext/Class":2,"./ObjectUtils":375,"./collection/HashMap":388}],379:[function(require,module,exports){
+},{"../ext/Class":2,"./ObjectUtils":376,"./collection/HashMap":389}],380:[function(require,module,exports){
 /* jshint maxdepth: 5 */
 /* jshint newcap: false */
 
@@ -25414,7 +25495,7 @@ var Serializer = Class.create({
 
 module.exports = new Serializer();
 
-},{"../ext/Class":2,"./ObjectUtils":375,"./SerializationContext":378}],380:[function(require,module,exports){
+},{"../ext/Class":2,"./ObjectUtils":376,"./SerializationContext":379}],381:[function(require,module,exports){
 var HashSet = require('./collection/HashSet');
 
 var SetUtils = {
@@ -25429,7 +25510,7 @@ var SetUtils = {
 
 module.exports = SetUtils;
 
-},{"./collection/HashSet":389}],381:[function(require,module,exports){
+},{"./collection/HashSet":390}],382:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var Slot = Class.create({
@@ -25459,7 +25540,7 @@ var Slot = Class.create({
 
 module.exports = Slot;
 
-},{"../ext/Class":2}],382:[function(require,module,exports){
+},{"../ext/Class":2}],383:[function(require,module,exports){
 var uniq = require('lodash.uniq');
 
 var StringUtils = {
@@ -25538,7 +25619,7 @@ var StringUtils = {
 
 module.exports = StringUtils;
 
-},{"lodash.uniq":687}],383:[function(require,module,exports){
+},{"lodash.uniq":724}],384:[function(require,module,exports){
 var TreeUtils = {
 
     /**
@@ -25584,7 +25665,7 @@ var TreeUtils = {
 
 module.exports = TreeUtils;
 
-},{}],384:[function(require,module,exports){
+},{}],385:[function(require,module,exports){
 
 var UriUtils = {
 
@@ -25616,7 +25697,7 @@ var UriUtils = {
 
 module.exports = UriUtils;
 
-},{}],385:[function(require,module,exports){
+},{}],386:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var ObjectUtils = require('../ObjectUtils');
 var ArrayUtils = require('../ArrayUtils');
@@ -25683,7 +25764,7 @@ var ArrayList = Class.create({
 
 module.exports = ArrayList;
 
-},{"../../ext/Class":2,"../ArrayUtils":367,"../ObjectUtils":375}],386:[function(require,module,exports){
+},{"../../ext/Class":2,"../ArrayUtils":368,"../ObjectUtils":376}],387:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Entry = Class.create({
@@ -25707,7 +25788,7 @@ var Entry = Class.create({
 
 module.exports = Entry;
 
-},{"../../ext/Class":2}],387:[function(require,module,exports){
+},{"../../ext/Class":2}],388:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var HashMap = require('./HashMap');
 
@@ -25754,7 +25835,7 @@ var HashBidiMap = Class.create({
 
 module.exports = HashBidiMap;
 
-},{"../../ext/Class":2,"./HashMap":388}],388:[function(require,module,exports){
+},{"../../ext/Class":2,"./HashMap":389}],389:[function(require,module,exports){
 var forEach = require('lodash.foreach');
 var Class = require('../../ext/Class');
 var ObjectUtils = require('./../ObjectUtils');
@@ -26017,7 +26098,7 @@ var HashMap = Class.create({
 
 module.exports = HashMap;
 
-},{"../../ext/Class":2,"./../ObjectUtils":375,"lodash.foreach":540}],389:[function(require,module,exports){
+},{"../../ext/Class":2,"./../ObjectUtils":376,"lodash.foreach":577}],390:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var HashMap = require('./HashMap');
 
@@ -26134,7 +26215,7 @@ var HashSet = Class.create({
 
 module.exports = HashSet;
 
-},{"../../ext/Class":2,"./HashMap":388}],390:[function(require,module,exports){
+},{"../../ext/Class":2,"./HashMap":389}],391:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var Iterator = Class.create({
@@ -26148,7 +26229,7 @@ var Iterator = Class.create({
 
 module.exports = Iterator;
 
-},{"../../ext/Class":2}],391:[function(require,module,exports){
+},{"../../ext/Class":2}],392:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Iterator = require('./Iterator');
 
@@ -26199,7 +26280,7 @@ var IteratorAbstract = Class.create(Iterator, {
 
 module.exports = IteratorAbstract;
 
-},{"../../ext/Class":2,"./Iterator":390}],392:[function(require,module,exports){
+},{"../../ext/Class":2,"./Iterator":391}],393:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var Iterator = require('./Iterator');
 
@@ -26240,7 +26321,7 @@ var IteratorArray = Class.create(Iterator, {
 
 module.exports = IteratorArray;
 
-},{"../../ext/Class":2,"./Iterator":390}],393:[function(require,module,exports){
+},{"../../ext/Class":2,"./Iterator":391}],394:[function(require,module,exports){
 var Class = require('../../ext/Class');
 var HashMap = require('./HashMap');
 
@@ -26318,7 +26399,7 @@ var ListMap = Class.create({
 
 module.exports = ListMap;
 
-},{"../../ext/Class":2,"./HashMap":388}],394:[function(require,module,exports){
+},{"../../ext/Class":2,"./HashMap":389}],395:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var HashSet = require('./HashSet');
@@ -26385,7 +26466,7 @@ var MapUnion = Class.create({
 
 module.exports = MapUnion;
 
-},{"../../ext/Class":2,"../ArrayUtils":367,"./HashSet":389}],395:[function(require,module,exports){
+},{"../../ext/Class":2,"../ArrayUtils":368,"./HashSet":390}],396:[function(require,module,exports){
 var Class = require('../../ext/Class');
 
 var MultiMapObjectArray = Class.create({
@@ -26445,7 +26526,7 @@ var MultiMapObjectArray = Class.create({
 
 module.exports = MultiMapObjectArray;
 
-},{"../../ext/Class":2}],396:[function(require,module,exports){
+},{"../../ext/Class":2}],397:[function(require,module,exports){
 'use strict';
 
 var ns = {
@@ -26477,6 +26558,7 @@ var ns = {
     ListMap: require('./collection/ListMap'),
     MapUnion: require('./collection/MapUnion'),
     MultiMapObjectArray: require('./collection/MultiMapObjectArray'),
+    AjaxUtils: require('./AjaxUtils'),
 };
 
 //Object.freeze(ns);
@@ -26484,7 +26566,7 @@ var ns = {
 module.exports = ns;
 
 
-},{"./ArrayUtils":367,"./CacheUtils":368,"./ClusterUtils":369,"./CollectionUtils":370,"./ExceptionUtils":372,"./JsonUtils":373,"./MapUtils":374,"./ObjectUtils":375,"./PrefixUtils":376,"./PromiseUtils":377,"./SerializationContext":378,"./Serializer":379,"./SetUtils":380,"./StringUtils":382,"./TreeUtils":383,"./UriUtils":384,"./collection/ArrayList":385,"./collection/Entry":386,"./collection/HashBidiMap":387,"./collection/HashMap":388,"./collection/HashSet":389,"./collection/Iterator":390,"./collection/IteratorAbstract":391,"./collection/IteratorArray":392,"./collection/ListMap":393,"./collection/MapUnion":394,"./collection/MultiMapObjectArray":395,"./shared":397}],397:[function(require,module,exports){
+},{"./AjaxUtils":367,"./ArrayUtils":368,"./CacheUtils":369,"./ClusterUtils":370,"./CollectionUtils":371,"./ExceptionUtils":373,"./JsonUtils":374,"./MapUtils":375,"./ObjectUtils":376,"./PrefixUtils":377,"./PromiseUtils":378,"./SerializationContext":379,"./Serializer":380,"./SetUtils":381,"./StringUtils":383,"./TreeUtils":384,"./UriUtils":385,"./collection/ArrayList":386,"./collection/Entry":387,"./collection/HashBidiMap":388,"./collection/HashMap":389,"./collection/HashSet":390,"./collection/Iterator":391,"./collection/IteratorAbstract":392,"./collection/IteratorArray":393,"./collection/ListMap":394,"./collection/MapUnion":395,"./collection/MultiMapObjectArray":396,"./shared":398}],398:[function(require,module,exports){
 var shared = {
     Promise: null,
     ajax: function() {
@@ -26494,7 +26576,7 @@ var shared = {
 
 module.exports = shared;
 
-},{}],398:[function(require,module,exports){
+},{}],399:[function(require,module,exports){
 /**
  * Namespace prefixes as defined, recommended and suggested in
  * http://www.w3.org/2011/rdfa-context/rdfa-1.1
@@ -26547,7 +26629,7 @@ var InitialContext = {
 
 module.exports = InitialContext;
 
-},{}],399:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 'use strict';
 
 var ns = {
@@ -26564,7 +26646,7 @@ var ns = {
 module.exports = ns;
 
 
-},{"./InitialContext":398,"./owl":400,"./rdf":401,"./rdfs":402,"./wgs84":403,"./xsd":404}],400:[function(require,module,exports){
+},{"./InitialContext":399,"./owl":401,"./rdf":402,"./rdfs":403,"./wgs84":404,"./xsd":405}],401:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var p = 'http://www.w3.org/2002/07/owl#';
 
@@ -26577,7 +26659,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"../rdf/NodeFactory":99}],401:[function(require,module,exports){
+},{"../rdf/NodeFactory":99}],402:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var p = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
 
@@ -26588,7 +26670,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"../rdf/NodeFactory":99}],402:[function(require,module,exports){
+},{"../rdf/NodeFactory":99}],403:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var p = 'http://www.w3.org/2000/01/rdf-schema#';
 
@@ -26600,7 +26682,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"../rdf/NodeFactory":99}],403:[function(require,module,exports){
+},{"../rdf/NodeFactory":99}],404:[function(require,module,exports){
 var NodeFactory = require('../rdf/NodeFactory');
 var p = 'http://www.w3.org/2003/01/geo/wgs84_pos#';
 
@@ -26612,7 +26694,7 @@ var ns = {
 
 module.exports = ns;
 
-},{"../rdf/NodeFactory":99}],404:[function(require,module,exports){
+},{"../rdf/NodeFactory":99}],405:[function(require,module,exports){
 var p = 'http://www.w3.org/2001/XMLSchema#';
 var Node_Uri = require('../rdf/node/Node_Uri');
 // Note we can't use the NodeFactory here because of cyclic dep
@@ -26633,7 +26715,4564 @@ var ns = {
 
 module.exports = ns;
 
-},{"../rdf/node/Node_Uri":117}],405:[function(require,module,exports){
+},{"../rdf/node/Node_Uri":117}],406:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise) {
+var SomePromiseArray = Promise._SomePromiseArray;
+function any(promises) {
+    var ret = new SomePromiseArray(promises);
+    var promise = ret.promise();
+    if (promise.isRejected()) {
+        return promise;
+    }
+    ret.setHowMany(1);
+    ret.setUnwrap();
+    ret.init();
+    return promise;
+}
+
+Promise.any = function (promises) {
+    return any(promises);
+};
+
+Promise.prototype.any = function () {
+    return any(this);
+};
+
+};
+
+},{}],407:[function(require,module,exports){
+(function (process){
+"use strict";
+var firstLineError = new Error();
+var schedule = require("./schedule.js");
+var Queue = require("./queue.js");
+var _process = typeof process !== "undefined" ? process : undefined;
+
+function Async() {
+    this._isTickUsed = false;
+    this._lateQueue = new Queue(16);
+    this._normalQueue = new Queue(16);
+    var self = this;
+    this.drainQueues = function () {
+        self._drainQueues();
+    };
+    this._schedule =
+        schedule.isStatic ? schedule(this.drainQueues) : schedule;
+}
+
+Async.prototype.haveItemsQueued = function () {
+    return this._normalQueue.length() > 0;
+};
+
+Async.prototype._withDomain = function(fn) {
+    if (_process !== undefined &&
+        _process.domain != null &&
+        !fn.domain) {
+        fn = _process.domain.bind(fn);
+    }
+    return fn;
+};
+
+Async.prototype.throwLater = function(fn, arg) {
+    if (arguments.length === 1) {
+        arg = fn;
+        fn = function () { throw arg; };
+    }
+    fn = this._withDomain(fn);
+    if (typeof setTimeout !== "undefined") {
+        setTimeout(function() {
+            fn(arg);
+        }, 0);
+    } else try {
+        this._schedule(function() {
+            fn(arg);
+        });
+    } catch (e) {
+        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/m3OTXk\u000a");
+    }
+};
+
+Async.prototype.invokeLater = function (fn, receiver, arg) {
+    fn = this._withDomain(fn);
+    this._lateQueue.push(fn, receiver, arg);
+    this._queueTick();
+};
+
+Async.prototype.invokeFirst = function (fn, receiver, arg) {
+    fn = this._withDomain(fn);
+    this._normalQueue.unshift(fn, receiver, arg);
+    this._queueTick();
+};
+
+Async.prototype.invoke = function (fn, receiver, arg) {
+    fn = this._withDomain(fn);
+    this._normalQueue.push(fn, receiver, arg);
+    this._queueTick();
+};
+
+Async.prototype.settlePromises = function(promise) {
+    this._normalQueue._pushOne(promise);
+    this._queueTick();
+};
+
+Async.prototype._drainQueue = function(queue) {
+    while (queue.length() > 0) {
+        var fn = queue.shift();
+        if (typeof fn !== "function") {
+            fn._settlePromises();
+            continue;
+        }
+        var receiver = queue.shift();
+        var arg = queue.shift();
+        fn.call(receiver, arg);
+    }
+};
+
+Async.prototype._drainQueues = function () {
+    this._drainQueue(this._normalQueue);
+    this._reset();
+    this._drainQueue(this._lateQueue);
+};
+
+Async.prototype._queueTick = function () {
+    if (!this._isTickUsed) {
+        this._isTickUsed = true;
+        this._schedule(this.drainQueues);
+    }
+};
+
+Async.prototype._reset = function () {
+    this._isTickUsed = false;
+};
+
+module.exports = new Async();
+module.exports.firstLineError = firstLineError;
+
+}).call(this,require('_process'))
+},{"./queue.js":430,"./schedule.js":433,"_process":441}],408:[function(require,module,exports){
+"use strict";
+var old;
+if (typeof Promise !== "undefined") old = Promise;
+function noConflict(bluebird) {
+    try { if (Promise === bluebird) Promise = old; }
+    catch (e) {}
+    return bluebird;
+}
+module.exports = require("./promise.js")();
+module.exports.noConflict = noConflict;
+
+},{"./promise.js":425}],409:[function(require,module,exports){
+"use strict";
+var cr = Object.create;
+if (cr) {
+    var callerCache = cr(null);
+    var getterCache = cr(null);
+    callerCache[" size"] = getterCache[" size"] = 0;
+}
+
+module.exports = function(Promise) {
+var util = require("./util.js");
+var canEvaluate = util.canEvaluate;
+var isIdentifier = util.isIdentifier;
+
+function makeMethodCaller (methodName) {
+    return new Function("obj", "                                             \n\
+        'use strict'                                                         \n\
+        var len = this.length;                                               \n\
+        switch(len) {                                                        \n\
+            case 1: return obj.methodName(this[0]);                          \n\
+            case 2: return obj.methodName(this[0], this[1]);                 \n\
+            case 3: return obj.methodName(this[0], this[1], this[2]);        \n\
+            case 0: return obj.methodName();                                 \n\
+            default: return obj.methodName.apply(obj, this);                 \n\
+        }                                                                    \n\
+        ".replace(/methodName/g, methodName));
+}
+
+function makeGetter (propertyName) {
+    return new Function("obj", "                                             \n\
+        'use strict';                                                        \n\
+        return obj.propertyName;                                             \n\
+        ".replace("propertyName", propertyName));
+}
+
+function getCompiled(name, compiler, cache) {
+    var ret = cache[name];
+    if (typeof ret !== "function") {
+        if (!isIdentifier(name)) {
+            return null;
+        }
+        ret = compiler(name);
+        cache[name] = ret;
+        cache[" size"]++;
+        if (cache[" size"] > 512) {
+            var keys = Object.keys(cache);
+            for (var i = 0; i < 256; ++i) delete cache[keys[i]];
+            cache[" size"] = keys.length - 256;
+        }
+    }
+    return ret;
+}
+
+function getMethodCaller(name) {
+    return getCompiled(name, makeMethodCaller, callerCache);
+}
+
+function getGetter(name) {
+    return getCompiled(name, makeGetter, getterCache);
+}
+
+function caller(obj) {
+    return obj[this.pop()].apply(obj, this);
+}
+Promise.prototype.call = function (methodName) {
+    var $_len = arguments.length;var args = new Array($_len - 1); for(var $_i = 1; $_i < $_len; ++$_i) {args[$_i - 1] = arguments[$_i];}
+    if (canEvaluate) {
+        var maybeCaller = getMethodCaller(methodName);
+        if (maybeCaller !== null) {
+            return this._then(
+                maybeCaller, undefined, undefined, args, undefined);
+        }
+    }
+    args.push(methodName);
+    return this._then(caller, undefined, undefined, args, undefined);
+};
+
+function namedGetter(obj) {
+    return obj[this];
+}
+function indexedGetter(obj) {
+    var index = +this;
+    if (index < 0) index = Math.max(0, index + obj.length);
+    return obj[index];
+}
+Promise.prototype.get = function (propertyName) {
+    var isIndex = (typeof propertyName === "number");
+    var getter;
+    if (!isIndex) {
+        if (canEvaluate) {
+            var maybeGetter = getGetter(propertyName);
+            getter = maybeGetter !== null ? maybeGetter : namedGetter;
+        } else {
+            getter = namedGetter;
+        }
+    } else {
+        getter = indexedGetter;
+    }
+    return this._then(getter, undefined, undefined, propertyName, undefined);
+};
+};
+
+},{"./util.js":440}],410:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var errors = require("./errors.js");
+var canAttachTrace = errors.canAttachTrace;
+var async = require("./async.js");
+var util = require("./util.js");
+var CancellationError = errors.CancellationError;
+
+Promise.prototype._cancel = function (reason) {
+    if (!this.isCancellable()) return this;
+    var parent;
+    var promiseToReject = this;
+    while ((parent = promiseToReject._cancellationParent) !== undefined &&
+        parent.isCancellable()) {
+        promiseToReject = parent;
+    }
+    this._unsetCancellable();
+    var trace = canAttachTrace(reason) ? reason
+                                       : new Error(util.toString(reason));
+    promiseToReject._attachExtraTrace(trace);
+    promiseToReject._target()._rejectUnchecked(reason, trace);
+};
+
+Promise.prototype.cancel = function (reason) {
+    if (!this.isCancellable()) return this;
+    if (reason === undefined) reason = new CancellationError();
+    async.invokeLater(this._cancel, this, reason);
+    return this;
+};
+
+Promise.prototype.cancellable = function () {
+    if (this._cancellable()) return this;
+    this._setCancellable();
+    this._cancellationParent = undefined;
+    return this;
+};
+
+Promise.prototype.uncancellable = function () {
+    var ret = new Promise(INTERNAL);
+    ret._propagateFrom(this, 2 | 4);
+    ret._follow(this);
+    ret._unsetCancellable();
+    return ret;
+};
+
+Promise.prototype.fork = function (didFulfill, didReject, didProgress) {
+    var ret = this._then(didFulfill, didReject, didProgress,
+                         undefined, undefined);
+
+    ret._setCancellable();
+    ret._cancellationParent = undefined;
+    return ret;
+};
+};
+
+},{"./async.js":407,"./errors.js":415,"./util.js":440}],411:[function(require,module,exports){
+"use strict";
+module.exports = function() {
+var inherits = require("./util.js").inherits;
+var defineProperty = require("./es5.js").defineProperty;
+var rtraceline = null;
+var formatStack = null;
+
+function CapturedTrace(parent) {
+    this._parent = parent;
+    captureStackTrace(this, CapturedTrace);
+
+}
+inherits(CapturedTrace, Error);
+
+CapturedTrace.prototype.parent = function() {
+    return this._parent;
+};
+
+CapturedTrace.prototype.setParent = function(parent) {
+    if (parent === this) return;
+    this._parent = parent;
+};
+
+CapturedTrace.prototype.hasParent = function() {
+    return this._parent !== undefined;
+};
+
+CapturedTrace.prototype.attachExtraTrace = function(error) {
+    var trace = this;
+    var stack = error.stack;
+    stack = typeof stack === "string" ? stack.split("\n") : [];
+    this.protectErrorMessageNewlines(stack);
+    var headerLineCount = 1;
+    var combinedTraces = 1;
+
+    do {
+        stack = trace.combine(stack);
+        combinedTraces++;
+    } while ((trace = trace.parent()) != null);
+
+    var stackTraceLimit = Error.stackTraceLimit || 10;
+    var max = (stackTraceLimit + headerLineCount) * combinedTraces;
+    var len = stack.length;
+    if (len > max) {
+        stack.length = max;
+    }
+
+    if (len > 0)
+        stack[0] = stack[0].split("\u0002\u0000\u0001").join("\n");
+
+    if (stack.length <= headerLineCount) {
+        error.stack = "(No stack trace)";
+    } else {
+        error.stack = stack.join("\n");
+    }
+};
+
+CapturedTrace.prototype.combine = function(current) {
+    var prev = this.stack.split("\n");
+    var currentLastIndex = current.length - 1;
+    var currentLastLine = current[currentLastIndex];
+    var commonRootMeetPoint = -1;
+    for (var i = prev.length - 1; i >= 0; --i) {
+        if (prev[i] === currentLastLine) {
+            commonRootMeetPoint = i;
+            break;
+        }
+    }
+
+    for (var i = commonRootMeetPoint; i >= 0; --i) {
+        var line = prev[i];
+        if (current[currentLastIndex] === line) {
+            current.pop();
+            currentLastIndex--;
+        } else {
+            break;
+        }
+    }
+
+    current.push("From previous event:");
+    var lines = current.concat(prev);
+
+    var ret = [];
+
+    for (var i = 0, len = lines.length; i < len; ++i) {
+        if (((rtraceline.test(lines[i]) && shouldIgnore(lines[i])) ||
+            (i > 0 && !rtraceline.test(lines[i])) &&
+            lines[i] !== "From previous event:")
+       ) {
+            continue;
+        }
+        ret.push(lines[i]);
+    }
+    return ret;
+};
+
+CapturedTrace.prototype.protectErrorMessageNewlines = function(stack) {
+    for (var i = 0; i < stack.length; ++i) {
+        if (rtraceline.test(stack[i])) {
+            break;
+        }
+    }
+
+    if (i <= 1) return;
+
+    var errorMessageLines = [];
+    for (var j = 0; j < i; ++j) {
+        errorMessageLines.push(stack.shift());
+    }
+    stack.unshift(errorMessageLines.join("\u0002\u0000\u0001"));
+};
+
+CapturedTrace.formatAndLogError = function(error, title) {
+    if (typeof console === "object") {
+        var message;
+        if (typeof error === "object" || typeof error === "function") {
+            var stack = error.stack;
+            message = title + formatStack(stack, error);
+        } else {
+            message = title + String(error);
+        }
+        if (typeof console.warn === "function" ||
+            typeof console.warn === "object") {
+            console.warn(message);
+        } else if (typeof console.log === "function" ||
+            typeof console.log === "object") {
+            console.log(message);
+        }
+    }
+};
+
+CapturedTrace.unhandledRejection = function (reason) {
+    CapturedTrace.formatAndLogError(
+        reason, "^--- With additional stack trace: ");
+};
+
+CapturedTrace.possiblyUnhandledRejection = function (reason) {
+    CapturedTrace.formatAndLogError(
+        reason, "Possibly unhandled ");
+};
+
+CapturedTrace.isSupported = function () {
+    return typeof captureStackTrace === "function";
+};
+
+function formatNonError(obj) {
+    var str;
+    if (typeof obj === "function") {
+        str = "[function " +
+            (obj.name || "anonymous") +
+            "]";
+    } else {
+        str = obj.toString();
+        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
+        if (ruselessToString.test(str)) {
+            try {
+                var newStr = JSON.stringify(obj);
+                str = newStr;
+            }
+            catch(e) {
+
+            }
+        }
+        if (str.length === 0) {
+            str = "(empty array)";
+        }
+    }
+    return ("(<" + snip(str) + ">, no stack trace)");
+}
+
+function snip(str) {
+    var maxChars = 41;
+    if (str.length < maxChars) {
+        return str;
+    }
+    return str.substr(0, maxChars - 3) + "...";
+}
+
+var shouldIgnore = function() { return false; };
+var parseLineInfoRegex = /[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
+function parseLineInfo(line) {
+    var matches = line.match(parseLineInfoRegex);
+    if (matches) {
+        return {
+            fileName: matches[1],
+            line: parseInt(matches[2], 10)
+        };
+    }
+}
+CapturedTrace.setBounds = function(firstLineError, lastLineError) {
+    if (!CapturedTrace.isSupported()) return;
+    var firstStackLines = firstLineError.stack.split("\n");
+    var lastStackLines = lastLineError.stack.split("\n");
+    var firstIndex = -1;
+    var lastIndex = -1;
+    var firstFileName;
+    var lastFileName;
+    for (var i = 0; i < firstStackLines.length; ++i) {
+        var result = parseLineInfo(firstStackLines[i]);
+        if (result) {
+            firstFileName = result.fileName;
+            firstIndex = result.line;
+            break;
+        }
+    }
+    for (var i = 0; i < lastStackLines.length; ++i) {
+        var result = parseLineInfo(lastStackLines[i]);
+        if (result) {
+            lastFileName = result.fileName;
+            lastIndex = result.line;
+            break;
+        }
+    }
+    if (firstIndex < 0 || lastIndex < 0 || !firstFileName || !lastFileName ||
+        firstFileName !== lastFileName || firstIndex >= lastIndex) {
+        return;
+    }
+
+    shouldIgnore = function(line) {
+        var info = parseLineInfo(line);
+        if (info) {
+            if (info.fileName === firstFileName &&
+                (firstIndex <= info.line && info.line <= lastIndex)) {
+                return true;
+            }
+        }
+        return false;
+    };
+};
+
+var captureStackTrace = (function stackDetection() {
+    if (typeof Error.stackTraceLimit === "number" &&
+        typeof Error.captureStackTrace === "function") {
+        rtraceline = /^\s*at\s*/;
+        formatStack = function(stack, error) {
+            if (typeof stack === "string") return stack;
+
+            if (error.name !== undefined &&
+                error.message !== undefined) {
+                return error.name + ". " + error.message;
+            }
+            return formatNonError(error);
+
+
+        };
+        var captureStackTrace = Error.captureStackTrace;
+        var bluebirdRegexp = /[\\\/]bluebird[\\\/]js[\\\/](main|debug|zalgo)/;
+        shouldIgnore = function(line) {
+            return bluebirdRegexp.test(line);
+        };
+        return function(receiver, ignoreUntil) {
+            captureStackTrace(receiver, ignoreUntil);
+        };
+    }
+    var err = new Error();
+
+    if (typeof err.stack === "string" &&
+        typeof "".startsWith === "function" &&
+        (err.stack.startsWith("stackDetection@")) &&
+        stackDetection.name === "stackDetection") {
+
+        defineProperty(Error, "stackTraceLimit", {
+            writable: true,
+            enumerable: false,
+            configurable: false,
+            value: 25
+        });
+        rtraceline = /@/;
+        var rline = /[@\n]/;
+
+        formatStack = function(stack, error) {
+            if (typeof stack === "string") {
+                return (error.name + ". " + error.message + "\n" + stack);
+            }
+
+            if (error.name !== undefined &&
+                error.message !== undefined) {
+                return error.name + ". " + error.message;
+            }
+            return formatNonError(error);
+        };
+
+        return function captureStackTrace(o) {
+            var stack = new Error().stack;
+            var split = stack.split(rline);
+            var len = split.length;
+            var ret = "";
+            for (var i = 0; i < len; i += 2) {
+                ret += split[i];
+                ret += "@";
+                ret += split[i + 1];
+                ret += "\n";
+            }
+            o.stack = ret;
+        };
+    } else {
+        formatStack = function(stack, error) {
+            if (typeof stack === "string") return stack;
+
+            if ((typeof error === "object" ||
+                typeof error === "function") &&
+                error.name !== undefined &&
+                error.message !== undefined) {
+                return error.name + ". " + error.message;
+            }
+            return formatNonError(error);
+        };
+
+        return null;
+    }
+})();
+
+return CapturedTrace;
+};
+
+},{"./es5.js":417,"./util.js":440}],412:[function(require,module,exports){
+"use strict";
+module.exports = function(NEXT_FILTER) {
+var util = require("./util.js");
+var errors = require("./errors.js");
+var tryCatch1 = util.tryCatch1;
+var errorObj = util.errorObj;
+var keys = require("./es5.js").keys;
+var TypeError = errors.TypeError;
+
+function CatchFilter(instances, callback, promise) {
+    this._instances = instances;
+    this._callback = callback;
+    this._promise = promise;
+}
+
+function safePredicate(predicate, e) {
+    var safeObject = {};
+    var retfilter = tryCatch1(predicate, safeObject, e);
+
+    if (retfilter === errorObj) return retfilter;
+
+    var safeKeys = keys(safeObject);
+    if (safeKeys.length) {
+        errorObj.e = new TypeError("Catch filter must inherit from Error or be a simple predicate function\u000a\u000a    See http://goo.gl/o84o68\u000a");
+        return errorObj;
+    }
+    return retfilter;
+}
+
+CatchFilter.prototype.doFilter = function (e) {
+    var cb = this._callback;
+    var promise = this._promise;
+    var boundTo = promise._boundTo;
+    for (var i = 0, len = this._instances.length; i < len; ++i) {
+        var item = this._instances[i];
+        var itemIsErrorType = item === Error ||
+            (item != null && item.prototype instanceof Error);
+
+        if (itemIsErrorType && e instanceof item) {
+            var ret = tryCatch1(cb, boundTo, e);
+            if (ret === errorObj) {
+                NEXT_FILTER.e = ret.e;
+                return NEXT_FILTER;
+            }
+            return ret;
+        } else if (typeof item === "function" && !itemIsErrorType) {
+            var shouldHandle = safePredicate(item, e);
+            if (shouldHandle === errorObj) {
+                var trace = errors.canAttachTrace(errorObj.e)
+                    ? errorObj.e
+                    : new Error(util.toString(errorObj.e));
+                this._promise._attachExtraTrace(trace);
+                e = errorObj.e;
+                break;
+            } else if (shouldHandle) {
+                var ret = tryCatch1(cb, boundTo, e);
+                if (ret === errorObj) {
+                    NEXT_FILTER.e = ret.e;
+                    return NEXT_FILTER;
+                }
+                return ret;
+            }
+        }
+    }
+    NEXT_FILTER.e = e;
+    return NEXT_FILTER;
+};
+
+return CatchFilter;
+};
+
+},{"./errors.js":415,"./es5.js":417,"./util.js":440}],413:[function(require,module,exports){
+"use strict";
+var util = require("./util.js");
+var isPrimitive = util.isPrimitive;
+var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
+
+module.exports = function(Promise) {
+var returner = function () {
+    return this;
+};
+var thrower = function () {
+    throw this;
+};
+
+var wrapper = function (value, action) {
+    if (action === 1) {
+        return function () {
+            throw value;
+        };
+    } else if (action === 2) {
+        return function () {
+            return value;
+        };
+    }
+};
+
+
+Promise.prototype["return"] =
+Promise.prototype.thenReturn = function (value) {
+    if (wrapsPrimitiveReceiver && isPrimitive(value)) {
+        return this._then(
+            wrapper(value, 2),
+            undefined,
+            undefined,
+            undefined,
+            undefined
+       );
+    }
+    return this._then(returner, undefined, undefined, value, undefined);
+};
+
+Promise.prototype["throw"] =
+Promise.prototype.thenThrow = function (reason) {
+    if (wrapsPrimitiveReceiver && isPrimitive(reason)) {
+        return this._then(
+            wrapper(reason, 1),
+            undefined,
+            undefined,
+            undefined,
+            undefined
+       );
+    }
+    return this._then(thrower, undefined, undefined, reason, undefined);
+};
+};
+
+},{"./util.js":440}],414:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var PromiseReduce = Promise.reduce;
+
+Promise.prototype.each = function (fn) {
+    return PromiseReduce(this, fn, null, INTERNAL);
+};
+
+Promise.each = function (promises, fn) {
+    return PromiseReduce(promises, fn, null, INTERNAL);
+};
+};
+
+},{}],415:[function(require,module,exports){
+"use strict";
+var Objectfreeze = require("./es5.js").freeze;
+var propertyIsWritable = require("./es5.js").propertyIsWritable;
+var util = require("./util.js");
+var inherits = util.inherits;
+var notEnumerableProp = util.notEnumerableProp;
+
+function markAsOriginatingFromRejection(e) {
+    try {
+        notEnumerableProp(e, "isOperational", true);
+    }
+    catch(ignore) {}
+}
+
+function originatesFromRejection(e) {
+    if (e == null) return false;
+    return ((e instanceof OperationalError) ||
+        e["isOperational"] === true);
+}
+
+function isError(obj) {
+    return obj instanceof Error;
+}
+
+function canAttachTrace(obj) {
+    return isError(obj) && propertyIsWritable(obj, "stack");
+}
+
+function subError(nameProperty, defaultMessage) {
+    function SubError(message) {
+        if (!(this instanceof SubError)) return new SubError(message);
+        notEnumerableProp(this, "message",
+            typeof message === "string" ? message : defaultMessage);
+        notEnumerableProp(this, "name", nameProperty);
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, this.constructor);
+        }
+    }
+    inherits(SubError, Error);
+    return SubError;
+}
+
+var _TypeError, _RangeError;
+var CancellationError = subError("CancellationError", "cancellation error");
+var TimeoutError = subError("TimeoutError", "timeout error");
+var AggregateError = subError("AggregateError", "aggregate error");
+try {
+    _TypeError = TypeError;
+    _RangeError = RangeError;
+} catch(e) {
+    _TypeError = subError("TypeError", "type error");
+    _RangeError = subError("RangeError", "range error");
+}
+
+var methods = ("join pop push shift unshift slice filter forEach some " +
+    "every map indexOf lastIndexOf reduce reduceRight sort reverse").split(" ");
+
+for (var i = 0; i < methods.length; ++i) {
+    if (typeof Array.prototype[methods[i]] === "function") {
+        AggregateError.prototype[methods[i]] = Array.prototype[methods[i]];
+    }
+}
+
+AggregateError.prototype.length = 0;
+AggregateError.prototype["isOperational"] = true;
+var level = 0;
+AggregateError.prototype.toString = function() {
+    var indent = Array(level * 4 + 1).join(" ");
+    var ret = "\n" + indent + "AggregateError of:" + "\n";
+    level++;
+    indent = Array(level * 4 + 1).join(" ");
+    for (var i = 0; i < this.length; ++i) {
+        var str = this[i] === this ? "[Circular AggregateError]" : this[i] + "";
+        var lines = str.split("\n");
+        for (var j = 0; j < lines.length; ++j) {
+            lines[j] = indent + lines[j];
+        }
+        str = lines.join("\n");
+        ret += str + "\n";
+    }
+    level--;
+    return ret;
+};
+
+function OperationalError(message) {
+    notEnumerableProp(this, "name", "OperationalError");
+    notEnumerableProp(this, "message", message);
+    this.cause = message;
+    this["isOperational"] = true;
+
+    if (message instanceof Error) {
+        notEnumerableProp(this, "message", message.message);
+        notEnumerableProp(this, "stack", message.stack);
+    } else if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, this.constructor);
+    }
+
+}
+inherits(OperationalError, Error);
+
+var key = "__BluebirdErrorTypes__";
+var errorTypes = Error[key];
+if (!errorTypes) {
+    errorTypes = Objectfreeze({
+        CancellationError: CancellationError,
+        TimeoutError: TimeoutError,
+        OperationalError: OperationalError,
+        RejectionError: OperationalError,
+        AggregateError: AggregateError
+    });
+    notEnumerableProp(Error, key, errorTypes);
+}
+
+module.exports = {
+    Error: Error,
+    TypeError: _TypeError,
+    RangeError: _RangeError,
+    CancellationError: errorTypes.CancellationError,
+    OperationalError: errorTypes.OperationalError,
+    TimeoutError: errorTypes.TimeoutError,
+    AggregateError: errorTypes.AggregateError,
+    originatesFromRejection: originatesFromRejection,
+    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
+    canAttachTrace: canAttachTrace
+};
+
+},{"./es5.js":417,"./util.js":440}],416:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise) {
+var TypeError = require("./errors.js").TypeError;
+
+function apiRejection(msg) {
+    var error = new TypeError(msg);
+    var ret = Promise.rejected(error);
+    var parent = ret._peekContext();
+    if (parent != null) {
+        parent.attachExtraTrace(error);
+    }
+    return ret;
+}
+
+return apiRejection;
+};
+
+},{"./errors.js":415}],417:[function(require,module,exports){
+var isES5 = (function(){
+    "use strict";
+    return this === undefined;
+})();
+
+if (isES5) {
+    module.exports = {
+        freeze: Object.freeze,
+        defineProperty: Object.defineProperty,
+        keys: Object.keys,
+        getPrototypeOf: Object.getPrototypeOf,
+        isArray: Array.isArray,
+        isES5: isES5,
+        propertyIsWritable: function(obj, prop) {
+            var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+            return !!(!descriptor || descriptor.writable || descriptor.set);
+        }
+    };
+} else {
+    var has = {}.hasOwnProperty;
+    var str = {}.toString;
+    var proto = {}.constructor.prototype;
+
+    var ObjectKeys = function (o) {
+        var ret = [];
+        for (var key in o) {
+            if (has.call(o, key)) {
+                ret.push(key);
+            }
+        }
+        return ret;
+    };
+
+    var ObjectDefineProperty = function (o, key, desc) {
+        o[key] = desc.value;
+        return o;
+    };
+
+    var ObjectFreeze = function (obj) {
+        return obj;
+    };
+
+    var ObjectGetPrototypeOf = function (obj) {
+        try {
+            return Object(obj).constructor.prototype;
+        }
+        catch (e) {
+            return proto;
+        }
+    };
+
+    var ArrayIsArray = function (obj) {
+        try {
+            return str.call(obj) === "[object Array]";
+        }
+        catch(e) {
+            return false;
+        }
+    };
+
+    module.exports = {
+        isArray: ArrayIsArray,
+        keys: ObjectKeys,
+        defineProperty: ObjectDefineProperty,
+        freeze: ObjectFreeze,
+        getPrototypeOf: ObjectGetPrototypeOf,
+        isES5: isES5,
+        propertyIsWritable: function() {
+            return true;
+        }
+    };
+}
+
+},{}],418:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var PromiseMap = Promise.map;
+
+Promise.prototype.filter = function (fn, options) {
+    return PromiseMap(this, fn, options, INTERNAL);
+};
+
+Promise.filter = function (promises, fn, options) {
+    return PromiseMap(promises, fn, options, INTERNAL);
+};
+};
+
+},{}],419:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, NEXT_FILTER, tryConvertToPromise) {
+var util = require("./util.js");
+var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
+var isPrimitive = util.isPrimitive;
+var thrower = util.thrower;
+
+function returnThis() {
+    return this;
+}
+function throwThis() {
+    throw this;
+}
+function return$(r) {
+    return function() {
+        return r;
+    };
+}
+function throw$(r) {
+    return function() {
+        throw r;
+    };
+}
+function promisedFinally(ret, reasonOrValue, isFulfilled) {
+    var then;
+    if (wrapsPrimitiveReceiver && isPrimitive(reasonOrValue)) {
+        then = isFulfilled ? return$(reasonOrValue) : throw$(reasonOrValue);
+    } else {
+        then = isFulfilled ? returnThis : throwThis;
+    }
+    return ret._then(then, thrower, undefined, reasonOrValue, undefined);
+}
+
+function finallyHandler(reasonOrValue) {
+    var promise = this.promise;
+    var handler = this.handler;
+
+    var ret = promise._isBound()
+                    ? handler.call(promise._boundTo)
+                    : handler();
+
+    if (ret !== undefined) {
+        var maybePromise = tryConvertToPromise(ret, undefined);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            return promisedFinally(maybePromise, reasonOrValue,
+                                    promise.isFulfilled());
+        }
+    }
+
+    if (promise.isRejected()) {
+        NEXT_FILTER.e = reasonOrValue;
+        return NEXT_FILTER;
+    } else {
+        return reasonOrValue;
+    }
+}
+
+function tapHandler(value) {
+    var promise = this.promise;
+    var handler = this.handler;
+
+    var ret = promise._isBound()
+                    ? handler.call(promise._boundTo, value)
+                    : handler(value);
+
+    if (ret !== undefined) {
+        var maybePromise = tryConvertToPromise(ret, undefined);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            return promisedFinally(maybePromise, value, true);
+        }
+    }
+    return value;
+}
+
+Promise.prototype._passThroughHandler = function (handler, isFinally) {
+    if (typeof handler !== "function") return this.then();
+
+    var promiseAndHandler = {
+        promise: this,
+        handler: handler
+    };
+
+    return this._then(
+            isFinally ? finallyHandler : tapHandler,
+            isFinally ? finallyHandler : undefined, undefined,
+            promiseAndHandler, undefined);
+};
+
+Promise.prototype.lastly =
+Promise.prototype["finally"] = function (handler) {
+    return this._passThroughHandler(handler, true);
+};
+
+Promise.prototype.tap = function (handler) {
+    return this._passThroughHandler(handler, false);
+};
+};
+
+},{"./util.js":440}],420:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise,
+                          apiRejection,
+                          INTERNAL,
+                          tryConvertToPromise) {
+var errors = require("./errors.js");
+var TypeError = errors.TypeError;
+var deprecated = require("./util.js").deprecated;
+var util = require("./util.js");
+var errorObj = util.errorObj;
+var tryCatch1 = util.tryCatch1;
+var yieldHandlers = [];
+
+function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
+    var _errorObj = errorObj;
+    var _Promise = Promise;
+    var len = yieldHandlers.length;
+    for (var i = 0; i < len; ++i) {
+        var result = tryCatch1(yieldHandlers[i], undefined, value);
+        if (result === _errorObj) {
+            return _Promise.reject(_errorObj.e);
+        }
+        var maybePromise = tryConvertToPromise(result, traceParent);
+        if (maybePromise instanceof _Promise) return maybePromise;
+    }
+    return null;
+}
+
+function PromiseSpawn(generatorFunction, receiver, yieldHandler) {
+    var promise = this._promise = new Promise(INTERNAL);
+    promise._setTrace(undefined);
+    this._generatorFunction = generatorFunction;
+    this._receiver = receiver;
+    this._generator = undefined;
+    this._yieldHandlers = typeof yieldHandler === "function"
+        ? [yieldHandler].concat(yieldHandlers)
+        : yieldHandlers;
+}
+
+PromiseSpawn.prototype.promise = function () {
+    return this._promise;
+};
+
+PromiseSpawn.prototype._run = function () {
+    this._generator = this._generatorFunction.call(this._receiver);
+    this._receiver =
+        this._generatorFunction = undefined;
+    this._next(undefined);
+};
+
+PromiseSpawn.prototype._continue = function (result) {
+    if (result === errorObj) {
+        this._generator = undefined;
+        var trace = errors.canAttachTrace(result.e)
+            ? result.e : new Error(util.toString(result.e));
+        this._promise._attachExtraTrace(trace);
+        this._promise._reject(result.e, trace);
+        return;
+    }
+
+    var value = result.value;
+    if (result.done === true) {
+        this._generator = undefined;
+        if (!this._promise._tryFollow(value)) {
+            this._promise._fulfill(value);
+        }
+    } else {
+        var maybePromise = tryConvertToPromise(value, this._promise);
+        if (!(maybePromise instanceof Promise)) {
+            maybePromise =
+                promiseFromYieldHandler(maybePromise,
+                                        this._yieldHandlers,
+                                        this._promise);
+            if (maybePromise === null) {
+                this._throw(new TypeError("A value was yielded that could not be treated as a promise\u000a\u000a    See http://goo.gl/4Y4pDk\u000a"));
+                return;
+            }
+        }
+        maybePromise._then(
+            this._next,
+            this._throw,
+            undefined,
+            this,
+            null
+       );
+    }
+};
+
+PromiseSpawn.prototype._throw = function (reason) {
+    if (errors.canAttachTrace(reason))
+        this._promise._attachExtraTrace(reason);
+    this._continue(
+        tryCatch1(this._generator["throw"], this._generator, reason)
+   );
+};
+
+PromiseSpawn.prototype._next = function (value) {
+    this._continue(
+        tryCatch1(this._generator.next, this._generator, value)
+   );
+};
+
+Promise.coroutine = function (generatorFunction, options) {
+    if (typeof generatorFunction !== "function") {
+        throw new TypeError("generatorFunction must be a function\u000a\u000a    See http://goo.gl/6Vqhm0\u000a");
+    }
+    var yieldHandler = Object(options).yieldHandler;
+    var PromiseSpawn$ = PromiseSpawn;
+    return function () {
+        var generator = generatorFunction.apply(this, arguments);
+        var spawn = new PromiseSpawn$(undefined, undefined, yieldHandler);
+        spawn._generator = generator;
+        spawn._next(undefined);
+        return spawn.promise();
+    };
+};
+
+Promise.coroutine.addYieldHandler = function(fn) {
+    if (typeof fn !== "function") throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    yieldHandlers.push(fn);
+};
+
+Promise.spawn = function (generatorFunction) {
+    deprecated("Promise.spawn is deprecated. Use Promise.coroutine instead.");
+    if (typeof generatorFunction !== "function") {
+        return apiRejection("generatorFunction must be a function\u000a\u000a    See http://goo.gl/6Vqhm0\u000a");
+    }
+    var spawn = new PromiseSpawn(generatorFunction, this);
+    var ret = spawn.promise();
+    spawn._run(Promise.spawn);
+    return ret;
+};
+};
+
+},{"./errors.js":415,"./util.js":440}],421:[function(require,module,exports){
+"use strict";
+module.exports =
+function(Promise, PromiseArray, tryConvertToPromise, INTERNAL) {
+var util = require("./util.js");
+var canEvaluate = util.canEvaluate;
+var tryCatch1 = util.tryCatch1;
+var errorObj = util.errorObj;
+
+
+if (canEvaluate) {
+    var thenCallback = function(i) {
+        return new Function("value", "holder", "                             \n\
+            'use strict';                                                    \n\
+            holder.pIndex = value;                                           \n\
+            holder.checkFulfillment(this);                                   \n\
+            ".replace(/Index/g, i));
+    };
+
+    var caller = function(count) {
+        var values = [];
+        for (var i = 1; i <= count; ++i) values.push("holder.p" + i);
+        return new Function("holder", "                                      \n\
+            'use strict';                                                    \n\
+            var callback = holder.fn;                                        \n\
+            return callback(values);                                         \n\
+            ".replace(/values/g, values.join(", ")));
+    };
+    var thenCallbacks = [];
+    var callers = [undefined];
+    for (var i = 1; i <= 5; ++i) {
+        thenCallbacks.push(thenCallback(i));
+        callers.push(caller(i));
+    }
+
+    var Holder = function(total, fn) {
+        this.p1 = this.p2 = this.p3 = this.p4 = this.p5 = null;
+        this.fn = fn;
+        this.total = total;
+        this.now = 0;
+    };
+
+    Holder.prototype.callers = callers;
+    Holder.prototype.checkFulfillment = function(promise) {
+        var now = this.now;
+        now++;
+        var total = this.total;
+        if (now >= total) {
+            var handler = this.callers[total];
+            var ret = tryCatch1(handler, undefined, this);
+            if (ret === errorObj) {
+                promise._rejectUnchecked(ret.e);
+            } else if (!promise._tryFollow(ret)) {
+                promise._fulfillUnchecked(ret);
+            }
+        } else {
+            this.now = now;
+        }
+    };
+}
+
+function reject(reason) {
+    this._reject(reason);
+}
+
+Promise.join = function () {
+    var last = arguments.length - 1;
+    var fn;
+    if (last > 0 && typeof arguments[last] === "function") {
+        fn = arguments[last];
+        if (last < 6 && canEvaluate) {
+            var ret = new Promise(INTERNAL);
+            ret._setTrace(undefined);
+            var holder = new Holder(last, fn);
+            var callbacks = thenCallbacks;
+            for (var i = 0; i < last; ++i) {
+                var maybePromise = tryConvertToPromise(arguments[i], undefined);
+                if (maybePromise instanceof Promise) {
+                    maybePromise = maybePromise._target();
+                    if (maybePromise._isPending()) {
+                        maybePromise._then(callbacks[i], reject,
+                                           undefined, ret, holder);
+                    } else if (maybePromise._isFulfilled()) {
+                        callbacks[i].call(ret,
+                                          maybePromise._value(), holder);
+                    } else {
+                        ret._reject(maybePromise._reason());
+                        maybePromise._unsetRejectionIsUnhandled();
+                    }
+                } else {
+                    callbacks[i].call(ret, maybePromise, holder);
+                }
+            }
+            return ret;
+        }
+    }
+    var $_len = arguments.length;var args = new Array($_len); for(var $_i = 0; $_i < $_len; ++$_i) {args[$_i] = arguments[$_i];}
+    var ret = new PromiseArray(args).promise();
+    return fn !== undefined ? ret.spread(fn) : ret;
+};
+
+};
+
+},{"./util.js":440}],422:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise,
+                          PromiseArray,
+                          apiRejection,
+                          tryConvertToPromise,
+                          INTERNAL) {
+var util = require("./util.js");
+var tryCatch3 = util.tryCatch3;
+var errorObj = util.errorObj;
+var PENDING = {};
+var EMPTY_ARRAY = [];
+
+function MappingPromiseArray(promises, fn, limit, _filter) {
+    this.constructor$(promises);
+    this._promise._setIsSpreadable();
+    this._callback = fn;
+    this._preservedValues = _filter === INTERNAL
+        ? new Array(this.length())
+        : null;
+    this._limit = limit;
+    this._inFlight = 0;
+    this._queue = limit >= 1 ? [] : EMPTY_ARRAY;
+    this._init$(undefined, -2);
+}
+util.inherits(MappingPromiseArray, PromiseArray);
+
+MappingPromiseArray.prototype._init = function () {};
+
+MappingPromiseArray.prototype._promiseFulfilled = function (value, index) {
+    var values = this._values;
+    var length = this.length();
+    var preservedValues = this._preservedValues;
+    var limit = this._limit;
+    if (values[index] === PENDING) {
+        values[index] = value;
+        if (limit >= 1) {
+            this._inFlight--;
+            this._drainQueue();
+            if (this._isResolved()) return;
+        }
+    } else {
+        if (limit >= 1 && this._inFlight >= limit) {
+            values[index] = value;
+            this._queue.push(index);
+            return;
+        }
+        if (preservedValues !== null) preservedValues[index] = value;
+
+        var callback = this._callback;
+        var receiver = this._promise._boundTo;
+        var ret = tryCatch3(callback, receiver, value, index, length);
+        if (ret === errorObj) return this._reject(ret.e);
+
+        var maybePromise = tryConvertToPromise(ret, this._promise);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            if (maybePromise._isPending()) {
+                if (limit >= 1) this._inFlight++;
+                values[index] = PENDING;
+                return maybePromise._proxyPromiseArray(this, index);
+            } else if (maybePromise._isFulfilled()) {
+                ret = maybePromise._value();
+            } else {
+                maybePromise._unsetRejectionIsUnhandled();
+                return this._reject(maybePromise._reason());
+            }
+        }
+        values[index] = ret;
+    }
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= length) {
+        if (preservedValues !== null) {
+            this._filter(values, preservedValues);
+        } else {
+            this._resolve(values);
+        }
+
+    }
+};
+
+MappingPromiseArray.prototype._drainQueue = function () {
+    var queue = this._queue;
+    var limit = this._limit;
+    var values = this._values;
+    while (queue.length > 0 && this._inFlight < limit) {
+        if (this._isResolved()) return;
+        var index = queue.pop();
+        this._promiseFulfilled(values[index], index);
+    }
+};
+
+MappingPromiseArray.prototype._filter = function (booleans, values) {
+    var len = values.length;
+    var ret = new Array(len);
+    var j = 0;
+    for (var i = 0; i < len; ++i) {
+        if (booleans[i]) ret[j++] = values[i];
+    }
+    ret.length = j;
+    this._resolve(ret);
+};
+
+MappingPromiseArray.prototype.preservedValues = function () {
+    return this._preservedValues;
+};
+
+function map(promises, fn, options, _filter) {
+    var limit = typeof options === "object" && options !== null
+        ? options.concurrency
+        : 0;
+    limit = typeof limit === "number" &&
+        isFinite(limit) && limit >= 1 ? limit : 0;
+    return new MappingPromiseArray(promises, fn, limit, _filter);
+}
+
+Promise.prototype.map = function (fn, options) {
+    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+
+    return map(this, fn, options, null).promise();
+};
+
+Promise.map = function (promises, fn, options, _filter) {
+    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    return map(promises, fn, options, _filter).promise();
+};
+
+
+};
+
+},{"./util.js":440}],423:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise) {
+var util = require("./util.js");
+var async = require("./async.js");
+var tryCatch2 = util.tryCatch2;
+var tryCatch1 = util.tryCatch1;
+var errorObj = util.errorObj;
+
+function spreadAdapter(val, receiver) {
+    if (!util.isArray(val)) return successAdapter(val, receiver);
+    var ret = util.tryCatchApply(this, [null].concat(val), receiver);
+    if (ret === errorObj) {
+        async.throwLater(ret.e);
+    }
+}
+
+function successAdapter(val, receiver) {
+    var nodeback = this;
+    var ret = val === undefined
+        ? tryCatch1(nodeback, receiver, null)
+        : tryCatch2(nodeback, receiver, null, val);
+    if (ret === errorObj) {
+        async.throwLater(ret.e);
+    }
+}
+function errorAdapter(reason, receiver) {
+    var nodeback = this;
+    var ret = tryCatch1(nodeback, receiver, reason);
+    if (ret === errorObj) {
+        async.throwLater(ret.e);
+    }
+}
+
+Promise.prototype.nodeify = function (nodeback, options) {
+    if (typeof nodeback == "function") {
+        var adapter = successAdapter;
+        if (options !== undefined && Object(options).spread) {
+            adapter = spreadAdapter;
+        }
+        this._then(
+            adapter,
+            errorAdapter,
+            undefined,
+            nodeback,
+            this._boundTo
+        );
+    }
+    return this;
+};
+};
+
+},{"./async.js":407,"./util.js":440}],424:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, PromiseArray) {
+var util = require("./util.js");
+var async = require("./async.js");
+var errors = require("./errors.js");
+var tryCatch1 = util.tryCatch1;
+var errorObj = util.errorObj;
+
+Promise.prototype.progressed = function (handler) {
+    return this._then(undefined, undefined, handler, undefined, undefined);
+};
+
+Promise.prototype._progress = function (progressValue) {
+    if (this._isFollowingOrFulfilledOrRejected()) return;
+    this._target()._progressUnchecked(progressValue);
+
+};
+
+Promise.prototype._progressHandlerAt = function (index) {
+    return index === 0
+        ? this._progressHandler0
+        : this[(index << 2) + index - 5 + 2];
+};
+
+Promise.prototype._doProgressWith = function (progression) {
+    var progressValue = progression.value;
+    var handler = progression.handler;
+    var promise = progression.promise;
+    var receiver = progression.receiver;
+
+    var ret = tryCatch1(handler, receiver, progressValue);
+    if (ret === errorObj) {
+        if (ret.e != null &&
+            ret.e.name !== "StopProgressPropagation") {
+            var trace = errors.canAttachTrace(ret.e)
+                ? ret.e : new Error(util.toString(ret.e));
+            promise._attachExtraTrace(trace);
+            promise._progress(ret.e);
+        }
+    } else if (ret instanceof Promise) {
+        ret._then(promise._progress, null, null, promise, undefined);
+    } else {
+        promise._progress(ret);
+    }
+};
+
+
+Promise.prototype._progressUnchecked = function (progressValue) {
+    var len = this._length();
+    var progress = this._progress;
+    for (var i = 0; i < len; i++) {
+        var handler = this._progressHandlerAt(i);
+        var promise = this._promiseAt(i);
+        if (!(promise instanceof Promise)) {
+            var receiver = this._receiverAt(i);
+            if (typeof handler === "function") {
+                handler.call(receiver, progressValue, promise);
+            } else if (receiver instanceof PromiseArray &&
+                       !receiver._isResolved()) {
+                receiver._promiseProgressed(progressValue, promise);
+            }
+            continue;
+        }
+
+        if (typeof handler === "function") {
+            async.invoke(this._doProgressWith, this, {
+                handler: handler,
+                promise: promise,
+                receiver: this._receiverAt(i),
+                value: progressValue
+            });
+        } else {
+            async.invoke(progress, promise, progressValue);
+        }
+    }
+};
+};
+
+},{"./async.js":407,"./errors.js":415,"./util.js":440}],425:[function(require,module,exports){
+(function (process){
+"use strict";
+module.exports = function() {
+var makeSelfResolutionError = function () {
+    return new TypeError("circular promise resolution chain\u000a\u000a    See http://goo.gl/LhFpo0\u000a");
+};
+var reflect = function() {
+    return new Promise.PromiseInspection(this._target());
+};
+var util = require("./util.js");
+var async = require("./async.js");
+var errors = require("./errors.js");
+var INTERNAL = function(){};
+var APPLY = {};
+var NEXT_FILTER = {e: null};
+var tryConvertToPromise = require("./thenables.js")(Promise, INTERNAL);
+var PromiseArray =
+    require("./promise_array.js")(Promise, INTERNAL, tryConvertToPromise);
+var CapturedTrace = require("./captured_trace.js")();
+var CatchFilter = require("./catch_filter.js")(NEXT_FILTER);
+var PromiseResolver = require("./promise_resolver.js");
+var isArray = util.isArray;
+var errorObj = util.errorObj;
+var tryCatch1 = util.tryCatch1;
+var tryCatch2 = util.tryCatch2;
+var tryCatchApply = util.tryCatchApply;
+var RangeError = errors.RangeError;
+var TypeError = errors.TypeError;
+var CancellationError = errors.CancellationError;
+var TimeoutError = errors.TimeoutError;
+var OperationalError = errors.OperationalError;
+var originatesFromRejection = errors.originatesFromRejection;
+var markAsOriginatingFromRejection = errors.markAsOriginatingFromRejection;
+var canAttachTrace = errors.canAttachTrace;
+var apiRejection = require("./errors_api_rejection")(Promise);
+var unhandledRejectionHandled;
+var debugging = false || !!(
+    typeof process !== "undefined" &&
+    typeof process.execPath === "string" &&
+    typeof process.env === "object" &&
+    (process.env["BLUEBIRD_DEBUG"] ||
+        process.env["NODE_ENV"] === "development")
+);
+function Promise(resolver) {
+    if (typeof resolver !== "function") {
+        throw new TypeError("the promise constructor requires a resolver function\u000a\u000a    See http://goo.gl/EC22Yn\u000a");
+    }
+    if (this.constructor !== Promise) {
+        throw new TypeError("the promise constructor cannot be invoked directly\u000a\u000a    See http://goo.gl/KsIlge\u000a");
+    }
+    this._bitField = 0;
+    this._fulfillmentHandler0 = undefined;
+    this._rejectionHandler0 = undefined;
+    this._progressHandler0 = undefined;
+    this._promise0 = undefined;
+    this._receiver0 = undefined;
+    this._settledValue = undefined;
+    this._boundTo = undefined;
+    if (resolver !== INTERNAL) this._resolveFromResolver(resolver);
+}
+
+Promise.prototype.bind = function (thisArg) {
+    var maybePromise = tryConvertToPromise(thisArg, this);
+    var ret = new Promise(INTERNAL);
+    ret._propagateFrom(this, 2 | 1);
+    var target = this._target();
+    if (maybePromise instanceof Promise) {
+        target._then(INTERNAL, ret._reject, ret._progress, ret, null);
+        maybePromise._then(function(thisArg) {
+            if (ret._isPending()) {
+                ret._setBoundTo(thisArg);
+                ret._follow(target);
+            }
+        }, ret._reject, ret._progress, ret, null);
+    } else {
+        ret._setBoundTo(thisArg);
+        ret._follow(target);
+    }
+
+    return ret;
+};
+
+Promise.prototype.toString = function () {
+    return "[object Promise]";
+};
+
+Promise.prototype.caught = Promise.prototype["catch"] = function (fn) {
+    var len = arguments.length;
+    if (len > 1) {
+        var catchInstances = new Array(len - 1),
+            j = 0, i;
+        for (i = 0; i < len - 1; ++i) {
+            var item = arguments[i];
+            if (typeof item === "function") {
+                catchInstances[j++] = item;
+            } else {
+                var error = new TypeError("Catch filter must inherit from Error or be a simple predicate function\u000a\u000a    See http://goo.gl/o84o68\u000a");
+                this._attachExtraTrace(error);
+                return Promise.reject(error);
+            }
+        }
+        catchInstances.length = j;
+        fn = arguments[i];
+
+        this._resetTrace();
+        var catchFilter = new CatchFilter(catchInstances, fn, this);
+        return this._then(undefined, catchFilter.doFilter, undefined,
+            catchFilter, undefined);
+    }
+    return this._then(undefined, fn, undefined, undefined, undefined);
+};
+
+Promise.prototype.reflect = function () {
+    return this._then(reflect, reflect, undefined, this, undefined);
+};
+
+Promise.prototype.then = function (didFulfill, didReject, didProgress) {
+    return this._then(didFulfill, didReject, didProgress,
+        undefined, undefined);
+};
+
+
+Promise.prototype.done = function (didFulfill, didReject, didProgress) {
+    var promise = this._then(didFulfill, didReject, didProgress,
+        undefined, undefined);
+    promise._setIsFinal();
+};
+
+Promise.prototype.spread = function (didFulfill, didReject) {
+    var followee = this._target();
+    var target = followee._isSpreadable()
+        ? (followee === this ? this : this.then())
+        : this.all();
+    return target._then(didFulfill, didReject, undefined, APPLY, undefined);
+};
+
+Promise.prototype.isCancellable = function () {
+    return !this.isResolved() &&
+        this._cancellable();
+};
+
+Promise.prototype.toJSON = function () {
+    var ret = {
+        isFulfilled: false,
+        isRejected: false,
+        fulfillmentValue: undefined,
+        rejectionReason: undefined
+    };
+    if (this.isFulfilled()) {
+        ret.fulfillmentValue = this.value();
+        ret.isFulfilled = true;
+    } else if (this.isRejected()) {
+        ret.rejectionReason = this.reason();
+        ret.isRejected = true;
+    }
+    return ret;
+};
+
+Promise.prototype.all = function () {
+    var ret = new PromiseArray(this).promise();
+    ret._setIsSpreadable();
+    return ret;
+};
+
+Promise.prototype.error = function (fn) {
+    return this.caught(originatesFromRejection, fn);
+};
+
+Promise.is = function (val) {
+    return val instanceof Promise;
+};
+
+Promise.all = function (promises) {
+    var ret = new PromiseArray(promises).promise();
+    ret._setIsSpreadable();
+    return ret;
+};
+
+Promise.method = function (fn) {
+    if (typeof fn !== "function") {
+        throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    }
+    return function () {
+        var value;
+        switch(arguments.length) {
+        case 0: value = tryCatch1(fn, this, undefined); break;
+        case 1: value = tryCatch1(fn, this, arguments[0]); break;
+        case 2: value = tryCatch2(fn, this, arguments[0], arguments[1]); break;
+        default:
+            var $_len = arguments.length;var args = new Array($_len); for(var $_i = 0; $_i < $_len; ++$_i) {args[$_i] = arguments[$_i];}
+            value = tryCatchApply(fn, args, this); break;
+        }
+        var ret = new Promise(INTERNAL);
+        ret._setTrace(undefined);
+        ret._resolveFromSyncValue(value);
+        return ret;
+    };
+};
+
+Promise.attempt = Promise["try"] = function (fn, args, ctx) {
+    if (typeof fn !== "function") {
+        return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    }
+    var value = isArray(args)
+        ? tryCatchApply(fn, args, ctx)
+        : tryCatch1(fn, ctx, args);
+
+    var ret = new Promise(INTERNAL);
+    ret._setTrace(undefined);
+    ret._resolveFromSyncValue(value);
+    return ret;
+};
+
+Promise.defer = Promise.pending = function () {
+    var promise = new Promise(INTERNAL);
+    promise._setTrace(undefined);
+    return new PromiseResolver(promise);
+};
+
+Promise.bind = function (thisArg) {
+    var maybePromise = tryConvertToPromise(thisArg, undefined);
+    var ret = new Promise(INTERNAL);
+    ret._setTrace(undefined);
+
+    if (maybePromise instanceof Promise) {
+        maybePromise._then(function(thisArg) {
+            ret._setBoundTo(thisArg);
+            ret._fulfill(undefined);
+        }, ret._reject, ret._progress, ret, null);
+    } else {
+        ret._setBoundTo(thisArg);
+        ret._setFulfilled();
+    }
+    return ret;
+};
+
+Promise.cast = function (obj) {
+    var ret = tryConvertToPromise(obj, undefined);
+    if (!(ret instanceof Promise)) {
+        var val = ret;
+        ret = new Promise(INTERNAL);
+        ret._setTrace(undefined);
+        ret._setFulfilled();
+        ret._settledValue = val;
+        ret._cleanValues();
+    }
+    return ret;
+};
+
+Promise.resolve = Promise.fulfilled = Promise.cast;
+
+Promise.reject = Promise.rejected = function (reason) {
+    var ret = new Promise(INTERNAL);
+    ret._setTrace(undefined);
+    markAsOriginatingFromRejection(reason);
+    ret._setRejected();
+    ret._settledValue = reason;
+    ret._cleanValues();
+    if (!canAttachTrace(reason)) {
+        var trace = new Error(util.toString(reason));
+        ret._setCarriedStackTrace(trace);
+    }
+    ret._ensurePossibleRejectionHandled();
+    return ret;
+};
+
+Promise.onPossiblyUnhandledRejection = function (fn) {
+        CapturedTrace.possiblyUnhandledRejection = typeof fn === "function"
+                                                    ? fn : undefined;
+};
+
+Promise.onUnhandledRejectionHandled = function (fn) {
+    unhandledRejectionHandled = typeof fn === "function" ? fn : undefined;
+};
+
+Promise.longStackTraces = function () {
+    if (async.haveItemsQueued() &&
+        debugging === false
+   ) {
+        throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/DT1qyG\u000a");
+    }
+    debugging = CapturedTrace.isSupported();
+};
+
+Promise.hasLongStackTraces = function () {
+    return debugging && CapturedTrace.isSupported();
+};
+
+Promise.setScheduler = function(fn) {
+    if (typeof fn !== "function") throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    async._schedule = fn;
+};
+
+Promise.prototype._then = function (
+    didFulfill,
+    didReject,
+    didProgress,
+    receiver,
+    internalData
+) {
+    var haveInternalData = internalData !== undefined;
+    var ret = haveInternalData ? internalData : new Promise(INTERNAL);
+
+    if (!haveInternalData) {
+        ret._propagateFrom(this, 7);
+    }
+
+    var target = this._target();
+    if (target !== this) {
+        if (receiver === undefined) receiver = this._boundTo;
+        if (!haveInternalData) ret._setIsMigrated();
+    }
+
+    var callbackIndex =
+        target._addCallbacks(didFulfill, didReject, didProgress, ret, receiver);
+
+    if (target._isResolved() && !target._isSettlePromisesQueued()) {
+        async.invoke(
+            target._settlePromiseAtPostResolution, target, callbackIndex);
+    }
+
+    return ret;
+};
+
+Promise.prototype._settlePromiseAtPostResolution = function (index) {
+    if (this._isRejectionUnhandled()) this._unsetRejectionIsUnhandled();
+    this._settlePromiseAt(index);
+};
+
+Promise.prototype._length = function () {
+    return this._bitField & 131071;
+};
+
+Promise.prototype._isFollowingOrFulfilledOrRejected = function () {
+    return (this._bitField & 939524096) > 0;
+};
+
+Promise.prototype._isFollowing = function () {
+    return (this._bitField & 536870912) === 536870912;
+};
+
+Promise.prototype._setLength = function (len) {
+    this._bitField = (this._bitField & -131072) |
+        (len & 131071);
+};
+
+Promise.prototype._setFulfilled = function () {
+    this._bitField = this._bitField | 268435456;
+};
+
+Promise.prototype._setRejected = function () {
+    this._bitField = this._bitField | 134217728;
+};
+
+Promise.prototype._setFollowing = function () {
+    this._bitField = this._bitField | 536870912;
+};
+
+Promise.prototype._setIsFinal = function () {
+    this._bitField = this._bitField | 33554432;
+};
+
+Promise.prototype._isFinal = function () {
+    return (this._bitField & 33554432) > 0;
+};
+
+Promise.prototype._cancellable = function () {
+    return (this._bitField & 67108864) > 0;
+};
+
+Promise.prototype._setCancellable = function () {
+    this._bitField = this._bitField | 67108864;
+};
+
+Promise.prototype._unsetCancellable = function () {
+    this._bitField = this._bitField & (~67108864);
+};
+
+Promise.prototype._setRejectionIsUnhandled = function () {
+    this._bitField = this._bitField | 2097152;
+};
+
+Promise.prototype._unsetRejectionIsUnhandled = function () {
+    this._bitField = this._bitField & (~2097152);
+    if (this._isUnhandledRejectionNotified()) {
+        this._unsetUnhandledRejectionIsNotified();
+        this._notifyUnhandledRejectionIsHandled();
+    }
+};
+
+Promise.prototype._isRejectionUnhandled = function () {
+    return (this._bitField & 2097152) > 0;
+};
+
+Promise.prototype._isSpreadable = function () {
+    return (this._bitField & 131072) > 0;
+};
+
+Promise.prototype._setIsSpreadable = function () {
+    this._bitField = this._bitField | 131072;
+};
+
+Promise.prototype._setIsMigrated = function () {
+    this._bitField = this._bitField | 4194304;
+};
+
+Promise.prototype._unsetIsMigrated = function () {
+    this._bitField = this._bitField & (~4194304);
+};
+
+Promise.prototype._isMigrated = function () {
+    return (this._bitField & 4194304) > 0;
+};
+
+Promise.prototype._setUnhandledRejectionIsNotified = function () {
+    this._bitField = this._bitField | 524288;
+};
+
+Promise.prototype._unsetUnhandledRejectionIsNotified = function () {
+    this._bitField = this._bitField & (~524288);
+};
+
+Promise.prototype._isUnhandledRejectionNotified = function () {
+    return (this._bitField & 524288) > 0;
+};
+
+Promise.prototype._setCarriedStackTrace = function (capturedTrace) {
+    this._bitField = this._bitField | 1048576;
+    this._fulfillmentHandler0 = capturedTrace;
+};
+
+Promise.prototype._unsetCarriedStackTrace = function () {
+    this._bitField = this._bitField & (~1048576);
+    this._fulfillmentHandler0 = undefined;
+};
+
+Promise.prototype._isCarryingStackTrace = function () {
+    return (this._bitField & 1048576) > 0;
+};
+
+Promise.prototype._getCarriedStackTrace = function () {
+    return this._isCarryingStackTrace()
+        ? this._fulfillmentHandler0
+        : undefined;
+};
+
+Promise.prototype._receiverAt = function (index) {
+    var ret = index === 0
+        ? this._receiver0
+        : this[
+            index * 5 - 5 + 4];
+    if (this._isBound() && ret === undefined) {
+        return this._boundTo;
+    }
+    return ret;
+};
+
+Promise.prototype._promiseAt = function (index) {
+    return index === 0
+        ? this._promise0
+        : this[index * 5 - 5 + 3];
+};
+
+Promise.prototype._fulfillmentHandlerAt = function (index) {
+    return index === 0
+        ? this._fulfillmentHandler0
+        : this[index * 5 - 5 + 0];
+};
+
+Promise.prototype._rejectionHandlerAt = function (index) {
+    return index === 0
+        ? this._rejectionHandler0
+        : this[index * 5 - 5 + 1];
+};
+
+Promise.prototype._migrateCallbacks = function (
+    fulfill,
+    reject,
+    progress,
+    promise,
+    receiver
+) {
+    if (promise instanceof Promise) promise._setIsMigrated();
+    this._addCallbacks(fulfill, reject, progress, promise, receiver);
+};
+
+Promise.prototype._addCallbacks = function (
+    fulfill,
+    reject,
+    progress,
+    promise,
+    receiver
+) {
+    var index = this._length();
+
+    if (index >= 131071 - 5) {
+        index = 0;
+        this._setLength(0);
+    }
+
+    if (index === 0) {
+        this._promise0 = promise;
+        if (receiver !== undefined) this._receiver0 = receiver;
+        if (typeof fulfill === "function" && !this._isCarryingStackTrace())
+            this._fulfillmentHandler0 = fulfill;
+        if (typeof reject === "function") this._rejectionHandler0 = reject;
+        if (typeof progress === "function") this._progressHandler0 = progress;
+    } else {
+        var base = index * 5 - 5;
+        this[base + 3] = promise;
+        this[base + 4] = receiver;
+        if (typeof fulfill === "function")
+            this[base + 0] = fulfill;
+        if (typeof reject === "function")
+            this[base + 1] = reject;
+        if (typeof progress === "function")
+            this[base + 2] = progress;
+    }
+    this._setLength(index + 1);
+    return index;
+};
+
+Promise.prototype._setProxyHandlers = function (receiver, promiseSlotValue) {
+    var index = this._length();
+
+    if (index >= 131071 - 5) {
+        index = 0;
+        this._setLength(0);
+    }
+    if (index === 0) {
+        this._promise0 = promiseSlotValue;
+        this._receiver0 = receiver;
+    } else {
+        var base = index * 5 - 5;
+        this[base + 3] = promiseSlotValue;
+        this[base + 4] = receiver;
+    }
+    this._setLength(index + 1);
+};
+
+Promise.prototype._proxyPromiseArray = function (promiseArray, index) {
+    this._setProxyHandlers(promiseArray, index);
+};
+
+Promise.prototype._setBoundTo = function (obj) {
+    if (obj !== undefined) {
+        this._bitField = this._bitField | 8388608;
+        this._boundTo = obj;
+    } else {
+        this._bitField = this._bitField & (~8388608);
+    }
+};
+
+Promise.prototype._isBound = function () {
+    return (this._bitField & 8388608) === 8388608;
+};
+
+Promise.prototype._resolveFromResolver = function (resolver) {
+    var promise = this;
+    this._setTrace(undefined);
+
+    this._pushContext();
+    var r = tryCatch2(resolver, undefined, function(val) {
+        if (promise._tryFollow(val)) {
+            return;
+        }
+        promise._fulfill(val);
+    }, function (val) {
+        var trace = canAttachTrace(val) ? val : new Error(util.toString(val));
+        promise._attachExtraTrace(trace);
+        markAsOriginatingFromRejection(val);
+        promise._reject(val, trace === val ? undefined : trace);
+    });
+    this._popContext();
+
+    if (r !== undefined && r === errorObj) {
+        var e = r.e;
+        var trace = canAttachTrace(e) ? e : new Error(util.toString(e));
+        promise._reject(e, trace);
+    }
+};
+
+Promise.prototype._settlePromiseFromHandler = function (
+    handler, receiver, value, promise
+) {
+    if (promise._isRejected()) return;
+    promise._pushContext();
+    var x;
+    if (receiver === APPLY && !this._isRejected()) {
+        x = tryCatchApply(handler, value, this._boundTo);
+    } else {
+        x = tryCatch1(handler, receiver, value);
+    }
+    promise._popContext();
+
+    if (x === errorObj || x === promise || x === NEXT_FILTER) {
+        var err = x === promise
+                    ? makeSelfResolutionError()
+                    : x.e;
+        var trace = canAttachTrace(err) ? err : new Error(util.toString(err));
+        if (x !== NEXT_FILTER) promise._attachExtraTrace(trace);
+        promise._rejectUnchecked(err, trace);
+    } else {
+        x = tryConvertToPromise(x, promise);
+        if (x instanceof Promise) {
+            x = x._target();
+            if (x._isRejected() &&
+                !x._isCarryingStackTrace() &&
+                !canAttachTrace(x._reason())) {
+                var trace = new Error(util.toString(x._reason()));
+                promise._attachExtraTrace(trace);
+                x._setCarriedStackTrace(trace);
+            }
+            promise._follow(x);
+        } else {
+            promise._fulfillUnchecked(x);
+        }
+    }
+};
+
+Promise.prototype._target = function() {
+    var ret = this;
+    while (ret._isFollowing()) ret = ret._followee();
+    return ret;
+};
+
+Promise.prototype._followee = function() {
+    return this._rejectionHandler0;
+};
+
+Promise.prototype._setFollowee = function(promise) {
+    this._rejectionHandler0 = promise;
+};
+
+Promise.prototype._follow = function (promise) {
+    if (promise._isPending()) {
+        var len = this._length();
+        for (var i = 0; i < len; ++i) {
+            promise._migrateCallbacks(
+                this._fulfillmentHandlerAt(i),
+                this._rejectionHandlerAt(i),
+                this._progressHandlerAt(i),
+                this._promiseAt(i),
+                this._receiverAt(i)
+            );
+        }
+        this._setFollowing();
+        this._setLength(0);
+        this._setFollowee(promise);
+        this._propagateFrom(promise, 1);
+    } else if (promise._isFulfilled()) {
+        this._fulfillUnchecked(promise._value());
+    } else {
+        this._rejectUnchecked(promise._reason(),
+            promise._getCarriedStackTrace());
+    }
+    if (promise._isRejectionUnhandled()) promise._unsetRejectionIsUnhandled();
+
+    if (debugging &&
+        !promise._trace.hasParent()) {
+        promise._trace.setParent(this._trace);
+    }
+};
+
+Promise.prototype._tryFollow = function (value) {
+    if (this._isFollowingOrFulfilledOrRejected() ||
+        value === this) {
+        return false;
+    }
+    var maybePromise = tryConvertToPromise(value, this);
+    if (!(maybePromise instanceof Promise)) {
+        return false;
+    }
+    this._follow(maybePromise._target());
+    return true;
+};
+
+Promise.prototype._resetTrace = function () {
+    if (debugging) {
+        this._trace = new CapturedTrace(this._peekContext());
+    }
+};
+
+Promise.prototype._setTrace = function (parent) {
+    if (debugging) {
+        var context = this._peekContext();
+        if (parent !== undefined &&
+            parent._trace.parent() === context) {
+            this._trace = parent._trace;
+        } else {
+            this._trace = new CapturedTrace(context);
+        }
+    }
+    return this;
+};
+
+Promise.prototype._attachExtraTrace = function (error) {
+    if (debugging && canAttachTrace(error)) {
+        this._trace.attachExtraTrace(error);
+    }
+};
+
+Promise.prototype._cleanValues = function () {
+    if (this._cancellable()) {
+        this._cancellationParent = undefined;
+    }
+};
+
+Promise.prototype._propagateFrom = function (parent, flags) {
+    if ((flags & 1) > 0 && parent._cancellable()) {
+        this._setCancellable();
+        this._cancellationParent = parent;
+    }
+    if ((flags & 4) > 0) {
+        this._setBoundTo(parent._boundTo);
+    }
+    if ((flags & 2) > 0) {
+        this._setTrace(parent);
+    }
+};
+
+Promise.prototype._fulfill = function (value) {
+    if (this._isFollowingOrFulfilledOrRejected()) return;
+    this._fulfillUnchecked(value);
+};
+
+Promise.prototype._reject = function (reason, carriedStackTrace) {
+    if (this._isFollowingOrFulfilledOrRejected()) return;
+    this._rejectUnchecked(reason, carriedStackTrace);
+};
+
+Promise.prototype._settlePromiseAt = function (index) {
+    var promise = this._promiseAt(index);
+    var isPromise = promise instanceof Promise;
+
+    if (isPromise && promise._isMigrated()) {
+        promise._unsetIsMigrated();
+        return async.invoke(this._settlePromiseAt, this, index);
+    }
+    var handler = this._isFulfilled()
+        ? this._fulfillmentHandlerAt(index)
+        : this._rejectionHandlerAt(index);
+
+    var carriedStackTrace =
+        this._isCarryingStackTrace() ? this._getCarriedStackTrace() : undefined;
+    var value = this._settledValue;
+    var receiver = this._receiverAt(index);
+
+
+    this._clearCallbackDataAtIndex(index);
+
+    if (typeof handler === "function") {
+        if (!isPromise) {
+            handler.call(receiver, value, promise);
+        } else {
+            this._settlePromiseFromHandler(handler, receiver, value, promise);
+        }
+    } else if (receiver instanceof PromiseArray) {
+        if (!receiver._isResolved()) {
+            if (this._isFulfilled()) {
+                receiver._promiseFulfilled(value, promise);
+            }
+            else {
+                receiver._promiseRejected(value, promise);
+            }
+        }
+    } else if (this._isFulfilled()) {
+        promise._fulfill(value);
+    } else {
+        promise._reject(value, carriedStackTrace);
+    }
+
+    if (index >= 4 && (index & 31) === 4)
+        async.invokeLater(this._setLength, this, 0);
+};
+
+Promise.prototype._clearCallbackDataAtIndex = function(index) {
+    if (index === 0) {
+        if (!this._isCarryingStackTrace()) {
+            this._fulfillmentHandler0 = undefined;
+        }
+        this._rejectionHandler0 =
+        this._progressHandler0 =
+        this._receiver0 =
+        this._promise0 = undefined;
+    } else {
+        var base = index * 5 - 5;
+        this[base + 3] =
+        this[base + 4] =
+        this[base + 0] =
+        this[base + 1] =
+        this[base + 2] = undefined;
+    }
+};
+
+Promise.prototype._isSettlePromisesQueued = function () {
+    return (this._bitField &
+            -1073741824) === -1073741824;
+};
+
+Promise.prototype._setSettlePromisesQueued = function () {
+    this._bitField = this._bitField | -1073741824;
+};
+
+Promise.prototype._unsetSettlePromisesQueued = function () {
+    this._bitField = this._bitField & (~-1073741824);
+};
+
+Promise.prototype._queueSettlePromises = function() {
+    if (!this._isSettlePromisesQueued()) {
+        async.settlePromises(this);
+        this._setSettlePromisesQueued();
+    }
+};
+
+Promise.prototype._fulfillUnchecked = function (value) {
+    if (value === this) {
+        var err = makeSelfResolutionError();
+        this._attachExtraTrace(err);
+        return this._rejectUnchecked(err, undefined);
+    }
+    this._setFulfilled();
+    this._settledValue = value;
+    this._cleanValues();
+
+    if (this._length() > 0) {
+        this._queueSettlePromises();
+    }
+};
+
+Promise.prototype._rejectUncheckedCheckError = function (reason) {
+    var trace = canAttachTrace(reason)
+        ? reason : new Error(util.toString(reason));
+    this._rejectUnchecked(reason, trace === reason ? undefined : trace);
+};
+
+Promise.prototype._rejectUnchecked = function (reason, trace) {
+    if (reason === this) {
+        var err = makeSelfResolutionError();
+        this._attachExtraTrace(err);
+        return this._rejectUnchecked(err);
+    }
+    this._setRejected();
+    this._settledValue = reason;
+    this._cleanValues();
+
+    if (this._isFinal()) {
+        async.throwLater(function(e) {
+            if ("stack" in e) {
+                async.invokeFirst(
+                    CapturedTrace.unhandledRejection, undefined, e);
+            }
+            throw e;
+        }, trace === undefined ? reason : trace);
+        return;
+    }
+
+    if (trace !== undefined) this._setCarriedStackTrace(trace);
+
+    if (this._length() > 0) {
+        this._queueSettlePromises();
+    } else {
+        this._ensurePossibleRejectionHandled();
+    }
+};
+
+Promise.prototype._settlePromises = function () {
+    this._unsetSettlePromisesQueued();
+    var len = this._length();
+    for (var i = 0; i < len; i++) {
+        this._settlePromiseAt(i);
+    }
+};
+
+Promise.prototype._ensurePossibleRejectionHandled = function () {
+    this._setRejectionIsUnhandled();
+    if (CapturedTrace.possiblyUnhandledRejection !== undefined) {
+        async.invokeLater(this._notifyUnhandledRejection, this, undefined);
+    }
+};
+
+Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
+    if (typeof unhandledRejectionHandled === "function") {
+        async.throwLater(unhandledRejectionHandled, this);
+    }
+};
+
+Promise.prototype._notifyUnhandledRejection = function () {
+    if (this._isRejectionUnhandled()) {
+        var reason = this._settledValue;
+        var trace = this._getCarriedStackTrace();
+
+        this._setUnhandledRejectionIsNotified();
+
+        if (trace !== undefined) {
+            this._unsetCarriedStackTrace();
+            reason = trace;
+        }
+        if (typeof CapturedTrace.possiblyUnhandledRejection === "function") {
+            CapturedTrace.possiblyUnhandledRejection(reason, this);
+        }
+    }
+};
+
+var contextStack = [];
+Promise.prototype._peekContext = function () {
+    var lastIndex = contextStack.length - 1;
+    if (lastIndex >= 0) {
+        return contextStack[lastIndex];
+    }
+    return undefined;
+
+};
+
+Promise.prototype._pushContext = function () {
+    if (!debugging) return;
+    contextStack.push(this._trace);
+};
+
+Promise.prototype._popContext = function () {
+    if (!debugging) return;
+    contextStack.pop();
+};
+
+Promise.prototype._resolveFromSyncValue = function (value) {
+    if (value === errorObj) {
+        this._setRejected();
+        var reason = value.e;
+        this._settledValue = reason;
+        this._cleanValues();
+        this._attachExtraTrace(reason);
+        this._ensurePossibleRejectionHandled();
+    } else {
+        var maybePromise = tryConvertToPromise(value, this);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            this._follow(maybePromise);
+        } else {
+            this._setFulfilled();
+            this._settledValue = value;
+            this._cleanValues();
+        }
+    }
+};
+
+if (!CapturedTrace.isSupported()) {
+    Promise.longStackTraces = function(){};
+    debugging = false;
+}
+
+Promise._makeSelfResolutionError = makeSelfResolutionError;
+require("./finally.js")(Promise, NEXT_FILTER, tryConvertToPromise);
+require("./direct_resolve.js")(Promise);
+require("./synchronous_inspection.js")(Promise);
+require("./join.js")(Promise, PromiseArray, tryConvertToPromise, INTERNAL);
+Promise.RangeError = RangeError;
+Promise.CancellationError = CancellationError;
+Promise.TimeoutError = TimeoutError;
+Promise.TypeError = TypeError;
+Promise.OperationalError = OperationalError;
+Promise.RejectionError = OperationalError;
+Promise.AggregateError = errors.AggregateError;
+
+util.toFastProperties(Promise);
+util.toFastProperties(Promise.prototype);
+Promise.Promise = Promise;
+CapturedTrace.setBounds(async.firstLineError, util.lastLineError);
+require('./nodeify.js')(Promise);
+require('./using.js')(Promise, apiRejection, tryConvertToPromise);
+require('./generators.js')(Promise, apiRejection, INTERNAL, tryConvertToPromise);
+require('./map.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL);
+require('./cancel.js')(Promise, INTERNAL);
+require('./promisify.js')(Promise, INTERNAL);
+require('./props.js')(Promise, PromiseArray, tryConvertToPromise);
+require('./race.js')(Promise, INTERNAL, tryConvertToPromise);
+require('./reduce.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL);
+require('./settle.js')(Promise, PromiseArray);
+require('./call_get.js')(Promise);
+require('./some.js')(Promise, PromiseArray, apiRejection);
+require('./progress.js')(Promise, PromiseArray);
+require('./any.js')(Promise);
+require('./each.js')(Promise, INTERNAL);
+require('./timers.js')(Promise, INTERNAL, tryConvertToPromise);
+require('./filter.js')(Promise, INTERNAL);
+
+Promise.prototype = Promise.prototype;
+return Promise;
+
+};
+
+}).call(this,require('_process'))
+},{"./any.js":406,"./async.js":407,"./call_get.js":409,"./cancel.js":410,"./captured_trace.js":411,"./catch_filter.js":412,"./direct_resolve.js":413,"./each.js":414,"./errors.js":415,"./errors_api_rejection":416,"./filter.js":418,"./finally.js":419,"./generators.js":420,"./join.js":421,"./map.js":422,"./nodeify.js":423,"./progress.js":424,"./promise_array.js":426,"./promise_resolver.js":427,"./promisify.js":428,"./props.js":429,"./race.js":431,"./reduce.js":432,"./settle.js":434,"./some.js":435,"./synchronous_inspection.js":436,"./thenables.js":437,"./timers.js":438,"./using.js":439,"./util.js":440,"_process":441}],426:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL, tryConvertToPromise) {
+var canAttachTrace = require("./errors.js").canAttachTrace;
+var util = require("./util.js");
+var isArray = util.isArray;
+
+function toResolutionValue(val) {
+    switch(val) {
+    case -1: return undefined;
+    case -2: return [];
+    case -3: return {};
+    }
+}
+
+function PromiseArray(values) {
+    var promise = this._promise = new Promise(INTERNAL);
+    var parent;
+    if (values instanceof Promise) {
+        parent = values;
+        promise._propagateFrom(parent, 1 | 4);
+    }
+    promise._setTrace(parent);
+    this._values = values;
+    this._length = 0;
+    this._totalResolved = 0;
+    this._init(undefined, -2);
+}
+PromiseArray.prototype.length = function () {
+    return this._length;
+};
+
+PromiseArray.prototype.promise = function () {
+    return this._promise;
+};
+
+PromiseArray.prototype._init = function init(_, resolveValueIfEmpty) {
+
+    var values = tryConvertToPromise(this._values, undefined);
+    if (values instanceof Promise) {
+        values._setBoundTo(this._promise._boundTo);
+        values = values._target();
+        this._values = values;
+        if (values._isFulfilled()) {
+            values = values._value();
+            if (!isArray(values)) {
+                var err = new Promise.TypeError("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a");
+                this.__hardReject__(err);
+                return;
+            }
+        } else if (values._isPending()) {
+            values._then(
+                init,
+                this._reject,
+                undefined,
+                this,
+                resolveValueIfEmpty
+           );
+            return;
+        } else {
+            values._unsetRejectionIsUnhandled();
+            this._reject(values._reason());
+            return;
+        }
+    } else if (!isArray(values)) {
+        var err = new Promise.TypeError("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a");
+        this.__hardReject__(err);
+        return;
+    }
+
+    if (values.length === 0) {
+        if (resolveValueIfEmpty === -5) {
+            this._resolveEmptyArray();
+        }
+        else {
+            this._resolve(toResolutionValue(resolveValueIfEmpty));
+        }
+        return;
+    }
+    var len = this.getActualLength(values.length);
+    this._length = len;
+    this._values = this.shouldCopyValues() ? new Array(len) : this._values;
+    var promise = this._promise;
+    for (var i = 0; i < len; ++i) {
+        if (this._isResolved()) return;
+        var maybePromise = tryConvertToPromise(values[i], promise);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            if (maybePromise._isPending()) {
+                maybePromise._proxyPromiseArray(this, i);
+            } else if (maybePromise._isFulfilled()) {
+                this._promiseFulfilled(maybePromise._value(), i);
+            } else {
+                maybePromise._unsetRejectionIsUnhandled();
+                this._promiseRejected(maybePromise._reason(), i);
+            }
+        } else {
+            this._promiseFulfilled(maybePromise, i);
+        }
+    }
+};
+
+PromiseArray.prototype._isResolved = function () {
+    return this._values === null;
+};
+
+PromiseArray.prototype._resolve = function (value) {
+    this._values = null;
+    this._promise._fulfill(value);
+};
+
+PromiseArray.prototype.__hardReject__ =
+PromiseArray.prototype._reject = function (reason) {
+    this._values = null;
+    var trace = canAttachTrace(reason)
+        ? reason : new Error(util.toString(reason));
+    this._promise._attachExtraTrace(trace);
+    this._promise._reject(reason, trace);
+};
+
+PromiseArray.prototype._promiseProgressed = function (progressValue, index) {
+    this._promise._progress({
+        index: index,
+        value: progressValue
+    });
+};
+
+
+PromiseArray.prototype._promiseFulfilled = function (value, index) {
+    this._values[index] = value;
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= this._length) {
+        this._resolve(this._values);
+    }
+};
+
+PromiseArray.prototype._promiseRejected = function (reason, index) {
+    this._totalResolved++;
+    this._reject(reason);
+};
+
+PromiseArray.prototype.shouldCopyValues = function () {
+    return true;
+};
+
+PromiseArray.prototype.getActualLength = function (len) {
+    return len;
+};
+
+return PromiseArray;
+};
+
+},{"./errors.js":415,"./util.js":440}],427:[function(require,module,exports){
+"use strict";
+var util = require("./util.js");
+var maybeWrapAsError = util.maybeWrapAsError;
+var errors = require("./errors.js");
+var TimeoutError = errors.TimeoutError;
+var OperationalError = errors.OperationalError;
+var async = require("./async.js");
+var haveGetters = util.haveGetters;
+var es5 = require("./es5.js");
+
+function isUntypedError(obj) {
+    return obj instanceof Error &&
+        es5.getPrototypeOf(obj) === Error.prototype;
+}
+
+function wrapAsOperationalError(obj) {
+    var ret;
+    if (isUntypedError(obj)) {
+        ret = new OperationalError(obj);
+    } else {
+        ret = obj;
+    }
+    errors.markAsOriginatingFromRejection(ret);
+    return ret;
+}
+
+function nodebackForPromise(promise) {
+    promise._setIsSpreadable();
+    return function(err, value) {
+        if (promise === null) return;
+
+        if (err) {
+            var wrapped = wrapAsOperationalError(maybeWrapAsError(err));
+            promise._attachExtraTrace(wrapped);
+            promise._reject(wrapped);
+        } else if (arguments.length > 2) {
+            var $_len = arguments.length;var args = new Array($_len - 1); for(var $_i = 1; $_i < $_len; ++$_i) {args[$_i - 1] = arguments[$_i];}
+            promise._fulfill(args);
+        } else {
+            promise._fulfill(value);
+        }
+
+        promise = null;
+    };
+}
+
+
+var PromiseResolver;
+if (!haveGetters) {
+    PromiseResolver = function (promise) {
+        this.promise = promise;
+        this.asCallback = nodebackForPromise(promise);
+        this.callback = this.asCallback;
+    };
+}
+else {
+    PromiseResolver = function (promise) {
+        this.promise = promise;
+    };
+}
+if (haveGetters) {
+    var prop = {
+        get: function() {
+            return nodebackForPromise(this.promise);
+        }
+    };
+    es5.defineProperty(PromiseResolver.prototype, "asCallback", prop);
+    es5.defineProperty(PromiseResolver.prototype, "callback", prop);
+}
+
+PromiseResolver._nodebackForPromise = nodebackForPromise;
+
+PromiseResolver.prototype.toString = function () {
+    return "[object PromiseResolver]";
+};
+
+PromiseResolver.prototype.resolve =
+PromiseResolver.prototype.fulfill = function (value) {
+    if (!(this instanceof PromiseResolver)) {
+        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
+    }
+
+    var promise = this.promise;
+    if (promise._tryFollow(value)) {
+        return;
+    }
+    async.invoke(promise._fulfill, promise, value);
+};
+
+PromiseResolver.prototype.reject = function (reason) {
+    if (!(this instanceof PromiseResolver)) {
+        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
+    }
+
+    var promise = this.promise;
+    errors.markAsOriginatingFromRejection(reason);
+    var trace = errors.canAttachTrace(reason)
+        ? reason : new Error(util.toString(reason));
+    promise._attachExtraTrace(trace);
+    async.invoke(promise._reject, promise, reason);
+    if (trace !== reason) {
+        async.invoke(this._setCarriedStackTrace, this, trace);
+    }
+};
+
+PromiseResolver.prototype.progress = function (value) {
+    if (!(this instanceof PromiseResolver)) {
+        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
+    }
+    async.invoke(this.promise._progress, this.promise, value);
+};
+
+PromiseResolver.prototype.cancel = function () {
+    async.invoke(this.promise.cancel, this.promise, undefined);
+};
+
+PromiseResolver.prototype.timeout = function () {
+    this.reject(new TimeoutError("timeout"));
+};
+
+PromiseResolver.prototype.isResolved = function () {
+    return this.promise.isResolved();
+};
+
+PromiseResolver.prototype.toJSON = function () {
+    return this.promise.toJSON();
+};
+
+PromiseResolver.prototype._setCarriedStackTrace = function (trace) {
+    if (this.promise.isRejected()) {
+        this.promise._setCarriedStackTrace(trace);
+    }
+};
+
+module.exports = PromiseResolver;
+
+},{"./async.js":407,"./errors.js":415,"./es5.js":417,"./util.js":440}],428:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var THIS = {};
+var util = require("./util.js");
+var nodebackForPromise = require("./promise_resolver.js")
+    ._nodebackForPromise;
+var withAppended = util.withAppended;
+var maybeWrapAsError = util.maybeWrapAsError;
+var canEvaluate = util.canEvaluate;
+var TypeError = require("./errors").TypeError;
+var defaultSuffix = "Async";
+var defaultFilter = function(name, func) {
+    return util.isIdentifier(name) &&
+        name.charAt(0) !== "_" &&
+        !util.isClass(func);
+};
+var defaultPromisified = {__isPromisified__: true};
+
+
+function escapeIdentRegex(str) {
+    return str.replace(/([$])/, "\\$");
+}
+
+function isPromisified(fn) {
+    try {
+        return fn.__isPromisified__ === true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+function hasPromisified(obj, key, suffix) {
+    var val = util.getDataPropertyOrDefault(obj, key + suffix,
+                                            defaultPromisified);
+    return val ? isPromisified(val) : false;
+}
+function checkValid(ret, suffix, suffixRegexp) {
+    for (var i = 0; i < ret.length; i += 2) {
+        var key = ret[i];
+        if (suffixRegexp.test(key)) {
+            var keyWithoutAsyncSuffix = key.replace(suffixRegexp, "");
+            for (var j = 0; j < ret.length; j += 2) {
+                if (ret[j] === keyWithoutAsyncSuffix) {
+                    throw new TypeError("Cannot promisify an API that has normal methods with '%s'-suffix\u000a\u000a    See http://goo.gl/iWrZbw\u000a"
+                        .replace("%s", suffix));
+                }
+            }
+        }
+    }
+}
+
+function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
+    var keys = util.inheritedDataKeys(obj);
+    var ret = [];
+    for (var i = 0; i < keys.length; ++i) {
+        var key = keys[i];
+        var value = obj[key];
+        if (typeof value === "function" &&
+            !isPromisified(value) &&
+            !hasPromisified(obj, key, suffix) &&
+            filter(key, value, obj)) {
+            ret.push(key, value);
+        }
+    }
+    checkValid(ret, suffix, suffixRegexp);
+    return ret;
+}
+
+function switchCaseArgumentOrder(likelyArgumentCount) {
+    var ret = [likelyArgumentCount];
+    var min = Math.max(0, likelyArgumentCount - 1 - 5);
+    for(var i = likelyArgumentCount - 1; i >= min; --i) {
+        if (i === likelyArgumentCount) continue;
+        ret.push(i);
+    }
+    for(var i = likelyArgumentCount + 1; i <= 5; ++i) {
+        ret.push(i);
+    }
+    return ret;
+}
+
+function argumentSequence(argumentCount) {
+    return util.filledRange(argumentCount, "arguments[", "]");
+}
+
+function parameterDeclaration(parameterCount) {
+    return util.filledRange(parameterCount, "_arg", "");
+}
+
+function parameterCount(fn) {
+    if (typeof fn.length === "number") {
+        return Math.max(Math.min(fn.length, 1023 + 1), 0);
+    }
+    return 0;
+}
+
+function generatePropertyAccess(key) {
+    if (util.isIdentifier(key)) {
+        return "." + key;
+    }
+    else return "['" + key.replace(/(['\\])/g, "\\$1") + "']";
+}
+
+function makeNodePromisifiedEval(callback, receiver, originalName, fn, suffix) {
+    var newParameterCount = Math.max(0, parameterCount(fn) - 1);
+    var argumentOrder = switchCaseArgumentOrder(newParameterCount);
+    var callbackName =
+        (typeof originalName === "string" && util.isIdentifier(originalName)
+            ? originalName + suffix
+            : "promisified");
+
+    function generateCallForArgumentCount(count) {
+        var args = argumentSequence(count).join(", ");
+        var comma = count > 0 ? ", " : "";
+        var ret;
+        if (typeof callback === "string") {
+            ret = "                                                          \n\
+                this.method({{args}}, fn);                                   \n\
+                break;                                                       \n\
+            ".replace(".method", generatePropertyAccess(callback));
+        } else if (receiver === THIS) {
+            ret =  "                                                         \n\
+                callback.call(this, {{args}}, fn);                           \n\
+                break;                                                       \n\
+            ";
+        } else if (receiver !== undefined) {
+            ret =  "                                                         \n\
+                callback.call(receiver, {{args}}, fn);                       \n\
+                break;                                                       \n\
+            ";
+        } else {
+            ret =  "                                                         \n\
+                callback({{args}}, fn);                                      \n\
+                break;                                                       \n\
+            ";
+        }
+        return ret.replace("{{args}}", args).replace(", ", comma);
+    }
+
+    function generateArgumentSwitchCase() {
+        var ret = "";
+        for(var i = 0; i < argumentOrder.length; ++i) {
+            ret += "case " + argumentOrder[i] +":" +
+                generateCallForArgumentCount(argumentOrder[i]);
+        }
+        var codeForCall;
+        if (typeof callback === "string") {
+            codeForCall = "                                                  \n\
+                this.property.apply(this, args);                             \n\
+            "
+                .replace(".property", generatePropertyAccess(callback));
+        } else if (receiver === THIS) {
+            codeForCall = "                                                  \n\
+                callback.apply(this, args);                                  \n\
+            ";
+        } else {
+            codeForCall = "                                                  \n\
+                callback.apply(receiver, args);                              \n\
+            ";
+        }
+
+        ret += "                                                             \n\
+        default:                                                             \n\
+            var args = new Array(len + 1);                                   \n\
+            var i = 0;                                                       \n\
+            for (var i = 0; i < len; ++i) {                                  \n\
+               args[i] = arguments[i];                                       \n\
+            }                                                                \n\
+            args[i] = fn;                                                    \n\
+            [CodeForCall]                                                    \n\
+            break;                                                           \n\
+        ".replace("[CodeForCall]", codeForCall);
+        return ret;
+    }
+
+    return new Function("Promise",
+                        "callback",
+                        "receiver",
+                        "withAppended",
+                        "maybeWrapAsError",
+                        "nodebackForPromise",
+                        "INTERNAL","                                         \n\
+        var ret = function (Parameters) {                        \n\
+            'use strict';                                                    \n\
+            var len = arguments.length;                                      \n\
+            var promise = new Promise(INTERNAL);                             \n\
+            promise._setTrace(undefined);                                    \n\
+            var fn = nodebackForPromise(promise);                            \n\
+            try {                                                            \n\
+                switch(len) {                                                \n\
+                    [CodeForSwitchCase]                                      \n\
+                }                                                            \n\
+            } catch (e) {                                                    \n\
+                var wrapped = maybeWrapAsError(e);                           \n\
+                promise._attachExtraTrace(wrapped);                          \n\
+                promise._reject(wrapped);                                    \n\
+            }                                                                \n\
+            return promise;                                                  \n\
+        };                                                                   \n\
+        ret.__isPromisified__ = true;                                        \n\
+        return ret;                                                          \n\
+        "
+        .replace("FunctionName", callbackName)
+        .replace("Parameters", parameterDeclaration(newParameterCount))
+        .replace("[CodeForSwitchCase]", generateArgumentSwitchCase()))(
+            Promise,
+            callback,
+            receiver,
+            withAppended,
+            maybeWrapAsError,
+            nodebackForPromise,
+            INTERNAL
+        );
+}
+
+function makeNodePromisifiedClosure(callback, receiver) {
+    function promisified() {
+        var _receiver = receiver;
+        if (receiver === THIS) _receiver = this;
+        if (typeof callback === "string") {
+            callback = _receiver[callback];
+        }
+        var promise = new Promise(INTERNAL);
+        promise._setTrace(undefined);
+        var fn = nodebackForPromise(promise);
+        try {
+            callback.apply(_receiver, withAppended(arguments, fn));
+        } catch(e) {
+            var wrapped = maybeWrapAsError(e);
+            promise._attachExtraTrace(wrapped);
+            promise._reject(wrapped);
+        }
+        return promise;
+    }
+    promisified.__isPromisified__ = true;
+    return promisified;
+}
+
+var makeNodePromisified = canEvaluate
+    ? makeNodePromisifiedEval
+    : makeNodePromisifiedClosure;
+
+function promisifyAll(obj, suffix, filter, promisifier) {
+    var suffixRegexp = new RegExp(escapeIdentRegex(suffix) + "$");
+    var methods =
+        promisifiableMethods(obj, suffix, suffixRegexp, filter);
+
+    for (var i = 0, len = methods.length; i < len; i+= 2) {
+        var key = methods[i];
+        var fn = methods[i+1];
+        var promisifiedKey = key + suffix;
+        obj[promisifiedKey] = promisifier === makeNodePromisified
+                ? makeNodePromisified(key, THIS, key, fn, suffix)
+                : promisifier(fn);
+    }
+    util.toFastProperties(obj);
+    return obj;
+}
+
+function promisify(callback, receiver) {
+    return makeNodePromisified(callback, receiver, undefined, callback);
+}
+
+Promise.promisify = function (fn, receiver) {
+    if (typeof fn !== "function") {
+        throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    }
+    if (isPromisified(fn)) {
+        return fn;
+    }
+    return promisify(fn, arguments.length < 2 ? THIS : receiver);
+};
+
+Promise.promisifyAll = function (target, options) {
+    if (typeof target !== "function" && typeof target !== "object") {
+        throw new TypeError("the target of promisifyAll must be an object or a function\u000a\u000a    See http://goo.gl/9ITlV0\u000a");
+    }
+    options = Object(options);
+    var suffix = options.suffix;
+    if (typeof suffix !== "string") suffix = defaultSuffix;
+    var filter = options.filter;
+    if (typeof filter !== "function") filter = defaultFilter;
+    var promisifier = options.promisifier;
+    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
+
+    if (!util.isIdentifier(suffix)) {
+        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/8FZo5V\u000a");
+    }
+
+    var keys = util.inheritedDataKeys(target, {includeHidden: true});
+    for (var i = 0; i < keys.length; ++i) {
+        var value = target[keys[i]];
+        if (keys[i] !== "constructor" &&
+            util.isClass(value)) {
+            promisifyAll(value.prototype, suffix, filter, promisifier);
+            promisifyAll(value, suffix, filter, promisifier);
+        }
+    }
+
+    return promisifyAll(target, suffix, filter, promisifier);
+};
+};
+
+
+},{"./errors":415,"./promise_resolver.js":427,"./util.js":440}],429:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, PromiseArray, tryConvertToPromise) {
+var util = require("./util.js");
+var apiRejection = require("./errors_api_rejection")(Promise);
+var isObject = util.isObject;
+var es5 = require("./es5.js");
+
+function PropertiesPromiseArray(obj) {
+    var keys = es5.keys(obj);
+    var len = keys.length;
+    var values = new Array(len * 2);
+    for (var i = 0; i < len; ++i) {
+        var key = keys[i];
+        values[i] = obj[key];
+        values[i + len] = key;
+    }
+    this.constructor$(values);
+}
+util.inherits(PropertiesPromiseArray, PromiseArray);
+
+PropertiesPromiseArray.prototype._init = function () {
+    this._init$(undefined, -3) ;
+};
+
+PropertiesPromiseArray.prototype._promiseFulfilled = function (value, index) {
+    this._values[index] = value;
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= this._length) {
+        var val = {};
+        var keyOffset = this.length();
+        for (var i = 0, len = this.length(); i < len; ++i) {
+            val[this._values[i + keyOffset]] = this._values[i];
+        }
+        this._resolve(val);
+    }
+};
+
+PropertiesPromiseArray.prototype._promiseProgressed = function (value, index) {
+    this._promise._progress({
+        key: this._values[index + this.length()],
+        value: value
+    });
+};
+
+PropertiesPromiseArray.prototype.shouldCopyValues = function () {
+    return false;
+};
+
+PropertiesPromiseArray.prototype.getActualLength = function (len) {
+    return len >> 1;
+};
+
+function props(promises) {
+    var ret;
+    var castValue = tryConvertToPromise(promises, undefined);
+
+    if (!isObject(castValue)) {
+        return apiRejection("cannot await properties of a non-object\u000a\u000a    See http://goo.gl/OsFKC8\u000a");
+    } else if (castValue instanceof Promise) {
+        ret = castValue._then(
+            Promise.props, undefined, undefined, undefined, undefined);
+    } else {
+        ret = new PropertiesPromiseArray(castValue).promise();
+    }
+
+    if (castValue instanceof Promise) {
+        ret._propagateFrom(castValue, 4);
+    }
+    return ret;
+}
+
+Promise.prototype.props = function () {
+    return props(this);
+};
+
+Promise.props = function (promises) {
+    return props(promises);
+};
+};
+
+},{"./errors_api_rejection":416,"./es5.js":417,"./util.js":440}],430:[function(require,module,exports){
+"use strict";
+function arrayMove(src, srcIndex, dst, dstIndex, len) {
+    for (var j = 0; j < len; ++j) {
+        dst[j + dstIndex] = src[j + srcIndex];
+        src[j + srcIndex] = void 0;
+    }
+}
+
+function Queue(capacity) {
+    this._capacity = capacity;
+    this._length = 0;
+    this._front = 0;
+}
+
+Queue.prototype._willBeOverCapacity = function (size) {
+    return this._capacity < size;
+};
+
+Queue.prototype._pushOne = function (arg) {
+    var length = this.length();
+    this._checkCapacity(length + 1);
+    var i = (this._front + length) & (this._capacity - 1);
+    this[i] = arg;
+    this._length = length + 1;
+};
+
+Queue.prototype._unshiftOne = function(value) {
+    var capacity = this._capacity;
+    this._checkCapacity(this.length() + 1);
+    var front = this._front;
+    var i = (((( front - 1 ) &
+                    ( capacity - 1) ) ^ capacity ) - capacity );
+    this[i] = value;
+    this._front = i;
+    this._length = this.length() + 1;
+};
+
+Queue.prototype.unshift = function(fn, receiver, arg) {
+    this._unshiftOne(arg);
+    this._unshiftOne(receiver);
+    this._unshiftOne(fn);
+};
+
+Queue.prototype.push = function (fn, receiver, arg) {
+    var length = this.length() + 3;
+    if (this._willBeOverCapacity(length)) {
+        this._pushOne(fn);
+        this._pushOne(receiver);
+        this._pushOne(arg);
+        return;
+    }
+    var j = this._front + length - 3;
+    this._checkCapacity(length);
+    var wrapMask = this._capacity - 1;
+    this[(j + 0) & wrapMask] = fn;
+    this[(j + 1) & wrapMask] = receiver;
+    this[(j + 2) & wrapMask] = arg;
+    this._length = length;
+};
+
+Queue.prototype.shift = function () {
+    var front = this._front,
+        ret = this[front];
+
+    this[front] = undefined;
+    this._front = (front + 1) & (this._capacity - 1);
+    this._length--;
+    return ret;
+};
+
+Queue.prototype.length = function () {
+    return this._length;
+};
+
+Queue.prototype._checkCapacity = function (size) {
+    if (this._capacity < size) {
+        this._resizeTo(this._capacity << 1);
+    }
+};
+
+Queue.prototype._resizeTo = function (capacity) {
+    var oldCapacity = this._capacity;
+    this._capacity = capacity;
+    var front = this._front;
+    var length = this._length;
+    if (front + length > oldCapacity) {
+        var moveItemsCount = (front + length) & (oldCapacity - 1);
+        arrayMove(this, 0, this, oldCapacity, moveItemsCount);
+    }
+};
+
+module.exports = Queue;
+
+},{}],431:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL, tryConvertToPromise) {
+var apiRejection = require("./errors_api_rejection.js")(Promise);
+var isArray = require("./util.js").isArray;
+
+var raceLater = function (promise) {
+    return promise.then(function(array) {
+        return race(array, promise);
+    });
+};
+
+function race(promises, parent) {
+    var maybePromise = tryConvertToPromise(promises, undefined);
+
+    if (maybePromise instanceof Promise) {
+        return raceLater(maybePromise);
+    } else if (!isArray(promises)) {
+        return apiRejection("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a");
+    }
+
+    var ret = new Promise(INTERNAL);
+    if (parent !== undefined) {
+        ret._propagateFrom(parent, 7);
+    } else {
+        ret._setTrace(undefined);
+    }
+    var fulfill = ret._fulfill;
+    var reject = ret._reject;
+    for (var i = 0, len = promises.length; i < len; ++i) {
+        var val = promises[i];
+
+        if (val === undefined && !(i in promises)) {
+            continue;
+        }
+
+        Promise.cast(val)._then(fulfill, reject, undefined, ret, null);
+    }
+    return ret;
+}
+
+Promise.race = function (promises) {
+    return race(promises, undefined);
+};
+
+Promise.prototype.race = function () {
+    return race(this, undefined);
+};
+
+};
+
+},{"./errors_api_rejection.js":416,"./util.js":440}],432:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise,
+                          PromiseArray,
+                          apiRejection,
+                          tryConvertToPromise,
+                          INTERNAL) {
+var util = require("./util.js");
+var tryCatch4 = util.tryCatch4;
+var tryCatch3 = util.tryCatch3;
+var errorObj = util.errorObj;
+function ReductionPromiseArray(promises, fn, accum, _each) {
+    this.constructor$(promises);
+    this._preservedValues = _each === INTERNAL ? [] : null;
+    this._zerothIsAccum = (accum === undefined);
+    this._gotAccum = false;
+    this._reducingIndex = (this._zerothIsAccum ? 1 : 0);
+    this._valuesPhase = undefined;
+
+    var maybePromise = tryConvertToPromise(accum, undefined);
+    var rejected = false;
+    var isPromise = maybePromise instanceof Promise;
+    if (isPromise) {
+        maybePromise = maybePromise._target();
+        if (maybePromise._isPending()) {
+            maybePromise._proxyPromiseArray(this, -1);
+        } else if (maybePromise._isFulfilled()) {
+            accum = maybePromise._value();
+            this._gotAccum = true;
+        } else {
+            maybePromise._unsetRejectionIsUnhandled();
+            this._reject(maybePromise._reason());
+            rejected = true;
+        }
+    }
+    if (!(isPromise || this._zerothIsAccum)) this._gotAccum = true;
+    this._callback = fn;
+    this._accum = accum;
+    if (!rejected) this._init$(undefined, -5);
+}
+util.inherits(ReductionPromiseArray, PromiseArray);
+
+ReductionPromiseArray.prototype._init = function () {};
+
+ReductionPromiseArray.prototype._resolveEmptyArray = function () {
+    if (this._gotAccum || this._zerothIsAccum) {
+        this._resolve(this._preservedValues !== null
+                        ? [] : this._accum);
+    }
+};
+
+ReductionPromiseArray.prototype._promiseFulfilled = function (value, index) {
+    var values = this._values;
+    values[index] = value;
+    var length = this.length();
+    var preservedValues = this._preservedValues;
+    var isEach = preservedValues !== null;
+    var gotAccum = this._gotAccum;
+    var valuesPhase = this._valuesPhase;
+    var valuesPhaseIndex;
+    if (!valuesPhase) {
+        valuesPhase = this._valuesPhase = Array(length);
+        for (valuesPhaseIndex=0; valuesPhaseIndex<length; ++valuesPhaseIndex) {
+            valuesPhase[valuesPhaseIndex] = 0;
+        }
+    }
+    valuesPhaseIndex = valuesPhase[index];
+
+    if (index === 0 && this._zerothIsAccum) {
+        if (!gotAccum) {
+            this._accum = value;
+            this._gotAccum = gotAccum = true;
+        }
+        valuesPhase[index] = ((valuesPhaseIndex === 0)
+            ? 1 : 2);
+    } else if (index === -1) {
+        if (!gotAccum) {
+            this._accum = value;
+            this._gotAccum = gotAccum = true;
+        }
+    } else {
+        if (valuesPhaseIndex === 0) {
+            valuesPhase[index] = 1;
+        }
+        else {
+            valuesPhase[index] = 2;
+            if (gotAccum) {
+                this._accum = value;
+            }
+        }
+    }
+    if (!gotAccum) return;
+
+    var callback = this._callback;
+    var receiver = this._promise._boundTo;
+    var ret;
+
+    for (var i = this._reducingIndex; i < length; ++i) {
+        valuesPhaseIndex = valuesPhase[i];
+        if (valuesPhaseIndex === 2) {
+            this._reducingIndex = i + 1;
+            continue;
+        }
+        if (valuesPhaseIndex !== 1) return;
+        value = values[i];
+        if (value instanceof Promise) {
+            value = value._target();
+            if (value._isFulfilled()) {
+                value = value._value();
+            } else if (value._isPending()) {
+                return;
+            } else {
+                value._unsetRejectionIsUnhandled();
+                return this._reject(value._reason());
+            }
+        }
+
+        if (isEach) {
+            preservedValues.push(value);
+            ret = tryCatch3(callback, receiver, value, i, length);
+        }
+        else {
+            ret = tryCatch4(callback, receiver, this._accum, value, i, length);
+        }
+
+        if (ret === errorObj) return this._reject(ret.e);
+
+        var maybePromise = tryConvertToPromise(ret, this._promise);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            if (maybePromise._isPending()) {
+                valuesPhase[i] = 4;
+                return maybePromise._proxyPromiseArray(this, i);
+            } else if (maybePromise._isFulfilled()) {
+                ret = maybePromise._value();
+            } else {
+                maybePromise._unsetRejectionIsUnhandled();
+                return this._reject(maybePromise._reason());
+            }
+        }
+
+        this._reducingIndex = i + 1;
+        this._accum = ret;
+    }
+
+    if (this._reducingIndex < length) return;
+    this._resolve(isEach ? preservedValues : this._accum);
+};
+
+function reduce(promises, fn, initialValue, _each) {
+    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
+    return array.promise();
+}
+
+Promise.prototype.reduce = function (fn, initialValue) {
+    return reduce(this, fn, initialValue, null);
+};
+
+Promise.reduce = function (promises, fn, initialValue, _each) {
+    return reduce(promises, fn, initialValue, _each);
+};
+};
+
+},{"./util.js":440}],433:[function(require,module,exports){
+(function (process){
+"use strict";
+var schedule;
+if (typeof process === "object" && typeof process.version === "string") {
+    schedule = parseInt(process.version.split(".")[1], 10) > 10
+        ? setImmediate : process.nextTick;
+}
+else if (typeof MutationObserver !== "undefined") {
+    schedule = function(fn) {
+        var div = document.createElement("div");
+        var observer = new MutationObserver(fn);
+        observer.observe(div, {attributes: true});
+        return function() { div.classList.toggle("foo"); };
+    };
+    schedule.isStatic = true;
+}
+else if (typeof setTimeout !== "undefined") {
+    schedule = function (fn) {
+        setTimeout(fn, 0);
+    };
+}
+else {
+    schedule = function() {
+        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/m3OTXk\u000a");
+    };
+}
+module.exports = schedule;
+
+}).call(this,require('_process'))
+},{"_process":441}],434:[function(require,module,exports){
+"use strict";
+module.exports =
+    function(Promise, PromiseArray) {
+var PromiseInspection = Promise.PromiseInspection;
+var util = require("./util.js");
+
+function SettledPromiseArray(values) {
+    this.constructor$(values);
+    this._promise._setIsSpreadable();
+}
+util.inherits(SettledPromiseArray, PromiseArray);
+
+SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
+    this._values[index] = inspection;
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= this._length) {
+        this._resolve(this._values);
+    }
+};
+
+SettledPromiseArray.prototype._promiseFulfilled = function (value, index) {
+    var ret = new PromiseInspection();
+    ret._bitField = 268435456;
+    ret._settledValue = value;
+    this._promiseResolved(index, ret);
+};
+SettledPromiseArray.prototype._promiseRejected = function (reason, index) {
+    var ret = new PromiseInspection();
+    ret._bitField = 134217728;
+    ret._settledValue = reason;
+    this._promiseResolved(index, ret);
+};
+
+Promise.settle = function (promises) {
+    return new SettledPromiseArray(promises).promise();
+};
+
+Promise.prototype.settle = function () {
+    return new SettledPromiseArray(this).promise();
+};
+};
+
+},{"./util.js":440}],435:[function(require,module,exports){
+"use strict";
+module.exports =
+function(Promise, PromiseArray, apiRejection) {
+var util = require("./util.js");
+var RangeError = require("./errors.js").RangeError;
+var AggregateError = require("./errors.js").AggregateError;
+var isArray = util.isArray;
+
+
+function SomePromiseArray(values) {
+    this.constructor$(values);
+    this._howMany = 0;
+    this._unwrap = false;
+    this._initialized = false;
+}
+util.inherits(SomePromiseArray, PromiseArray);
+
+SomePromiseArray.prototype._init = function () {
+    if (!this._initialized) {
+        return;
+    }
+    this._promise._setIsSpreadable();
+    if (this._howMany === 0) {
+        this._resolve([]);
+        return;
+    }
+    this._init$(undefined, -5);
+    var isArrayResolved = isArray(this._values);
+    if (!this._isResolved() &&
+        isArrayResolved &&
+        this._howMany > this._canPossiblyFulfill()) {
+        this._reject(this._getRangeError(this.length()));
+    }
+};
+
+SomePromiseArray.prototype.init = function () {
+    this._initialized = true;
+    this._init();
+};
+
+SomePromiseArray.prototype.setUnwrap = function () {
+    this._unwrap = true;
+};
+
+SomePromiseArray.prototype.howMany = function () {
+    return this._howMany;
+};
+
+SomePromiseArray.prototype.setHowMany = function (count) {
+    if (this._isResolved()) return;
+    this._howMany = count;
+};
+
+SomePromiseArray.prototype._promiseFulfilled = function (value) {
+    this._addFulfilled(value);
+    if (this._fulfilled() === this.howMany()) {
+        this._values.length = this.howMany();
+        if (this.howMany() === 1 && this._unwrap) {
+            this._resolve(this._values[0]);
+        } else {
+            this._resolve(this._values);
+        }
+    }
+
+};
+SomePromiseArray.prototype._promiseRejected = function (reason) {
+    this._addRejected(reason);
+    if (this.howMany() > this._canPossiblyFulfill()) {
+        var e = new AggregateError();
+        for (var i = this.length(); i < this._values.length; ++i) {
+            e.push(this._values[i]);
+        }
+        this._reject(e);
+    }
+};
+
+SomePromiseArray.prototype._fulfilled = function () {
+    return this._totalResolved;
+};
+
+SomePromiseArray.prototype._rejected = function () {
+    return this._values.length - this.length();
+};
+
+SomePromiseArray.prototype._addRejected = function (reason) {
+    this._values.push(reason);
+};
+
+SomePromiseArray.prototype._addFulfilled = function (value) {
+    this._values[this._totalResolved++] = value;
+};
+
+SomePromiseArray.prototype._canPossiblyFulfill = function () {
+    return this.length() - this._rejected();
+};
+
+SomePromiseArray.prototype._getRangeError = function (count) {
+    var message = "Input array must contain at least " +
+            this._howMany + " items but contains only " + count + " items";
+    return new RangeError(message);
+};
+
+SomePromiseArray.prototype._resolveEmptyArray = function () {
+    this._reject(this._getRangeError(0));
+};
+
+function some(promises, howMany) {
+    if ((howMany | 0) !== howMany || howMany < 0) {
+        return apiRejection("expecting a positive integer\u000a\u000a    See http://goo.gl/1wAmHx\u000a");
+    }
+    var ret = new SomePromiseArray(promises);
+    var promise = ret.promise();
+    if (promise.isRejected()) {
+        return promise;
+    }
+    ret.setHowMany(howMany);
+    ret.init();
+    return promise;
+}
+
+Promise.some = function (promises, howMany) {
+    return some(promises, howMany);
+};
+
+Promise.prototype.some = function (howMany) {
+    return some(this, howMany);
+};
+
+Promise._SomePromiseArray = SomePromiseArray;
+};
+
+},{"./errors.js":415,"./util.js":440}],436:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise) {
+function PromiseInspection(promise) {
+    if (promise !== undefined) {
+        promise = promise._target();
+        this._bitField = promise._bitField;
+        this._settledValue = promise._isResolved()
+            ? promise._settledValue
+            : undefined;
+    }
+    else {
+        this._bitField = 0;
+        this._settledValue = undefined;
+    }
+}
+
+PromiseInspection.prototype.value = function () {
+    if (!this.isFulfilled()) {
+        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/hc1DLj\u000a");
+    }
+    return this._settledValue;
+};
+
+PromiseInspection.prototype.error =
+PromiseInspection.prototype.reason = function () {
+    if (!this.isRejected()) {
+        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/hPuiwB\u000a");
+    }
+    return this._settledValue;
+};
+
+PromiseInspection.prototype.isFulfilled =
+Promise.prototype._isFulfilled = function () {
+    return (this._bitField & 268435456) > 0;
+};
+
+PromiseInspection.prototype.isRejected =
+Promise.prototype._isRejected = function () {
+    return (this._bitField & 134217728) > 0;
+};
+
+PromiseInspection.prototype.isPending =
+Promise.prototype._isPending = function () {
+    return (this._bitField & 402653184) === 0;
+};
+
+PromiseInspection.prototype.isResolved =
+Promise.prototype._isResolved = function () {
+    return (this._bitField & 402653184) > 0;
+};
+
+Promise.prototype.isPending = function() {
+    return this._target()._isPending();
+};
+
+Promise.prototype.isRejected = function() {
+    return this._target()._isRejected();
+};
+
+Promise.prototype.isFulfilled = function() {
+    return this._target()._isFulfilled();
+};
+
+Promise.prototype.isResolved = function() {
+    return this._target()._isResolved();
+};
+
+Promise.prototype._value = function() {
+    return this._settledValue;
+};
+
+Promise.prototype._reason = function() {
+    return this._settledValue;
+};
+
+Promise.prototype.value = function() {
+    var target = this._target();
+    if (!target.isFulfilled()) {
+        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/hc1DLj\u000a");
+    }
+    return target._settledValue;
+};
+
+Promise.prototype.reason = function() {
+    var target = this._target();
+    if (!target.isRejected()) {
+        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/hPuiwB\u000a");
+    }
+    return target._settledValue;
+};
+
+
+Promise.PromiseInspection = PromiseInspection;
+};
+
+},{}],437:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var util = require("./util.js");
+var canAttachTrace = require("./errors.js").canAttachTrace;
+var errorObj = util.errorObj;
+var isObject = util.isObject;
+
+function getThen(obj) {
+    try {
+        return obj.then;
+    }
+    catch(e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+function tryConvertToPromise(obj, traceParent) {
+    if (isObject(obj)) {
+        if (obj instanceof Promise) {
+            return obj;
+        }
+        else if (isAnyBluebirdPromise(obj)) {
+            var ret = new Promise(INTERNAL);
+            ret._setTrace(undefined);
+            obj._then(
+                ret._fulfillUnchecked,
+                ret._rejectUncheckedCheckError,
+                ret._progressUnchecked,
+                ret,
+                null
+            );
+            return ret;
+        }
+        var then = getThen(obj);
+        if (then === errorObj) {
+            if (traceParent !== undefined && canAttachTrace(then.e)) {
+                traceParent._attachExtraTrace(then.e);
+            }
+            return Promise.reject(then.e);
+        } else if (typeof then === "function") {
+            return doThenable(obj, then, traceParent);
+        }
+    }
+    return obj;
+}
+
+var hasProp = {}.hasOwnProperty;
+function isAnyBluebirdPromise(obj) {
+    return hasProp.call(obj, "_promise0");
+}
+
+function doThenable(x, then, traceParent) {
+    var resolver = Promise.defer();
+    var called = false;
+    try {
+        then.call(
+            x,
+            resolveFromThenable,
+            rejectFromThenable,
+            progressFromThenable
+        );
+    } catch(e) {
+        if (!called) {
+            called = true;
+            var trace = canAttachTrace(e) ? e : new Error(util.toString(e));
+            if (traceParent !== undefined) {
+                traceParent._attachExtraTrace(trace);
+            }
+            resolver.promise._reject(e, trace);
+        }
+    }
+    return resolver.promise;
+
+    function resolveFromThenable(y) {
+        if (called) return;
+        called = true;
+
+        if (x === y) {
+            var e = Promise._makeSelfResolutionError();
+            if (traceParent !== undefined) {
+                traceParent._attachExtraTrace(e);
+            }
+            resolver.promise._reject(e, undefined);
+            return;
+        }
+        resolver.resolve(y);
+    }
+
+    function rejectFromThenable(r) {
+        if (called) return;
+        called = true;
+        var trace = canAttachTrace(r) ? r : new Error(util.toString(r));
+        if (traceParent !== undefined) {
+            traceParent._attachExtraTrace(trace);
+        }
+        resolver.promise._reject(r, trace);
+    }
+
+    function progressFromThenable(v) {
+        if (called) return;
+        var promise = resolver.promise;
+        if (typeof promise._progress === "function") {
+            promise._progress(v);
+        }
+    }
+}
+
+return tryConvertToPromise;
+};
+
+},{"./errors.js":415,"./util.js":440}],438:[function(require,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL, tryConvertToPromise) {
+var errors = require("./errors.js");
+var TimeoutError = Promise.TimeoutError;
+
+var afterTimeout = function (promise, message) {
+    if (!promise.isPending()) return;
+    if (typeof message !== "string") {
+        message = "operation timed out";
+    }
+    var err = new TimeoutError(message);
+    errors.markAsOriginatingFromRejection(err);
+    promise._attachExtraTrace(err);
+    promise._cancel(err);
+};
+
+var afterDelay = function (value, promise) {
+    promise._fulfill(value);
+};
+
+var delay = Promise.delay = function (value, ms) {
+    if (ms === undefined) {
+        ms = value;
+        value = undefined;
+    }
+    ms = +ms;
+    var maybePromise = tryConvertToPromise(value, undefined);
+    var promise = new Promise(INTERNAL);
+
+    if (maybePromise instanceof Promise) {
+        promise._propagateFrom(maybePromise, 7);
+        promise._follow(maybePromise._target());
+        return promise.then(function(value) {
+            return Promise.delay(value, ms);
+        });
+    } else {
+        promise._setTrace(undefined);
+        setTimeout(function delayTimeout() {
+            afterDelay(value, promise);
+        }, ms);
+    }
+    return promise;
+};
+
+Promise.prototype.delay = function (ms) {
+    return delay(this, ms);
+};
+
+function successClear(value) {
+    var handle = this;
+    if (handle instanceof Number) handle = +handle;
+    clearTimeout(handle);
+    return value;
+}
+
+function failureClear(reason) {
+    var handle = this;
+    if (handle instanceof Number) handle = +handle;
+    clearTimeout(handle);
+    throw reason;
+}
+
+Promise.prototype.timeout = function (ms, message) {
+    var target = this._target();
+    ms = +ms;
+    var ret = new Promise(INTERNAL).cancellable();
+    ret._propagateFrom(this, 7);
+    ret._follow(target);
+    var handle = setTimeout(function timeoutTimeout() {
+        afterTimeout(ret, message);
+    }, ms);
+    return ret._then(successClear, failureClear, undefined, handle, undefined);
+};
+
+};
+
+},{"./errors.js":415}],439:[function(require,module,exports){
+"use strict";
+module.exports = function (Promise, apiRejection, tryConvertToPromise) {
+    var TypeError = require("./errors.js").TypeError;
+    var inherits = require("./util.js").inherits;
+    var PromiseInspection = Promise.PromiseInspection;
+
+    function inspectionMapper(inspections) {
+        var len = inspections.length;
+        for (var i = 0; i < len; ++i) {
+            var inspection = inspections[i];
+            if (inspection.isRejected()) {
+                return Promise.reject(inspection.error());
+            }
+            inspections[i] = inspection._settledValue;
+        }
+        return inspections;
+    }
+
+    function thrower(e) {
+        setTimeout(function(){throw e;}, 0);
+    }
+
+    function castPreservingDisposable(thenable) {
+        var maybePromise = tryConvertToPromise(thenable, undefined);
+        if (maybePromise !== thenable &&
+            typeof thenable._isDisposable === "function" &&
+            typeof thenable._getDisposer === "function" &&
+            thenable._isDisposable()) {
+            maybePromise._setDisposable(thenable._getDisposer());
+        }
+        return maybePromise;
+    }
+    function dispose(resources, inspection) {
+        var i = 0;
+        var len = resources.length;
+        var ret = Promise.defer();
+        function iterator() {
+            if (i >= len) return ret.resolve();
+            var maybePromise = castPreservingDisposable(resources[i++]);
+            if (maybePromise instanceof Promise &&
+                maybePromise._isDisposable()) {
+                try {
+                    maybePromise = tryConvertToPromise(
+                        maybePromise._getDisposer().tryDispose(inspection),
+                        undefined);
+                } catch (e) {
+                    return thrower(e);
+                }
+                if (maybePromise instanceof Promise) {
+                    return maybePromise._then(iterator, thrower,
+                                              null, null, null);
+                }
+            }
+            iterator();
+        }
+        iterator();
+        return ret.promise;
+    }
+
+    function disposerSuccess(value) {
+        var inspection = new PromiseInspection();
+        inspection._settledValue = value;
+        inspection._bitField = 268435456;
+        return dispose(this, inspection).thenReturn(value);
+    }
+
+    function disposerFail(reason) {
+        var inspection = new PromiseInspection();
+        inspection._settledValue = reason;
+        inspection._bitField = 134217728;
+        return dispose(this, inspection).thenThrow(reason);
+    }
+
+    function Disposer(data, promise) {
+        this._data = data;
+        this._promise = promise;
+    }
+
+    Disposer.prototype.data = function () {
+        return this._data;
+    };
+
+    Disposer.prototype.promise = function () {
+        return this._promise;
+    };
+
+    Disposer.prototype.resource = function () {
+        if (this.promise()._isFulfilled()) {
+            return this.promise()._value();
+        }
+        return null;
+    };
+
+    Disposer.prototype.tryDispose = function(inspection) {
+        var resource = this.resource();
+        var ret = resource !== null
+            ? this.doDispose(resource, inspection) : null;
+        this._promise._unsetDisposable();
+        this._data = this._promise = null;
+        return ret;
+    };
+
+    Disposer.isDisposer = function (d) {
+        return (d != null &&
+                typeof d.resource === "function" &&
+                typeof d.tryDispose === "function");
+    };
+
+    function FunctionDisposer(fn, promise) {
+        this.constructor$(fn, promise);
+    }
+    inherits(FunctionDisposer, Disposer);
+
+    FunctionDisposer.prototype.doDispose = function (resource, inspection) {
+        var fn = this.data();
+        return fn.call(resource, resource, inspection);
+    };
+
+    Promise.using = function () {
+        var len = arguments.length;
+        if (len < 2) return apiRejection(
+                        "you must pass at least 2 arguments to Promise.using");
+        var fn = arguments[len - 1];
+        if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
+        len--;
+        var resources = new Array(len);
+        for (var i = 0; i < len; ++i) {
+            var resource = arguments[i];
+            if (Disposer.isDisposer(resource)) {
+                var disposer = resource;
+                resource = resource.promise();
+                resource._setDisposable(disposer);
+            }
+            resources[i] = resource;
+        }
+
+        return Promise.settle(resources)
+            .then(inspectionMapper)
+            .spread(fn)
+            ._then(
+                disposerSuccess, disposerFail, undefined, resources, undefined);
+    };
+
+    Promise.prototype._setDisposable = function (disposer) {
+        this._bitField = this._bitField | 262144;
+        this._disposer = disposer;
+    };
+
+    Promise.prototype._isDisposable = function () {
+        return (this._bitField & 262144) > 0;
+    };
+
+    Promise.prototype._getDisposer = function () {
+        return this._disposer;
+    };
+
+    Promise.prototype._unsetDisposable = function () {
+        this._bitField = this._bitField & (~262144);
+        this._disposer = undefined;
+    };
+
+    Promise.prototype.disposer = function (fn) {
+        if (typeof fn === "function") {
+            return new FunctionDisposer(fn, this._target());
+        }
+        throw new TypeError();
+    };
+
+};
+
+},{"./errors.js":415,"./util.js":440}],440:[function(require,module,exports){
+"use strict";
+var es5 = require("./es5.js");
+var haveGetters = (function(){
+    try {
+        var o = {};
+        es5.defineProperty(o, "f", {
+            get: function () {
+                return 3;
+            }
+        });
+        return o.f === 3;
+    }
+    catch (e) {
+        return false;
+    }
+
+})();
+var canEvaluate = typeof navigator == "undefined";
+var errorObj = {e: {}};
+function tryCatch1(fn, receiver, arg) {
+    try { return fn.call(receiver, arg); }
+    catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+function tryCatch2(fn, receiver, arg, arg2) {
+    try { return fn.call(receiver, arg, arg2); }
+    catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+function tryCatch3(fn, receiver, arg, arg2, arg3) {
+    try { return fn.call(receiver, arg, arg2, arg3); }
+    catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+function tryCatch4(fn, receiver, arg, arg2, arg3, arg4) {
+    try { return fn.call(receiver, arg, arg2, arg3, arg4); }
+    catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+function tryCatchApply(fn, args, receiver) {
+    try { return fn.apply(receiver, args); }
+    catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+
+var inherits = function(Child, Parent) {
+    var hasProp = {}.hasOwnProperty;
+
+    function T() {
+        this.constructor = Child;
+        this.constructor$ = Parent;
+        for (var propertyName in Parent.prototype) {
+            if (hasProp.call(Parent.prototype, propertyName) &&
+                propertyName.charAt(propertyName.length-1) !== "$"
+           ) {
+                this[propertyName + "$"] = Parent.prototype[propertyName];
+            }
+        }
+    }
+    T.prototype = Parent.prototype;
+    Child.prototype = new T();
+    return Child.prototype;
+};
+
+function asString(val) {
+    return typeof val === "string" ? val : ("" + val);
+}
+
+function isPrimitive(val) {
+    return val == null || val === true || val === false ||
+        typeof val === "string" || typeof val === "number";
+
+}
+
+function isObject(value) {
+    return !isPrimitive(value);
+}
+
+function maybeWrapAsError(maybeError) {
+    if (!isPrimitive(maybeError)) return maybeError;
+
+    return new Error(asString(maybeError));
+}
+
+function withAppended(target, appendee) {
+    var len = target.length;
+    var ret = new Array(len + 1);
+    var i;
+    for (i = 0; i < len; ++i) {
+        ret[i] = target[i];
+    }
+    ret[i] = appendee;
+    return ret;
+}
+
+function getDataPropertyOrDefault(obj, key, defaultValue) {
+    if (es5.isES5) {
+        var desc = Object.getOwnPropertyDescriptor(obj, key);
+        if (desc != null) {
+            return desc.get == null && desc.set == null
+                    ? desc.value
+                    : defaultValue;
+        }
+    } else {
+        return {}.hasOwnProperty.call(obj, key) ? obj[key] : undefined;
+    }
+}
+
+function notEnumerableProp(obj, name, value) {
+    if (isPrimitive(obj)) return obj;
+    var descriptor = {
+        value: value,
+        configurable: true,
+        enumerable: false,
+        writable: true
+    };
+    es5.defineProperty(obj, name, descriptor);
+    return obj;
+}
+
+
+var wrapsPrimitiveReceiver = (function() {
+    return this !== "string";
+}).call("string");
+
+function thrower(r) {
+    throw r;
+}
+
+var inheritedDataKeys = (function() {
+    if (es5.isES5) {
+        return function(obj, opts) {
+            var ret = [];
+            var visitedKeys = Object.create(null);
+            var getKeys = Object(opts).includeHidden
+                ? Object.getOwnPropertyNames
+                : Object.keys;
+            while (obj != null) {
+                var keys;
+                try {
+                    keys = getKeys(obj);
+                } catch (e) {
+                    return ret;
+                }
+                for (var i = 0; i < keys.length; ++i) {
+                    var key = keys[i];
+                    if (visitedKeys[key]) continue;
+                    visitedKeys[key] = true;
+                    var desc = Object.getOwnPropertyDescriptor(obj, key);
+                    if (desc != null && desc.get == null && desc.set == null) {
+                        ret.push(key);
+                    }
+                }
+                obj = es5.getPrototypeOf(obj);
+            }
+            return ret;
+        };
+    } else {
+        return function(obj) {
+            var ret = [];
+            /*jshint forin:false */
+            for (var key in obj) {
+                ret.push(key);
+            }
+            return ret;
+        };
+    }
+
+})();
+
+function isClass(fn) {
+    try {
+        if (typeof fn === "function") {
+            var keys = es5.keys(fn.prototype);
+            return keys.length > 0 &&
+                   !(keys.length === 1 && keys[0] === "constructor");
+        }
+        return false;
+    } catch (e) {
+        return false;
+    }
+}
+
+function toFastProperties(obj) {
+    /*jshint -W027*/
+    function f() {}
+    f.prototype = obj;
+    return f;
+    eval(obj);
+}
+
+var rident = /^[a-z$_][a-z$_0-9]*$/i;
+function isIdentifier(str) {
+    return rident.test(str);
+}
+
+function filledRange(count, prefix, suffix) {
+    var ret = new Array(count);
+    for(var i = 0; i < count; ++i) {
+        ret[i] = prefix + i + suffix;
+    }
+    return ret;
+}
+
+function safeToString(obj) {
+    try {
+        return obj + "";
+    } catch (e) {
+        return "[no string representation]";
+    }
+}
+
+var ret = {
+    isClass: isClass,
+    isIdentifier: isIdentifier,
+    inheritedDataKeys: inheritedDataKeys,
+    getDataPropertyOrDefault: getDataPropertyOrDefault,
+    thrower: thrower,
+    isArray: es5.isArray,
+    haveGetters: haveGetters,
+    notEnumerableProp: notEnumerableProp,
+    isPrimitive: isPrimitive,
+    isObject: isObject,
+    canEvaluate: canEvaluate,
+    errorObj: errorObj,
+    tryCatch1: tryCatch1,
+    tryCatch2: tryCatch2,
+    tryCatch3: tryCatch3,
+    tryCatch4: tryCatch4,
+    tryCatchApply: tryCatchApply,
+    inherits: inherits,
+    withAppended: withAppended,
+    asString: asString,
+    maybeWrapAsError: maybeWrapAsError,
+    wrapsPrimitiveReceiver: wrapsPrimitiveReceiver,
+    toFastProperties: toFastProperties,
+    filledRange: filledRange,
+    toString: safeToString,
+    lastLineError: new Error()
+};
+
+module.exports = ret;
+
+},{"./es5.js":417}],441:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],442:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26689,7 +31328,7 @@ var defaults = function(object, source, guard) {
 
 module.exports = defaults;
 
-},{"lodash._objecttypes":406,"lodash.keys":407}],406:[function(require,module,exports){
+},{"lodash._objecttypes":443,"lodash.keys":444}],443:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26711,7 +31350,7 @@ var objectTypes = {
 
 module.exports = objectTypes;
 
-},{}],407:[function(require,module,exports){
+},{}],444:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26749,7 +31388,7 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-},{"lodash._isnative":408,"lodash._shimkeys":409,"lodash.isobject":410}],408:[function(require,module,exports){
+},{"lodash._isnative":445,"lodash._shimkeys":446,"lodash.isobject":447}],445:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26785,7 +31424,7 @@ function isNative(value) {
 
 module.exports = isNative;
 
-},{}],409:[function(require,module,exports){
+},{}],446:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26825,7 +31464,7 @@ var shimKeys = function(object) {
 
 module.exports = shimKeys;
 
-},{"lodash._objecttypes":406}],410:[function(require,module,exports){
+},{"lodash._objecttypes":443}],447:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26866,7 +31505,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{"lodash._objecttypes":406}],411:[function(require,module,exports){
+},{"lodash._objecttypes":443}],448:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -26948,7 +31587,7 @@ function find(collection, callback, thisArg) {
 
 module.exports = find;
 
-},{"lodash.createcallback":412,"lodash.forown":447}],412:[function(require,module,exports){
+},{"lodash.createcallback":449,"lodash.forown":484}],449:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.3 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27031,7 +31670,7 @@ function createCallback(func, thisArg, argCount) {
 
 module.exports = createCallback;
 
-},{"lodash._basecreatecallback":413,"lodash._baseisequal":431,"lodash.isobject":440,"lodash.keys":442,"lodash.property":446}],413:[function(require,module,exports){
+},{"lodash._basecreatecallback":450,"lodash._baseisequal":468,"lodash.isobject":477,"lodash.keys":479,"lodash.property":483}],450:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27113,7 +31752,7 @@ function baseCreateCallback(func, thisArg, argCount) {
 
 module.exports = baseCreateCallback;
 
-},{"lodash._setbinddata":414,"lodash.bind":417,"lodash.identity":569,"lodash.support":429}],414:[function(require,module,exports){
+},{"lodash._setbinddata":451,"lodash.bind":454,"lodash.identity":606,"lodash.support":466}],451:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27158,9 +31797,9 @@ var setBindData = !defineProperty ? noop : function(func, value) {
 
 module.exports = setBindData;
 
-},{"lodash._isnative":415,"lodash.noop":416}],415:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],416:[function(require,module,exports){
+},{"lodash._isnative":452,"lodash.noop":453}],452:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],453:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27188,7 +31827,7 @@ function noop() {
 
 module.exports = noop;
 
-},{}],417:[function(require,module,exports){
+},{}],454:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27230,7 +31869,7 @@ function bind(func, thisArg) {
 
 module.exports = bind;
 
-},{"lodash._createwrapper":418,"lodash._slice":428}],418:[function(require,module,exports){
+},{"lodash._createwrapper":455,"lodash._slice":465}],455:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27338,7 +31977,7 @@ function createWrapper(func, bitmask, partialArgs, partialRightArgs, thisArg, ar
 
 module.exports = createWrapper;
 
-},{"lodash._basebind":419,"lodash._basecreatewrapper":423,"lodash._slice":428,"lodash.isfunction":427}],419:[function(require,module,exports){
+},{"lodash._basebind":456,"lodash._basecreatewrapper":460,"lodash._slice":465,"lodash.isfunction":464}],456:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27402,7 +32041,7 @@ function baseBind(bindData) {
 
 module.exports = baseBind;
 
-},{"lodash._basecreate":420,"lodash._setbinddata":414,"lodash._slice":428,"lodash.isobject":440}],420:[function(require,module,exports){
+},{"lodash._basecreate":457,"lodash._setbinddata":451,"lodash._slice":465,"lodash.isobject":477}],457:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -27448,11 +32087,11 @@ if (!nativeCreate) {
 module.exports = baseCreate;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._isnative":421,"lodash.isobject":440,"lodash.noop":422}],421:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],422:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],423:[function(require,module,exports){
+},{"lodash._isnative":458,"lodash.isobject":477,"lodash.noop":459}],458:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],459:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],460:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27532,13 +32171,13 @@ function baseCreateWrapper(bindData) {
 
 module.exports = baseCreateWrapper;
 
-},{"lodash._basecreate":424,"lodash._setbinddata":414,"lodash._slice":428,"lodash.isobject":440}],424:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":425,"lodash.isobject":440,"lodash.noop":426}],425:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],426:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],427:[function(require,module,exports){
+},{"lodash._basecreate":461,"lodash._setbinddata":451,"lodash._slice":465,"lodash.isobject":477}],461:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":462,"lodash.isobject":477,"lodash.noop":463}],462:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],463:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],464:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27567,7 +32206,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],428:[function(require,module,exports){
+},{}],465:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27607,7 +32246,7 @@ function slice(array, start, end) {
 
 module.exports = slice;
 
-},{}],429:[function(require,module,exports){
+},{}],466:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -27651,9 +32290,9 @@ support.funcNames = typeof Function.name == 'string';
 module.exports = support;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._isnative":430}],430:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],431:[function(require,module,exports){
+},{"lodash._isnative":467}],467:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],468:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27864,7 +32503,7 @@ function baseIsEqual(a, b, callback, isWhere, stackA, stackB) {
 
 module.exports = baseIsEqual;
 
-},{"lodash._getarray":432,"lodash._objecttypes":434,"lodash._releasearray":435,"lodash.forin":438,"lodash.isfunction":439}],432:[function(require,module,exports){
+},{"lodash._getarray":469,"lodash._objecttypes":471,"lodash._releasearray":472,"lodash.forin":475,"lodash.isfunction":476}],469:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27887,7 +32526,7 @@ function getArray() {
 
 module.exports = getArray;
 
-},{"lodash._arraypool":433}],433:[function(require,module,exports){
+},{"lodash._arraypool":470}],470:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27902,9 +32541,9 @@ var arrayPool = [];
 
 module.exports = arrayPool;
 
-},{}],434:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],435:[function(require,module,exports){
+},{}],471:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],472:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27931,9 +32570,9 @@ function releaseArray(array) {
 
 module.exports = releaseArray;
 
-},{"lodash._arraypool":436,"lodash._maxpoolsize":437}],436:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],437:[function(require,module,exports){
+},{"lodash._arraypool":473,"lodash._maxpoolsize":474}],473:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],474:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -27948,7 +32587,7 @@ var maxPoolSize = 40;
 
 module.exports = maxPoolSize;
 
-},{}],438:[function(require,module,exports){
+},{}],475:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28004,21 +32643,21 @@ var forIn = function(collection, callback, thisArg) {
 
 module.exports = forIn;
 
-},{"lodash._basecreatecallback":413,"lodash._objecttypes":434}],439:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],440:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":441}],441:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],442:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":443,"lodash._shimkeys":444,"lodash.isobject":440}],443:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],444:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":445}],445:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],446:[function(require,module,exports){
+},{"lodash._basecreatecallback":450,"lodash._objecttypes":471}],476:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],477:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":478}],478:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],479:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":480,"lodash._shimkeys":481,"lodash.isobject":477}],480:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],481:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":482}],482:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],483:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28060,7 +32699,7 @@ function property(key) {
 
 module.exports = property;
 
-},{}],447:[function(require,module,exports){
+},{}],484:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28112,57 +32751,57 @@ var forOwn = function(collection, callback, thisArg) {
 
 module.exports = forOwn;
 
-},{"lodash._basecreatecallback":448,"lodash._objecttypes":468,"lodash.keys":469}],448:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":449,"lodash.bind":452,"lodash.identity":569,"lodash.support":466}],449:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":450,"lodash.noop":451}],450:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],451:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],452:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":453,"lodash._slice":465}],453:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":454,"lodash._basecreatewrapper":459,"lodash._slice":465,"lodash.isfunction":464}],454:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":455,"lodash._setbinddata":449,"lodash._slice":465,"lodash.isobject":458}],455:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":456,"lodash.isobject":458,"lodash.noop":457}],456:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],457:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],458:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":468}],459:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":460,"lodash._setbinddata":449,"lodash._slice":465,"lodash.isobject":463}],460:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":461,"lodash.isobject":463,"lodash.noop":462}],461:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],462:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],463:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":468}],464:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],465:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],466:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":467}],467:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],468:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],469:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":470,"lodash._shimkeys":471,"lodash.isobject":472}],470:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],471:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":468}],472:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":468}],473:[function(require,module,exports){
+},{"lodash._basecreatecallback":485,"lodash._objecttypes":505,"lodash.keys":506}],485:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":486,"lodash.bind":489,"lodash.identity":606,"lodash.support":503}],486:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":487,"lodash.noop":488}],487:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],488:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],489:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":490,"lodash._slice":502}],490:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":491,"lodash._basecreatewrapper":496,"lodash._slice":502,"lodash.isfunction":501}],491:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":492,"lodash._setbinddata":486,"lodash._slice":502,"lodash.isobject":495}],492:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":493,"lodash.isobject":495,"lodash.noop":494}],493:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],494:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],495:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":505}],496:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":497,"lodash._setbinddata":486,"lodash._slice":502,"lodash.isobject":500}],497:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":498,"lodash.isobject":500,"lodash.noop":499}],498:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],499:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],500:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":505}],501:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],502:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],503:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":504}],504:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],505:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],506:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":507,"lodash._shimkeys":508,"lodash.isobject":509}],507:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],508:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":505}],509:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":505}],510:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28230,7 +32869,7 @@ function flatten(array, isShallow, callback, thisArg) {
 
 module.exports = flatten;
 
-},{"lodash._baseflatten":474,"lodash.map":478}],474:[function(require,module,exports){
+},{"lodash._baseflatten":511,"lodash.map":515}],511:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28284,7 +32923,7 @@ function baseFlatten(array, isShallow, isStrict, fromIndex) {
 
 module.exports = baseFlatten;
 
-},{"lodash.isarguments":475,"lodash.isarray":476}],475:[function(require,module,exports){
+},{"lodash.isarguments":512,"lodash.isarray":513}],512:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28326,7 +32965,7 @@ function isArguments(value) {
 
 module.exports = isArguments;
 
-},{}],476:[function(require,module,exports){
+},{}],513:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28373,9 +33012,9 @@ var isArray = nativeIsArray || function(value) {
 
 module.exports = isArray;
 
-},{"lodash._isnative":477}],477:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],478:[function(require,module,exports){
+},{"lodash._isnative":514}],514:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],515:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28447,129 +33086,129 @@ function map(collection, callback, thisArg) {
 
 module.exports = map;
 
-},{"lodash.createcallback":479,"lodash.forown":514}],479:[function(require,module,exports){
-module.exports=require(412)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":412,"lodash._basecreatecallback":480,"lodash._baseisequal":498,"lodash.isobject":507,"lodash.keys":509,"lodash.property":513}],480:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":481,"lodash.bind":484,"lodash.identity":569,"lodash.support":496}],481:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":482,"lodash.noop":483}],482:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],483:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],484:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":485,"lodash._slice":495}],485:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":486,"lodash._basecreatewrapper":490,"lodash._slice":495,"lodash.isfunction":494}],486:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":487,"lodash._setbinddata":481,"lodash._slice":495,"lodash.isobject":507}],487:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":488,"lodash.isobject":507,"lodash.noop":489}],488:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],489:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],490:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":491,"lodash._setbinddata":481,"lodash._slice":495,"lodash.isobject":507}],491:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":492,"lodash.isobject":507,"lodash.noop":493}],492:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],493:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],494:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],495:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],496:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":497}],497:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],498:[function(require,module,exports){
-module.exports=require(431)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":431,"lodash._getarray":499,"lodash._objecttypes":501,"lodash._releasearray":502,"lodash.forin":505,"lodash.isfunction":506}],499:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":500}],500:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],501:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],502:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":503,"lodash._maxpoolsize":504}],503:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],504:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],505:[function(require,module,exports){
-module.exports=require(438)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":438,"lodash._basecreatecallback":480,"lodash._objecttypes":501}],506:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],507:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":508}],508:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],509:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":510,"lodash._shimkeys":511,"lodash.isobject":507}],510:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],511:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":512}],512:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],513:[function(require,module,exports){
-module.exports=require(446)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":446}],514:[function(require,module,exports){
+},{"lodash.createcallback":516,"lodash.forown":551}],516:[function(require,module,exports){
+module.exports=require(449)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":449,"lodash._basecreatecallback":517,"lodash._baseisequal":535,"lodash.isobject":544,"lodash.keys":546,"lodash.property":550}],517:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":518,"lodash.bind":521,"lodash.identity":606,"lodash.support":533}],518:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":519,"lodash.noop":520}],519:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],520:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],521:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":522,"lodash._slice":532}],522:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":523,"lodash._basecreatewrapper":527,"lodash._slice":532,"lodash.isfunction":531}],523:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":524,"lodash._setbinddata":518,"lodash._slice":532,"lodash.isobject":544}],524:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":525,"lodash.isobject":544,"lodash.noop":526}],525:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],526:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],527:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":528,"lodash._setbinddata":518,"lodash._slice":532,"lodash.isobject":544}],528:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":529,"lodash.isobject":544,"lodash.noop":530}],529:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],530:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],531:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],532:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],533:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":534}],534:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],535:[function(require,module,exports){
+module.exports=require(468)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":468,"lodash._getarray":536,"lodash._objecttypes":538,"lodash._releasearray":539,"lodash.forin":542,"lodash.isfunction":543}],536:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":537}],537:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],538:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],539:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":540,"lodash._maxpoolsize":541}],540:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],541:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],542:[function(require,module,exports){
+module.exports=require(475)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":475,"lodash._basecreatecallback":517,"lodash._objecttypes":538}],543:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],544:[function(require,module,exports){
 module.exports=require(447)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":447,"lodash._basecreatecallback":515,"lodash._objecttypes":535,"lodash.keys":536}],515:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":516,"lodash.bind":519,"lodash.identity":569,"lodash.support":533}],516:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":517,"lodash.noop":518}],517:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],518:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],519:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":520,"lodash._slice":532}],520:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":521,"lodash._basecreatewrapper":526,"lodash._slice":532,"lodash.isfunction":531}],521:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":522,"lodash._setbinddata":516,"lodash._slice":532,"lodash.isobject":525}],522:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":523,"lodash.isobject":525,"lodash.noop":524}],523:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],524:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],525:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":535}],526:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":527,"lodash._setbinddata":516,"lodash._slice":532,"lodash.isobject":530}],527:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":528,"lodash.isobject":530,"lodash.noop":529}],528:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],529:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],530:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":535}],531:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],532:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],533:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":534}],534:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],535:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],536:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":537,"lodash._shimkeys":538,"lodash.isobject":539}],537:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],538:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":535}],539:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":535}],540:[function(require,module,exports){
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":545}],545:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],546:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":547,"lodash._shimkeys":548,"lodash.isobject":544}],547:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],548:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":549}],549:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],550:[function(require,module,exports){
+module.exports=require(483)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":483}],551:[function(require,module,exports){
+module.exports=require(484)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":484,"lodash._basecreatecallback":552,"lodash._objecttypes":572,"lodash.keys":573}],552:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":553,"lodash.bind":556,"lodash.identity":606,"lodash.support":570}],553:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":554,"lodash.noop":555}],554:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],555:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],556:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":557,"lodash._slice":569}],557:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":558,"lodash._basecreatewrapper":563,"lodash._slice":569,"lodash.isfunction":568}],558:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":559,"lodash._setbinddata":553,"lodash._slice":569,"lodash.isobject":562}],559:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":560,"lodash.isobject":562,"lodash.noop":561}],560:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],561:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],562:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":572}],563:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":564,"lodash._setbinddata":553,"lodash._slice":569,"lodash.isobject":567}],564:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":565,"lodash.isobject":567,"lodash.noop":566}],565:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],566:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],567:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":572}],568:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],569:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],570:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":571}],571:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],572:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],573:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":574,"lodash._shimkeys":575,"lodash.isobject":576}],574:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],575:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":572}],576:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":572}],577:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28626,63 +33265,63 @@ function forEach(collection, callback, thisArg) {
 
 module.exports = forEach;
 
-},{"lodash._basecreatecallback":541,"lodash.forown":563}],541:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":542,"lodash.bind":545,"lodash.identity":569,"lodash.support":561}],542:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":543,"lodash.noop":544}],543:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],544:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],545:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":546,"lodash._slice":560}],546:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":547,"lodash._basecreatewrapper":553,"lodash._slice":560,"lodash.isfunction":559}],547:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":548,"lodash._setbinddata":542,"lodash._slice":560,"lodash.isobject":551}],548:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":549,"lodash.isobject":551,"lodash.noop":550}],549:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],550:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],551:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":552}],552:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],553:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":554,"lodash._setbinddata":542,"lodash._slice":560,"lodash.isobject":557}],554:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":555,"lodash.isobject":557,"lodash.noop":556}],555:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],556:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],557:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":558}],558:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],559:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],560:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],561:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":562}],562:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],563:[function(require,module,exports){
+},{"lodash._basecreatecallback":578,"lodash.forown":600}],578:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":579,"lodash.bind":582,"lodash.identity":606,"lodash.support":598}],579:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":580,"lodash.noop":581}],580:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],581:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],582:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":583,"lodash._slice":597}],583:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":584,"lodash._basecreatewrapper":590,"lodash._slice":597,"lodash.isfunction":596}],584:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":585,"lodash._setbinddata":579,"lodash._slice":597,"lodash.isobject":588}],585:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":586,"lodash.isobject":588,"lodash.noop":587}],586:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],587:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],588:[function(require,module,exports){
 module.exports=require(447)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":447,"lodash._basecreatecallback":541,"lodash._objecttypes":564,"lodash.keys":565}],564:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],565:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":566,"lodash._shimkeys":567,"lodash.isobject":568}],566:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],567:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":564}],568:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":564}],569:[function(require,module,exports){
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":589}],589:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],590:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":591,"lodash._setbinddata":579,"lodash._slice":597,"lodash.isobject":594}],591:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":592,"lodash.isobject":594,"lodash.noop":593}],592:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],593:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],594:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":595}],595:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],596:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],597:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],598:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":599}],599:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],600:[function(require,module,exports){
+module.exports=require(484)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":484,"lodash._basecreatecallback":578,"lodash._objecttypes":601,"lodash.keys":602}],601:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],602:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":603,"lodash._shimkeys":604,"lodash.isobject":605}],603:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],604:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":601}],605:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":601}],606:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28712,7 +33351,7 @@ function identity(value) {
 
 module.exports = identity;
 
-},{}],570:[function(require,module,exports){
+},{}],607:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28768,69 +33407,69 @@ function isEqual(a, b, callback, thisArg) {
 
 module.exports = isEqual;
 
-},{"lodash._basecreatecallback":571,"lodash._baseisequal":593}],571:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":572,"lodash.bind":575,"lodash.identity":569,"lodash.support":591}],572:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":573,"lodash.noop":574}],573:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],574:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],575:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":576,"lodash._slice":590}],576:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":577,"lodash._basecreatewrapper":583,"lodash._slice":590,"lodash.isfunction":589}],577:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":578,"lodash._setbinddata":572,"lodash._slice":590,"lodash.isobject":581}],578:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":579,"lodash.isobject":581,"lodash.noop":580}],579:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],580:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],581:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":582}],582:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],583:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":584,"lodash._setbinddata":572,"lodash._slice":590,"lodash.isobject":587}],584:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":585,"lodash.isobject":587,"lodash.noop":586}],585:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],586:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],587:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":588}],588:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],589:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],590:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],591:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":592}],592:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],593:[function(require,module,exports){
-module.exports=require(431)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":431,"lodash._getarray":594,"lodash._objecttypes":596,"lodash._releasearray":597,"lodash.forin":600,"lodash.isfunction":601}],594:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":595}],595:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],596:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],597:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":598,"lodash._maxpoolsize":599}],598:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],599:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],600:[function(require,module,exports){
-module.exports=require(438)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":438,"lodash._basecreatecallback":571,"lodash._objecttypes":596}],601:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],602:[function(require,module,exports){
+},{"lodash._basecreatecallback":608,"lodash._baseisequal":630}],608:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":609,"lodash.bind":612,"lodash.identity":606,"lodash.support":628}],609:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":610,"lodash.noop":611}],610:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],611:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],612:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":613,"lodash._slice":627}],613:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":614,"lodash._basecreatewrapper":620,"lodash._slice":627,"lodash.isfunction":626}],614:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":615,"lodash._setbinddata":609,"lodash._slice":627,"lodash.isobject":618}],615:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":616,"lodash.isobject":618,"lodash.noop":617}],616:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],617:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],618:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":619}],619:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],620:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":621,"lodash._setbinddata":609,"lodash._slice":627,"lodash.isobject":624}],621:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":622,"lodash.isobject":624,"lodash.noop":623}],622:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],623:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],624:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":625}],625:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],626:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],627:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],628:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":629}],629:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],630:[function(require,module,exports){
+module.exports=require(468)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":468,"lodash._getarray":631,"lodash._objecttypes":633,"lodash._releasearray":634,"lodash.forin":637,"lodash.isfunction":638}],631:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":632}],632:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],633:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],634:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":635,"lodash._maxpoolsize":636}],635:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],636:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],637:[function(require,module,exports){
+module.exports=require(475)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":475,"lodash._basecreatecallback":608,"lodash._objecttypes":633}],638:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],639:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -28899,129 +33538,129 @@ function reduce(collection, callback, accumulator, thisArg) {
 
 module.exports = reduce;
 
-},{"lodash.createcallback":603,"lodash.forown":638}],603:[function(require,module,exports){
-module.exports=require(412)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":412,"lodash._basecreatecallback":604,"lodash._baseisequal":622,"lodash.isobject":631,"lodash.keys":633,"lodash.property":637}],604:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":605,"lodash.bind":608,"lodash.identity":569,"lodash.support":620}],605:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":606,"lodash.noop":607}],606:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],607:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],608:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":609,"lodash._slice":619}],609:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":610,"lodash._basecreatewrapper":614,"lodash._slice":619,"lodash.isfunction":618}],610:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":611,"lodash._setbinddata":605,"lodash._slice":619,"lodash.isobject":631}],611:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":612,"lodash.isobject":631,"lodash.noop":613}],612:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],613:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],614:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":615,"lodash._setbinddata":605,"lodash._slice":619,"lodash.isobject":631}],615:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":616,"lodash.isobject":631,"lodash.noop":617}],616:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],617:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],618:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],619:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],620:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":621}],621:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],622:[function(require,module,exports){
-module.exports=require(431)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":431,"lodash._getarray":623,"lodash._objecttypes":625,"lodash._releasearray":626,"lodash.forin":629,"lodash.isfunction":630}],623:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":624}],624:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],625:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],626:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":627,"lodash._maxpoolsize":628}],627:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],628:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],629:[function(require,module,exports){
-module.exports=require(438)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":438,"lodash._basecreatecallback":604,"lodash._objecttypes":625}],630:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],631:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":632}],632:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],633:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":634,"lodash._shimkeys":635,"lodash.isobject":631}],634:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],635:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":636}],636:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],637:[function(require,module,exports){
-module.exports=require(446)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":446}],638:[function(require,module,exports){
+},{"lodash.createcallback":640,"lodash.forown":675}],640:[function(require,module,exports){
+module.exports=require(449)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":449,"lodash._basecreatecallback":641,"lodash._baseisequal":659,"lodash.isobject":668,"lodash.keys":670,"lodash.property":674}],641:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":642,"lodash.bind":645,"lodash.identity":606,"lodash.support":657}],642:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":643,"lodash.noop":644}],643:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],644:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],645:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":646,"lodash._slice":656}],646:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":647,"lodash._basecreatewrapper":651,"lodash._slice":656,"lodash.isfunction":655}],647:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":648,"lodash._setbinddata":642,"lodash._slice":656,"lodash.isobject":668}],648:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":649,"lodash.isobject":668,"lodash.noop":650}],649:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],650:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],651:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":652,"lodash._setbinddata":642,"lodash._slice":656,"lodash.isobject":668}],652:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":653,"lodash.isobject":668,"lodash.noop":654}],653:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],654:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],655:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],656:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],657:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":658}],658:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],659:[function(require,module,exports){
+module.exports=require(468)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":468,"lodash._getarray":660,"lodash._objecttypes":662,"lodash._releasearray":663,"lodash.forin":666,"lodash.isfunction":667}],660:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":661}],661:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],662:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],663:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":664,"lodash._maxpoolsize":665}],664:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],665:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],666:[function(require,module,exports){
+module.exports=require(475)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":475,"lodash._basecreatecallback":641,"lodash._objecttypes":662}],667:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],668:[function(require,module,exports){
 module.exports=require(447)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":447,"lodash._basecreatecallback":639,"lodash._objecttypes":659,"lodash.keys":660}],639:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":640,"lodash.bind":643,"lodash.identity":569,"lodash.support":657}],640:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":641,"lodash.noop":642}],641:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],642:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],643:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":644,"lodash._slice":656}],644:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":645,"lodash._basecreatewrapper":650,"lodash._slice":656,"lodash.isfunction":655}],645:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":646,"lodash._setbinddata":640,"lodash._slice":656,"lodash.isobject":649}],646:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":647,"lodash.isobject":649,"lodash.noop":648}],647:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],648:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],649:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":659}],650:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":651,"lodash._setbinddata":640,"lodash._slice":656,"lodash.isobject":654}],651:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":652,"lodash.isobject":654,"lodash.noop":653}],652:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],653:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],654:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":659}],655:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],656:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],657:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":658}],658:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],659:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],660:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":661,"lodash._shimkeys":662,"lodash.isobject":663}],661:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],662:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":659}],663:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":659}],664:[function(require,module,exports){
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":669}],669:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],670:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":671,"lodash._shimkeys":672,"lodash.isobject":668}],671:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],672:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":673}],673:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],674:[function(require,module,exports){
+module.exports=require(483)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":483}],675:[function(require,module,exports){
+module.exports=require(484)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.forown/index.js":484,"lodash._basecreatecallback":676,"lodash._objecttypes":696,"lodash.keys":697}],676:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":677,"lodash.bind":680,"lodash.identity":606,"lodash.support":694}],677:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":678,"lodash.noop":679}],678:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],679:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],680:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":681,"lodash._slice":693}],681:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":682,"lodash._basecreatewrapper":687,"lodash._slice":693,"lodash.isfunction":692}],682:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":683,"lodash._setbinddata":677,"lodash._slice":693,"lodash.isobject":686}],683:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":684,"lodash.isobject":686,"lodash.noop":685}],684:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],685:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],686:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":696}],687:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":688,"lodash._setbinddata":677,"lodash._slice":693,"lodash.isobject":691}],688:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":689,"lodash.isobject":691,"lodash.noop":690}],689:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],690:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],691:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":696}],692:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],693:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],694:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":695}],695:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],696:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],697:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":698,"lodash._shimkeys":699,"lodash.isobject":700}],698:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],699:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":696}],700:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":696}],701:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29053,15 +33692,15 @@ function union() {
 
 module.exports = union;
 
-},{"lodash._baseflatten":665,"lodash._baseuniq":669}],665:[function(require,module,exports){
-module.exports=require(474)
-},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/index.js":474,"lodash.isarguments":666,"lodash.isarray":667}],666:[function(require,module,exports){
-module.exports=require(475)
-},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/node_modules/lodash.isarguments/index.js":475}],667:[function(require,module,exports){
-module.exports=require(476)
-},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/node_modules/lodash.isarray/index.js":476,"lodash._isnative":668}],668:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],669:[function(require,module,exports){
+},{"lodash._baseflatten":702,"lodash._baseuniq":706}],702:[function(require,module,exports){
+module.exports=require(511)
+},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/index.js":511,"lodash.isarguments":703,"lodash.isarray":704}],703:[function(require,module,exports){
+module.exports=require(512)
+},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/node_modules/lodash.isarguments/index.js":512}],704:[function(require,module,exports){
+module.exports=require(513)
+},{"/pipeline/build/node_modules/lodash.flatten/node_modules/lodash._baseflatten/node_modules/lodash.isarray/index.js":513,"lodash._isnative":705}],705:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],706:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29127,7 +33766,7 @@ function baseUniq(array, isSorted, callback) {
 
 module.exports = baseUniq;
 
-},{"lodash._baseindexof":670,"lodash._cacheindexof":671,"lodash._createcache":673,"lodash._getarray":678,"lodash._largearraysize":680,"lodash._releasearray":681,"lodash._releaseobject":684}],670:[function(require,module,exports){
+},{"lodash._baseindexof":707,"lodash._cacheindexof":708,"lodash._createcache":710,"lodash._getarray":715,"lodash._largearraysize":717,"lodash._releasearray":718,"lodash._releaseobject":721}],707:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29161,7 +33800,7 @@ function baseIndexOf(array, value, fromIndex) {
 
 module.exports = baseIndexOf;
 
-},{}],671:[function(require,module,exports){
+},{}],708:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29202,7 +33841,7 @@ function cacheIndexOf(cache, value) {
 
 module.exports = cacheIndexOf;
 
-},{"lodash._baseindexof":670,"lodash._keyprefix":672}],672:[function(require,module,exports){
+},{"lodash._baseindexof":707,"lodash._keyprefix":709}],709:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.2 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29217,7 +33856,7 @@ var keyPrefix = '__1335248838000__';
 
 module.exports = keyPrefix;
 
-},{}],673:[function(require,module,exports){
+},{}],710:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29264,7 +33903,7 @@ function createCache(array) {
 
 module.exports = createCache;
 
-},{"lodash._cachepush":674,"lodash._getobject":676,"lodash._releaseobject":684}],674:[function(require,module,exports){
+},{"lodash._cachepush":711,"lodash._getobject":713,"lodash._releaseobject":721}],711:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29304,9 +33943,9 @@ function cachePush(value) {
 
 module.exports = cachePush;
 
-},{"lodash._keyprefix":675}],675:[function(require,module,exports){
-module.exports=require(672)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":672}],676:[function(require,module,exports){
+},{"lodash._keyprefix":712}],712:[function(require,module,exports){
+module.exports=require(709)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":709}],713:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29343,7 +33982,7 @@ function getObject() {
 
 module.exports = getObject;
 
-},{"lodash._objectpool":677}],677:[function(require,module,exports){
+},{"lodash._objectpool":714}],714:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29358,11 +33997,11 @@ var objectPool = [];
 
 module.exports = objectPool;
 
-},{}],678:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":679}],679:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],680:[function(require,module,exports){
+},{}],715:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":716}],716:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],717:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29377,13 +34016,13 @@ var largeArraySize = 75;
 
 module.exports = largeArraySize;
 
-},{}],681:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":682,"lodash._maxpoolsize":683}],682:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],683:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],684:[function(require,module,exports){
+},{}],718:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":719,"lodash._maxpoolsize":720}],719:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],720:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],721:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29414,11 +34053,11 @@ function releaseObject(object) {
 
 module.exports = releaseObject;
 
-},{"lodash._maxpoolsize":685,"lodash._objectpool":686}],685:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],686:[function(require,module,exports){
-module.exports=require(677)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":677}],687:[function(require,module,exports){
+},{"lodash._maxpoolsize":722,"lodash._objectpool":723}],722:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],723:[function(require,module,exports){
+module.exports=require(714)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":714}],724:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29489,113 +34128,113 @@ function uniq(array, isSorted, callback, thisArg) {
 
 module.exports = uniq;
 
-},{"lodash._baseuniq":688,"lodash.createcallback":706}],688:[function(require,module,exports){
-module.exports=require(669)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/index.js":669,"lodash._baseindexof":689,"lodash._cacheindexof":690,"lodash._createcache":692,"lodash._getarray":697,"lodash._largearraysize":699,"lodash._releasearray":700,"lodash._releaseobject":703}],689:[function(require,module,exports){
-module.exports=require(670)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._baseindexof/index.js":670}],690:[function(require,module,exports){
-module.exports=require(671)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/index.js":671,"lodash._baseindexof":689,"lodash._keyprefix":691}],691:[function(require,module,exports){
-module.exports=require(672)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":672}],692:[function(require,module,exports){
-module.exports=require(673)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/index.js":673,"lodash._cachepush":693,"lodash._getobject":695,"lodash._releaseobject":703}],693:[function(require,module,exports){
-module.exports=require(674)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._cachepush/index.js":674,"lodash._keyprefix":694}],694:[function(require,module,exports){
-module.exports=require(672)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":672}],695:[function(require,module,exports){
-module.exports=require(676)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/index.js":676,"lodash._objectpool":696}],696:[function(require,module,exports){
-module.exports=require(677)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":677}],697:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":698}],698:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],699:[function(require,module,exports){
-module.exports=require(680)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._largearraysize/index.js":680}],700:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":701,"lodash._maxpoolsize":702}],701:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],702:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],703:[function(require,module,exports){
-module.exports=require(684)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._releaseobject/index.js":684,"lodash._maxpoolsize":704,"lodash._objectpool":705}],704:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],705:[function(require,module,exports){
-module.exports=require(677)
-},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":677}],706:[function(require,module,exports){
-module.exports=require(412)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":412,"lodash._basecreatecallback":707,"lodash._baseisequal":725,"lodash.isobject":734,"lodash.keys":736,"lodash.property":740}],707:[function(require,module,exports){
-module.exports=require(413)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":413,"lodash._setbinddata":708,"lodash.bind":711,"lodash.identity":569,"lodash.support":723}],708:[function(require,module,exports){
-module.exports=require(414)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":414,"lodash._isnative":709,"lodash.noop":710}],709:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],710:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],711:[function(require,module,exports){
-module.exports=require(417)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":417,"lodash._createwrapper":712,"lodash._slice":722}],712:[function(require,module,exports){
-module.exports=require(418)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":418,"lodash._basebind":713,"lodash._basecreatewrapper":717,"lodash._slice":722,"lodash.isfunction":721}],713:[function(require,module,exports){
-module.exports=require(419)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":419,"lodash._basecreate":714,"lodash._setbinddata":708,"lodash._slice":722,"lodash.isobject":734}],714:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":715,"lodash.isobject":734,"lodash.noop":716}],715:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],716:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],717:[function(require,module,exports){
-module.exports=require(423)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":423,"lodash._basecreate":718,"lodash._setbinddata":708,"lodash._slice":722,"lodash.isobject":734}],718:[function(require,module,exports){
-module.exports=require(420)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":420,"lodash._isnative":719,"lodash.isobject":734,"lodash.noop":720}],719:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],720:[function(require,module,exports){
-module.exports=require(416)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":416}],721:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],722:[function(require,module,exports){
-module.exports=require(428)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":428}],723:[function(require,module,exports){
-module.exports=require(429)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":429,"lodash._isnative":724}],724:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],725:[function(require,module,exports){
-module.exports=require(431)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":431,"lodash._getarray":726,"lodash._objecttypes":728,"lodash._releasearray":729,"lodash.forin":732,"lodash.isfunction":733}],726:[function(require,module,exports){
-module.exports=require(432)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":432,"lodash._arraypool":727}],727:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],728:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],729:[function(require,module,exports){
-module.exports=require(435)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":435,"lodash._arraypool":730,"lodash._maxpoolsize":731}],730:[function(require,module,exports){
-module.exports=require(433)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":433}],731:[function(require,module,exports){
-module.exports=require(437)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":437}],732:[function(require,module,exports){
-module.exports=require(438)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":438,"lodash._basecreatecallback":707,"lodash._objecttypes":728}],733:[function(require,module,exports){
-module.exports=require(427)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":427}],734:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":735}],735:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],736:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":737,"lodash._shimkeys":738,"lodash.isobject":734}],737:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],738:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":739}],739:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],740:[function(require,module,exports){
+},{"lodash._baseuniq":725,"lodash.createcallback":743}],725:[function(require,module,exports){
+module.exports=require(706)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/index.js":706,"lodash._baseindexof":726,"lodash._cacheindexof":727,"lodash._createcache":729,"lodash._getarray":734,"lodash._largearraysize":736,"lodash._releasearray":737,"lodash._releaseobject":740}],726:[function(require,module,exports){
+module.exports=require(707)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._baseindexof/index.js":707}],727:[function(require,module,exports){
+module.exports=require(708)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/index.js":708,"lodash._baseindexof":726,"lodash._keyprefix":728}],728:[function(require,module,exports){
+module.exports=require(709)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":709}],729:[function(require,module,exports){
+module.exports=require(710)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/index.js":710,"lodash._cachepush":730,"lodash._getobject":732,"lodash._releaseobject":740}],730:[function(require,module,exports){
+module.exports=require(711)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._cachepush/index.js":711,"lodash._keyprefix":731}],731:[function(require,module,exports){
+module.exports=require(709)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._cacheindexof/node_modules/lodash._keyprefix/index.js":709}],732:[function(require,module,exports){
+module.exports=require(713)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/index.js":713,"lodash._objectpool":733}],733:[function(require,module,exports){
+module.exports=require(714)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":714}],734:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":735}],735:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],736:[function(require,module,exports){
+module.exports=require(717)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._largearraysize/index.js":717}],737:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":738,"lodash._maxpoolsize":739}],738:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],739:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],740:[function(require,module,exports){
+module.exports=require(721)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._releaseobject/index.js":721,"lodash._maxpoolsize":741,"lodash._objectpool":742}],741:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],742:[function(require,module,exports){
+module.exports=require(714)
+},{"/pipeline/build/node_modules/lodash.union/node_modules/lodash._baseuniq/node_modules/lodash._createcache/node_modules/lodash._getobject/node_modules/lodash._objectpool/index.js":714}],743:[function(require,module,exports){
+module.exports=require(449)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/index.js":449,"lodash._basecreatecallback":744,"lodash._baseisequal":762,"lodash.isobject":771,"lodash.keys":773,"lodash.property":777}],744:[function(require,module,exports){
+module.exports=require(450)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/index.js":450,"lodash._setbinddata":745,"lodash.bind":748,"lodash.identity":606,"lodash.support":760}],745:[function(require,module,exports){
+module.exports=require(451)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/index.js":451,"lodash._isnative":746,"lodash.noop":747}],746:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],747:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],748:[function(require,module,exports){
+module.exports=require(454)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/index.js":454,"lodash._createwrapper":749,"lodash._slice":759}],749:[function(require,module,exports){
+module.exports=require(455)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/index.js":455,"lodash._basebind":750,"lodash._basecreatewrapper":754,"lodash._slice":759,"lodash.isfunction":758}],750:[function(require,module,exports){
+module.exports=require(456)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/index.js":456,"lodash._basecreate":751,"lodash._setbinddata":745,"lodash._slice":759,"lodash.isobject":771}],751:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":752,"lodash.isobject":771,"lodash.noop":753}],752:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],753:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],754:[function(require,module,exports){
+module.exports=require(460)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basecreatewrapper/index.js":460,"lodash._basecreate":755,"lodash._setbinddata":745,"lodash._slice":759,"lodash.isobject":771}],755:[function(require,module,exports){
+module.exports=require(457)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":457,"lodash._isnative":756,"lodash.isobject":771,"lodash.noop":757}],756:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],757:[function(require,module,exports){
+module.exports=require(453)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":453}],758:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],759:[function(require,module,exports){
+module.exports=require(465)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._slice/index.js":465}],760:[function(require,module,exports){
+module.exports=require(466)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.support/index.js":466,"lodash._isnative":761}],761:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],762:[function(require,module,exports){
+module.exports=require(468)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/index.js":468,"lodash._getarray":763,"lodash._objecttypes":765,"lodash._releasearray":766,"lodash.forin":769,"lodash.isfunction":770}],763:[function(require,module,exports){
+module.exports=require(469)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/index.js":469,"lodash._arraypool":764}],764:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],765:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],766:[function(require,module,exports){
+module.exports=require(472)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/index.js":472,"lodash._arraypool":767,"lodash._maxpoolsize":768}],767:[function(require,module,exports){
+module.exports=require(470)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._getarray/node_modules/lodash._arraypool/index.js":470}],768:[function(require,module,exports){
+module.exports=require(474)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash._releasearray/node_modules/lodash._maxpoolsize/index.js":474}],769:[function(require,module,exports){
+module.exports=require(475)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._baseisequal/node_modules/lodash.forin/index.js":475,"lodash._basecreatecallback":744,"lodash._objecttypes":765}],770:[function(require,module,exports){
+module.exports=require(464)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash.isfunction/index.js":464}],771:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":772}],772:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],773:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":774,"lodash._shimkeys":775,"lodash.isobject":771}],774:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],775:[function(require,module,exports){
 module.exports=require(446)
-},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":446}],741:[function(require,module,exports){
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":776}],776:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],777:[function(require,module,exports){
+module.exports=require(483)
+},{"/pipeline/build/node_modules/lodash.find/node_modules/lodash.createcallback/node_modules/lodash.property/index.js":483}],778:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -29633,19 +34272,19 @@ function values(object) {
 
 module.exports = values;
 
-},{"lodash.keys":742}],742:[function(require,module,exports){
-module.exports=require(407)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":407,"lodash._isnative":743,"lodash._shimkeys":744,"lodash.isobject":746}],743:[function(require,module,exports){
-module.exports=require(408)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":408}],744:[function(require,module,exports){
-module.exports=require(409)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":409,"lodash._objecttypes":745}],745:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],746:[function(require,module,exports){
-module.exports=require(410)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":410,"lodash._objecttypes":747}],747:[function(require,module,exports){
-module.exports=require(406)
-},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":406}],748:[function(require,module,exports){
+},{"lodash.keys":779}],779:[function(require,module,exports){
+module.exports=require(444)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/index.js":444,"lodash._isnative":780,"lodash._shimkeys":781,"lodash.isobject":783}],780:[function(require,module,exports){
+module.exports=require(445)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._isnative/index.js":445}],781:[function(require,module,exports){
+module.exports=require(446)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":446,"lodash._objecttypes":782}],782:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],783:[function(require,module,exports){
+module.exports=require(447)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash.keys/node_modules/lodash.isobject/index.js":447,"lodash._objecttypes":784}],784:[function(require,module,exports){
+module.exports=require(443)
+},{"/pipeline/build/node_modules/lodash.defaults/node_modules/lodash._objecttypes/index.js":443}],785:[function(require,module,exports){
 (function (global){
 /**
  * @license
