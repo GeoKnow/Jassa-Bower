@@ -7269,7 +7269,6 @@ module.exports = ns;
 
 },{"./BboxExprFactory":72,"./BboxExprFactoryWgs84":73,"./BboxExprFactoryWkt":74,"./Bounds":75,"./DataServiceBboxCache":76,"./GeoConceptUtils":77,"./GeoDataSourceUtils":78,"./GeoExprUtils":79,"./GeoMapFactory":80,"./GeoMapFactoryUtils":81,"./GeoMapUtils":82,"./GeoUtils":83,"./ListServiceBbox":84,"./Point":85,"./PointUtils":86,"./QuadTree":87,"./QuadTreeNode":88,"./Range":89}],91:[function(require,module,exports){
 var shared = require('./util/shared');
-var Promise = require('bluebird');
 var AjaxUtils = require('./util/AjaxUtils');
 
 /**
@@ -7284,7 +7283,7 @@ var AjaxUtils = require('./util/AjaxUtils');
  */
 
 /**
- * @Deprecated
+ *
  *
  * The global jassa object was originally intended to support
  * customizing the promise and ajax library.
@@ -7302,7 +7301,7 @@ var Jassa = function(promise, ajaxRequest) {
     }
 
     // store promise and ajax function
-    shared.Promise = promise || Promise;
+    shared.Promise = promise || require('bluebird');
     shared.ajax = AjaxUtils.createAjaxWrapperFn(ajaxRequest);
 
     // return jassa object
@@ -7326,13 +7325,14 @@ var Jassa = function(promise, ajaxRequest) {
 
 
 Jassa.ext = require('./ext');
-Jassa.util = require('./util');
-Jassa.rdf = require('./rdf');
-Jassa.vocab = require('./vocab');
-Jassa.sparql = require('./sparql');
-Jassa.service = require('./service');
-Jassa.sponate = require('./sponate');
-Jassa.facete = require('./facete');
+
+//Jassa.util = require('./util');
+//Jassa.rdf = require('./rdf');
+//Jassa.vocab = require('./vocab');
+//Jassa.sparql = require('./sparql');
+//Jassa.service = require('./service');
+//Jassa.sponate = require('./sponate');
+//Jassa.facete = require('./facete');
 
 
 
