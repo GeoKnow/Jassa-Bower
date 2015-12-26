@@ -7324,7 +7324,7 @@ var Jassa = function(promise, ajaxRequest) {
 //jassa = new Jassa(Promise, ajaxWrapper);
 
 
-/*
+
 Jassa.ext = require('./ext');
 Jassa.util = require('./util');
 Jassa.rdf = require('./rdf');
@@ -7333,7 +7333,7 @@ Jassa.sparql = require('./sparql');
 Jassa.service = require('./service');
 Jassa.sponate = require('./sponate');
 Jassa.facete = require('./facete');
-*/
+
 
 
 module.exports = Jassa;
