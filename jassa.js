@@ -7306,7 +7306,7 @@ var Jassa = function(promise, ajaxRequest) {
 
     // return jassa object
     return {
-        ext: require('./ext'),
+//        ext: require('./ext'),
         util: require('./util'),
         rdf: require('./rdf'),
         io: require('./io'),
@@ -9431,7 +9431,7 @@ var TalisRdfJsonUtils = {
         return result;
     },
 
-    renameProperty: function(talisRdfJson, s, oldName, newName) {
+    renamePredicate: function(talisRdfJson, s, oldName, newName) {
         var pToOs = talisRdfJson[s];
         if(pToOs) {
             this.renameKey(pToOs, oldName, newName);
@@ -9439,8 +9439,11 @@ var TalisRdfJsonUtils = {
     },
 
     renameKey: function(obj, oldName, newName) {
-        var data = obj[oldName];
-        obj[newName] = data;
+        if(oldName in obj) {
+            var data = obj[oldName];
+            delete obj[oldName];
+            obj[newName] = data;
+        }
     }
 
 
