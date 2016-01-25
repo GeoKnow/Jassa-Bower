@@ -16678,6 +16678,7 @@ var ElementUtils = require('./ElementUtils');
 var Quad = require('./Quad');
 
 var QuadUtils = {
+
     triplesToQuads: function(triples, graphNode) {
 
         var result = triples.map(function(triple) {
@@ -17059,6 +17060,8 @@ QueryType.Describe = 3;
 module.exports = QueryType;
 
 },{}],249:[function(require,module,exports){
+var ArrayUtils = require('../util/ArrayUtils');
+
 var Triple = require('../rdf/Triple');
 var ExprVar = require('./expr/ExprVar');
 
@@ -17078,6 +17081,32 @@ var ElementTriplesBlock = require('./element/ElementTriplesBlock');
 var Query = require('./Query');
 
 var QueryUtils = {
+
+    injectElement: function(query, element) {
+        var old = query.getQueryPattern();
+
+        var tmp = new ElementGroup([old, element]);
+        var newQueryPattern = tmp.flatten();
+
+        query.setQueryPattern(newQueryPattern);
+        return query;
+    },
+
+    injectSortElement: function(query, sortElement) {
+        var e = sortElement.getElement();
+
+        QueryUtils.injectElement(query, e);
+
+        var scs = sortElement.getSortConditions();
+        // extend the query pattern with
+        var arr = query.getOrderBy();
+        ArrayUtils.clear(arr);
+        ArrayUtils.addAll(arr, scs);
+
+        return query;
+    },
+
+
     // This method is dangerous as it attempts to handle too many cases
     // don't use
     createQueryCount: function(elements, limit, variable, outputVar, groupVars, useDistinct, options) {
@@ -17196,7 +17225,7 @@ var QueryUtils = {
 
 module.exports = QueryUtils;
 
-},{"../rdf/Triple":102,"./Query":247,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./element/ElementUnion":268,"./expr/E_OneOf":291,"./expr/ExprAggregator":295,"./expr/ExprVar":303}],250:[function(require,module,exports){
+},{"../rdf/Triple":102,"../util/ArrayUtils":368,"./Query":247,"./agg/AggCount":257,"./element/ElementFilter":261,"./element/ElementGroup":262,"./element/ElementSubQuery":266,"./element/ElementTriplesBlock":267,"./element/ElementUnion":268,"./expr/E_OneOf":291,"./expr/ExprAggregator":295,"./expr/ExprVar":303}],250:[function(require,module,exports){
 var Class = require('../ext/Class');
 
 var ElementUtils = require('./ElementUtils');
