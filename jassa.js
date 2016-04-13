@@ -31968,7 +31968,7 @@ module.exports = find;
 
 },{"lodash.createcallback":455,"lodash.forown":490}],455:[function(require,module,exports){
 /**
- * Lo-Dash 2.4.3 (Custom Build) <http://lodash.com/>
+ * Lo-Dash 2.4.4 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
