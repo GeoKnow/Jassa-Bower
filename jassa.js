@@ -24059,7 +24059,7 @@ var AjaxUtils = {
 
             var r = Promise.resolve(jqXHR)
                 .cancellable()
-                .catch(Promise.TimeoutError, Promise.CancellationError, function(e) {
+                ['catch'](Promise.TimeoutError, Promise.CancellationError, function(e) {
                     //console.log('CANCELLED REQUEST');
                     jqXHR.abort();
                     throw e;
@@ -24341,7 +24341,7 @@ var CacheUtils = {
                 });
             })
             .cancellable()
-            .catch(function(e) {
+            ['catch'](function(e) {
                 cleanupClient();
                 clientId = null;
 
@@ -24939,7 +24939,7 @@ var PromiseUtils = {
     all: function(promises) {
         var r = Promise.all(promises)
             .cancellable()
-            .catch(Promise.CancellationError, function(e) {
+            ['catch'](Promise.CancellationError, function(e) {
                 promises.forEach(function(promise) {
                     try {
                         if(promise && promise.cancel) {
