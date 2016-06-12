@@ -18470,7 +18470,7 @@ var ElementFactoryCombine = Class.create(ElementFactory, {
             result = result.flatten();
         }
 
-        // Remove unneccesary ElementGroup unless it is enforced
+        // Remove unnecessary ElementGroup unless it is enforced
         if (!this.forceGroup) {
             var members = result.getArgs();
             if (members.length === 1) {
